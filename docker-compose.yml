@@ -1,0 +1,10 @@
+version: "3"
+services:
+    database:
+        image: cockroachdb/cockroach
+        command: start-single-node --insecure
+        ports:
+            - "8080:8080"
+            - "26257:26257"
+        volumes:
+            - ".docker:/cockroach/cockroach-data"
