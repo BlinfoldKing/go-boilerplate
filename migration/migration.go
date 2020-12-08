@@ -15,12 +15,7 @@ func Migrate(direction string, step int) (int, error) {
 
 	migrate.SetTable("schema_migrations")
 
-	dbURL, err := config.DB_URL()
-	if err != nil {
-		return 0, err
-	}
-
-	db, err := sql.Open("postgres", dbURL)
+	db, err := sql.Open("postgres", config.DB_URL())
 	if err != nil {
 		return 0, err
 	}

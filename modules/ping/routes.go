@@ -1,11 +1,16 @@
 package ping
 
-import "github.com/kataras/iris/v12"
+import (
+	"go-boilerplate/adapters"
+
+	"github.com/kataras/iris/v12"
+)
 
 const name = "/ping"
 
-func Routes(app *iris.Application) {
-	app.Party(name)
+func Routes(app *iris.Application, adapters adapters.Adapters) {
+	handler := handler{adapters}
 
-	app.Get("/", Ping)
+	ping := app.Party(name)
+	ping.Get("/", handler.Ping)
 }

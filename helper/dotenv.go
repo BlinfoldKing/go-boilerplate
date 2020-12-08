@@ -1,20 +1,14 @@
 package helper
 
 import (
-	"github.com/joho/godotenv"
 	"os"
 )
 
-func GetEnv(variable string, fallback string) (string, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return "", err
-	}
-
+func GetEnv(variable string, fallback string) string {
 	res := os.Getenv(variable)
 	if res != "" {
-		return res, nil
+		return res
 	}
 
-	return fallback, nil
+	return fallback
 }
