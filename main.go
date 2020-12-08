@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"go-boilerplate/server"
+)
 
 func main() {
-	fmt.Println("vim-go")
+	server.New().Listen()
 }
