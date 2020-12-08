@@ -1,9 +1,9 @@
 package main
 
 import (
-	"go-boilerplate/server"
+	"go-boilerplate/console"
 )
 
 func main() {
-	server.New().Listen()
+	console.Execute()
 }
