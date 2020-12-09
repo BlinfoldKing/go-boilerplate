@@ -12,7 +12,8 @@ import (
 )
 
 type Server struct {
-	app *iris.Application
+	app     *iris.Application
+	Adapter adapters.Adapters
 }
 
 func New() Server {
@@ -28,6 +29,7 @@ func New() Server {
 
 	return Server{
 		app,
+		adapters,
 	}
 
 }
