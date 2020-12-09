@@ -18,7 +18,7 @@ var migrateCmd = &cobra.Command{
 
 func init() {
 	migrateCmd.PersistentFlags().Int("step", 0, "maximum migration steps")
-	migrateCmd.PersistentFlags().String("direction", "up", "migration direction")
+	migrateCmd.PersistentFlags().String("direction", "up", "migration direction, up to apply and down to redo")
 	Root.AddCommand(migrateCmd)
 }
 
