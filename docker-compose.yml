@@ -7,4 +7,13 @@ services:
             - "8080:8080"
             - "26257:26257"
         volumes:
-            - ".docker:/cockroach/cockroach-data"
+            - ".docker/cockroach:/cockroach/cockroach-data"
+    redis:
+        image: bitnami/redis:latest
+        environment:
+            - REDIS_PASSWORD=secret123
+        ports:
+            - "6379:6379"
+        volumes:
+            - ".docker/redis:/bitnami/redis/data"
+

@@ -13,3 +13,15 @@ func PORT() string {
 	return helper.
 		GetEnv("PORT", "8000")
 }
+
+// REDISHOST get redis host
+func REDISHOST() string {
+	return helper.
+		GetEnv("REDIS_HOST", "localhost:6379")
+}
+
+// REDISPASSWORD get redis password
+func REDISPASSWORD() string {
+	return helper.
+		GetEnv("REDIS_PASSWORD", "secret123")
+}
