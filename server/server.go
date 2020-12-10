@@ -11,11 +11,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Server wrapper
 type Server struct {
 	app     *iris.Application
 	Adapter adapters.Adapters
 }
 
+// New create new user
 func New() Server {
 	app := iris.New()
 	app.Use(middlewares.Logger)
@@ -34,6 +36,7 @@ func New() Server {
 
 }
 
+// Listen start server
 func (server Server) Listen() {
 	server.app.Run(
 		iris.Addr(fmt.Sprintf(":%s", config.PORT())),

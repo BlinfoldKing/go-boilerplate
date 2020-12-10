@@ -11,7 +11,7 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/kataras/iris/v12 v12.1.8
-	github.com/lib/pq v1.3.0
+	github.com/lib/pq v1.7.0
 	github.com/moul/http2curl v1.0.0 // indirect
 	github.com/rubenv/sql-migrate v0.0.0-20200616145509-8d140a17f351
 	github.com/satori/uuid v1.2.0
@@ -27,4 +27,5 @@ require (
 	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c
 	gorm.io/driver/postgres v1.0.5
 	gorm.io/gorm v1.20.8
+	xorm.io/xorm v1.0.5
 )

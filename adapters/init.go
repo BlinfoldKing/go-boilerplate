@@ -5,14 +5,17 @@ import (
 	validation "go-boilerplate/adapters/validator"
 
 	"github.com/go-playground/validator/v10"
-	"gorm.io/gorm"
+	// "gorm.io/gorm"
+	"xorm.io/xorm"
 )
 
+// Adapters is wrapper for lib/drivers that needed to be injected
 type Adapters struct {
-	Postgres  *gorm.DB
+	Postgres  *xorm.Engine
 	Validator *validator.Validate
 }
 
+// Init create new Adapters
 func Init() (Adapters, error) {
 	postgres, err := postgres.Init()
 	if err != nil {

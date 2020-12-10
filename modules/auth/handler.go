@@ -13,6 +13,7 @@ type handler struct {
 	adapters adapters.Adapters
 }
 
+// Register create new user
 func (handler handler) Register(ctx iris.Context) {
 	var request RegisterRequest
 	err := ctx.ReadJSON(&request)

@@ -3,23 +3,28 @@ package users
 import (
 	"go-boilerplate/entity"
 
-	"gorm.io/gorm"
+	"xorm.io/xorm"
+	// "gorm.io/gorm"
 )
 
+// PostgresRepository repository implementation on postgres
 type PostgresRepository struct {
-	db *gorm.DB
+	db *xorm.Engine
 }
 
-func CreatePosgresRepository(db *gorm.DB) Repository {
+// CreatePosgresRepository init PostgresRepository
+func CreatePosgresRepository(db *xorm.Engine) Repository {
 	return PostgresRepository{db}
 }
 
+// Save save user to db
 func (repo PostgresRepository) Save(user entity.User) error {
-	err := repo.db.Model(&user).Create(&user).Error
+	_, err := repo.db.Table("users").Insert(&user)
 	return err
 }
 
+// FindByEmail find user by email
 func (repo PostgresRepository) FindByEmail(email string) (user entity.User, err error) {
-	err = repo.db.Model(&user).Where("email = ?").Find(&user).Error
+	err = repo.db.Table("users").Where("email = ?", email).Find(&user)
 	return
 }

@@ -8,6 +8,7 @@ import (
 
 const name = "/ping"
 
+// Routes init ping
 func Routes(app *iris.Application, adapters adapters.Adapters) {
 	handler := handler{adapters}
 

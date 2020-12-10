@@ -9,6 +9,7 @@ import (
 
 const name = "/auth"
 
+// Routes init auth
 func Routes(app *iris.Application, adapters adapters.Adapters) {
 	userRepository := users.CreatePosgresRepository(adapters.Postgres)
 	userService := users.CreateService(userRepository)

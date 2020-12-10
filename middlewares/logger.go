@@ -6,6 +6,7 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
+// Logger Basic logger
 func Logger(ctx iris.Context) {
 	body, _ := ctx.GetBody()
 	log := fmt.Sprintf(

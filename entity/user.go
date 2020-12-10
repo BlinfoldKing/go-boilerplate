@@ -5,17 +5,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// User user entity
 type User struct {
-	Id           uuid.UUID `gorm:"id"`
-	Email        string    `gorm:"email"`
-	PasswordHash string    `gorm:"password_hash"`
+	ID           string `xorm:"id"`
+	Email        string `xorm:"email"`
+	PasswordHash string `xorm:"password_hash"`
 }
 
+// NewUser create new user
 func NewUser(email, password string) (user User, err error) {
-	id := uuid.NewV4()
+	id := uuid.NewV4().String()
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	user = User{
-		Id:           id,
+		ID:           id,
 		Email:        email,
 		PasswordHash: string(bytes),
 	}
@@ -23,6 +25,7 @@ func NewUser(email, password string) (user User, err error) {
 	return
 }
 
+// ComparePassword Compare current password hash and a password
 func (user User) ComparePassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 
