@@ -40,5 +40,4 @@ func (response Response) WithMessage(message string) Response {
 // JSON send response as JSON
 func (response Response) JSON() {
 	response.context.JSON(response.content)
-	response.context.Next()
 }

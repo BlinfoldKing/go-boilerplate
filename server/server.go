@@ -20,7 +20,6 @@ type Server struct {
 // New create new user
 func New() Server {
 	app := iris.New()
-	app.Use(middlewares.Logger)
 
 	adapters, err := adapters.Init()
 	if err != nil {
@@ -28,6 +27,16 @@ func New() Server {
 	}
 
 	modules.Init(app, adapters)
+
+	jwt, err := middlewares.CreateJWT(adapters.Redis)
+	if err != nil {
+		logrus.Panic(err)
+	}
+
+	app.UseGlobal(middlewares.Logger)
+	app.UseGlobal(jwt.AuthenticateToken)
+
+	app.DoneGlobal(jwt.GenerateToken)
 
 	return Server{
 		app,

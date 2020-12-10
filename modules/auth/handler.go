@@ -41,9 +41,6 @@ func (handler handler) Register(ctx iris.Context) {
 		return
 	}
 
-	helper.
-		CreateResponse(ctx).
-		Ok().
-		WithData(user).
-		JSON()
+	ctx.Values().Set("user", user)
+	ctx.Next()
 }

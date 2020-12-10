@@ -2,9 +2,8 @@ package migration
 
 import (
 	"database/sql"
-	"go-boilerplate/config"
-
 	migrate "github.com/rubenv/sql-migrate"
+	"go-boilerplate/config"
 )
 
 // Migrate run migration files
@@ -18,7 +17,7 @@ func Migrate(direction string, step int) (int, error) {
 
 	migrate.SetTable("schema_migrations")
 
-	db, err := sql.Open("postgres", config.DBURL())
+	db, err := sql.Open("postgres", config.DBCONFIG())
 	if err != nil {
 		return 0, err
 	}

@@ -8,25 +8,37 @@ import (
 
 // User user entity
 type User struct {
-	ID           string `xorm:"id"`
-	Email        string `xorm:"email"`
-	PasswordHash string `xorm:"password_hash"`
+	ID           string `xorm:"id" json:"id"`
+	Email        string `xorm:"email" json:"email"`
+	PasswordHash string `xorm:"password_hash" json:"password_hash"`
+	Role         string `xorm:"role" json:"role"`
 }
 
 // HashType specifiy hashing for password
 type HashType = string
+
+// UserRole specify available role
+type UserRole = string
 
 const (
 	// ARGO2ID using argo2id
 	ARGO2ID HashType = "argo2id"
 	// BCRYPT using bcrypt
 	BCRYPT HashType = "bcrypt"
+
+	// ADMIN admin role
+	ADMIN UserRole = "admin"
+	// MEMBER member role
+	MEMBER UserRole = "member"
+	// PUBLIC public role
+	PUBLIC UserRole = "public"
 )
 
 // UserConfig specify optional config
 type UserConfig struct {
 	// HashAlgo specify hash algorithm
 	HashAlgo HashType
+	Role     string
 }
 
 // NewUser create new user
@@ -42,10 +54,16 @@ func NewUser(email, password string, config UserConfig) (user User, err error) {
 		bytes = []byte(hash)
 	}
 
+	role := ADMIN // set default role to admin
+	if config.Role != "" {
+		role = config.Role
+	}
+
 	user = User{
 		ID:           id,
 		Email:        email,
 		PasswordHash: string(bytes),
+		Role:         role,
 	}
 
 	return

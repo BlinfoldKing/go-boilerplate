@@ -9,5 +9,5 @@ import (
 
 // Init create data base driver using xorm
 func Init() (db *xorm.Engine, err error) {
-	return xorm.NewEngine("postgres", config.DBURL())
+	return xorm.NewEngine("postgres", config.DBCONFIG())
 }
