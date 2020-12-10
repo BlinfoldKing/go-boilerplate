@@ -2,6 +2,7 @@ package auth
 
 import (
 	"go-boilerplate/adapters"
+	"go-boilerplate/helper"
 	"go-boilerplate/modules/users"
 
 	"github.com/kataras/iris/v12"
@@ -24,19 +25,25 @@ func (handler handler) Register(ctx iris.Context) {
 
 	err = handler.adapters.Validator.Struct(&request)
 	if err != nil {
-		logrus.Error(err)
-		ctx.Next()
+		helper.
+			CreateErrorResponse(ctx, err).
+			BadRequest().
+			JSON()
 		return
 	}
 
 	user, err := handler.users.CreateUser(request.Email, request.Password)
 	if err != nil {
-		ctx.JSON(err)
-		ctx.Next()
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
 		return
 	}
 
-	ctx.JSON(user)
-
-	ctx.Next()
+	helper.
+		CreateResponse(ctx).
+		Ok().
+		WithData(user).
+		JSON()
 }

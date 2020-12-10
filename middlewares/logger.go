@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/kataras/iris/v12"
+	"github.com/sirupsen/logrus"
 )
 
 // Logger Basic logger
@@ -12,7 +13,8 @@ func Logger(ctx iris.Context) {
 	log := fmt.Sprintf(
 		"path: %s, method: %s, body: %s",
 		ctx.Path(), ctx.Request().Method, body)
-	ctx.Application().Logger().Info(log)
+
+	logrus.Info(log)
 
 	ctx.Next()
 }
