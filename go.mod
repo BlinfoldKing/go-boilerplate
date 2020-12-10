@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/ajg/form v1.5.1 // indirect
+	github.com/alexedwards/argon2id v0.0.0-20200802152012-2464efd3196b
 	github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072 // indirect
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/google/go-querystring v1.0.0 // indirect
@@ -13,6 +14,7 @@ require (
 	github.com/kataras/iris/v12 v12.1.8
 	github.com/lib/pq v1.7.0
 	github.com/moul/http2curl v1.0.0 // indirect
+	github.com/nbutton23/zxcvbn-go v0.0.0-20180912185939-ae427f1e4c1d
 	github.com/rubenv/sql-migrate v0.0.0-20200616145509-8d140a17f351
 	github.com/satori/uuid v1.2.0
 	github.com/sergi/go-diff v1.1.0 // indirect

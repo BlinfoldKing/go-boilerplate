@@ -14,7 +14,7 @@ func CreateService(repo Repository) Service {
 
 // CreateUser create new user
 func (service Service) CreateUser(email, password string) (user entity.User, err error) {
-	user, err = entity.NewUser(email, password)
+	user, err = entity.NewUser(email, password, entity.UserConfig{})
 	if err != nil {
 		return
 	}

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"go-boilerplate/console"
-
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+	"go-boilerplate/console"
 )
 
 func main() {

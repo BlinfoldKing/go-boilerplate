@@ -25,12 +25,15 @@ func (handler handler) Register(ctx iris.Context) {
 	err = handler.adapters.Validator.Struct(&request)
 	if err != nil {
 		logrus.Error(err)
+		ctx.Next()
 		return
 	}
 
 	user, err := handler.users.CreateUser(request.Email, request.Password)
 	if err != nil {
 		ctx.JSON(err)
+		ctx.Next()
+		return
 	}
 
 	ctx.JSON(user)
