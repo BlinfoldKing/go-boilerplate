@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/Joker/hpp v1.0.0 // indirect
 	github.com/alexedwards/argon2id v0.0.0-20200802152012-2464efd3196b
+	github.com/casbin/casbin v1.9.1
 	github.com/casbin/casbin/v2 v2.19.4
 	github.com/cychiuae/casbin-pg-adapter v0.0.5
 	github.com/go-playground/validator/v10 v10.4.1

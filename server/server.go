@@ -28,15 +28,15 @@ func New() Server {
 
 	modules.Init(app, adapters)
 
-	jwt, err := middlewares.CreateJWT(adapters.Redis)
+	err = middlewares.InitJWT(adapters)
 	if err != nil {
 		logrus.Panic(err)
 	}
 
 	app.UseGlobal(middlewares.Logger)
-	app.UseGlobal(jwt.AuthenticateToken)
+	app.UseGlobal(middlewares.AuthenticateToken)
 
-	app.DoneGlobal(jwt.GenerateToken)
+	app.DoneGlobal(middlewares.GenerateToken)
 
 	return Server{
 		app,
