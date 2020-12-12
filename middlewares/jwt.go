@@ -2,7 +2,6 @@ package middlewares
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"go-boilerplate/adapters"
 	"go-boilerplate/config"
@@ -121,8 +120,11 @@ func InitJWT(adapters adapters.Adapters) error {
 		}
 
 		sub = user.Role
-		if ok, _ := adapters.Enforcer.Enforce(sub, obj, act); !ok {
-			helper.CreateErrorResponse(ctx, errors.New("Not Allowed for this role")).Unauthorized().JSON()
+		if ok, err := adapters.Enforcer.Enforce(sub, obj, act); !ok {
+			if err == nil {
+				err = fmt.Errorf("Not Allowed for this role: %s, obj: %s, act: %s", sub, obj, act)
+			}
+			helper.CreateErrorResponse(ctx, err).Unauthorized().JSON()
 			return
 		}
 

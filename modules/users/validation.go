@@ -1,7 +1,7 @@
 package users
 
-// PaginationQuery paginatation params
-type PaginationQuery struct {
-	Limit  int `json:"limit" validate:"required"`
-	Offset int `json:"offset" validate:"required"`
+// UpdateRequest  request for update
+type UpdateRequest struct {
+	ID   string `json:"id" validate:"required"`
+	Role string `json:"role" validate:"required"`
 }

@@ -1,6 +1,7 @@
 package users
 
 import (
+	"fmt"
 	"go-boilerplate/adapters"
 	"go-boilerplate/helper"
 
@@ -26,5 +27,72 @@ func (h handler) GetList(ctx iris.Context) {
 	}
 
 	helper.CreateResponse(ctx).Ok().WithData(users).JSON()
+	ctx.Next()
+}
+
+func (h handler) GetByID(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+
+	users, err := h.users.GetByID(id)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(users).JSON()
+	ctx.Next()
+}
+
+func (h handler) DeleteByID(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+
+	err := h.users.DeleteByID(id)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.
+		CreateResponse(ctx).
+		Ok().
+		WithMessage(fmt.Sprintf("%s deleted", id)).
+		JSON()
+	ctx.Next()
+}
+
+func (h handler) Update(ctx iris.Context) {
+	request := ctx.Values().Get("body").(*UpdateRequest)
+
+	user, err := h.users.GetByID(request.ID)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	user.Role = request.Role
+
+	user, err = h.users.Update(user)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.
+		CreateResponse(ctx).
+		Ok().
+		WithData(user).
+		JSON()
 	ctx.Next()
 }

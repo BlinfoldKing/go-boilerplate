@@ -36,3 +36,21 @@ func (repo PostgresRepository) GetList(limit, offset int) (users []entity.User, 
 		})
 	return
 }
+
+// Update update user
+func (repo PostgresRepository) Update(user entity.User) (entity.User, error) {
+	_, err := repo.db.Table("users").Update(&user)
+	return user, err
+}
+
+// FindByID find user by id
+func (repo PostgresRepository) FindByID(id string) (user entity.User, err error) {
+	_, err = repo.db.SQL("SELECT * FROM users WHERE id = ?", id).Get(&user)
+	return
+}
+
+// DeleteByID delete user by id
+func (repo PostgresRepository) DeleteByID(id string) error {
+	_, err := repo.db.Exec("DELETE FROM users WHERE id = ?", id)
+	return err
+}

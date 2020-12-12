@@ -9,3 +9,5 @@ policy:
     admin:
         - method: GET
           route: /users/*
+        - method: PUT
+          route: /users/

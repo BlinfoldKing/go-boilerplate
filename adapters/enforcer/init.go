@@ -2,7 +2,6 @@ package enforcer
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/casbin/casbin/v2"
 	"github.com/cychiuae/casbin-pg-adapter"
 	"go-boilerplate/config"
