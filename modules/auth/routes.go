@@ -24,4 +24,6 @@ func Routes(app *iris.Application, adapters adapters.Adapters) {
 	auth.Post("/login", middlewares.ValidateBody(adapters, &LoginRequest{}),
 		handler.Login, middlewares.GenerateToken)
 
+	auth.Post("/logout", middlewares.InvalidateToken, handler.Logout)
+
 }

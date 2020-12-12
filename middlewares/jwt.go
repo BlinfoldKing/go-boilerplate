@@ -21,6 +21,9 @@ var GenerateToken func(iris.Context)
 // AuthenticateToken check wheter token valid or not
 var AuthenticateToken func(iris.Context)
 
+// InvalidateToken invalidate token
+var InvalidateToken func(iris.Context)
+
 // InitJWT init JWT struct
 func InitJWT(adapters adapters.Adapters) error {
 	key, err := ioutil.ReadFile(".keys/public.pem")
@@ -35,6 +38,26 @@ func InitJWT(adapters adapters.Adapters) error {
 		Expiration:    true,
 		SigningMethod: jwt.SigningMethodHS256,
 	})
+
+	verifyToken := func(ctx iris.Context) (user entity.User, err error) {
+
+		if err = j.CheckJWT(ctx); err != nil {
+			return
+		}
+
+		token := ctx.Values().Get("jwt").(*jwt.Token)
+		claim := token.Claims.(jwt.MapClaims)
+		userid := claim["user_id"].(string)
+
+		data, err := adapters.Redis.Get(fmt.Sprintf("logged:user:%s", userid)).Result()
+		if err != nil {
+			return
+		}
+
+		json.Unmarshal([]byte(data), &user)
+
+		return
+	}
 
 	GenerateToken = func(ctx iris.Context) {
 		now := time.Now()
@@ -60,16 +83,7 @@ func InitJWT(adapters adapters.Adapters) error {
 			return
 		}
 
-		err = adapters.Redis.Set(fmt.Sprintf("logged:user:%s", user.ID), data, 0).Err()
-		if err != nil {
-			helper.
-				CreateErrorResponse(ctx, err).
-				InternalServer().
-				JSON()
-			return
-		}
-
-		err = adapters.Redis.Expire(fmt.Sprintf("logged:user:%s", user.ID), duration).Err()
+		err = adapters.Redis.SetNX(fmt.Sprintf("logged:user:%s", user.ID), data, 0).Err()
 		if err != nil {
 			helper.
 				CreateErrorResponse(ctx, err).
@@ -91,10 +105,6 @@ func InitJWT(adapters adapters.Adapters) error {
 
 	AuthenticateToken = func(ctx iris.Context) {
 		path := ctx.Path()
-		if path == "/auth/login" || path == "/auth/register" {
-			ctx.Next()
-			return
-		}
 
 		sub := "public"
 		obj := path
@@ -104,26 +114,31 @@ func InitJWT(adapters adapters.Adapters) error {
 			return
 		}
 
-		if err := j.CheckJWT(ctx); err != nil {
+		user, err := verifyToken(ctx)
+		if err != nil {
 			helper.CreateErrorResponse(ctx, err).Unauthorized().JSON()
 			return
 		}
 
-		token := ctx.Values().Get("jwt").(*jwt.Token)
-		claim := token.Claims.(jwt.MapClaims)
-		userid := claim["user_id"].(string)
-
-		data, err := adapters.Redis.Get(fmt.Sprintf("logged:user:%s", userid)).Result()
-		if err != nil {
-			helper.CreateErrorResponse(ctx, err).Unauthorized().JSON()
-		}
-
-		var user entity.User
-		json.Unmarshal([]byte(data), &user)
 		sub = user.Role
-
 		if ok, _ := adapters.Enforcer.Enforce(sub, obj, act); !ok {
 			helper.CreateErrorResponse(ctx, errors.New("Not Allowed for this role")).Unauthorized().JSON()
+			return
+		}
+
+		ctx.Next()
+	}
+
+	InvalidateToken = func(ctx iris.Context) {
+		user, err := verifyToken(ctx)
+		if err != nil {
+			helper.CreateErrorResponse(ctx, err).Unauthorized().JSON()
+			return
+		}
+
+		err = adapters.Redis.Del(fmt.Sprintf("logged:user:%s", user.ID)).Err()
+		if err != nil {
+			helper.CreateErrorResponse(ctx, err).InternalServer().JSON()
 			return
 		}
 

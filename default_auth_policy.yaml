@@ -1,0 +1,8 @@
+policy:
+    public:
+        - method: POST
+          route: /auth/register
+        - method: POST
+          route: /auth/login
+        - method: POST
+          route: /auth/logout

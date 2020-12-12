@@ -46,3 +46,8 @@ func (handler handler) Login(ctx iris.Context) {
 	ctx.Values().Set("user", user)
 	ctx.Next()
 }
+
+func (handler handler) Logout(ctx iris.Context) {
+	helper.CreateResponse(ctx).Ok().WithMessage("logout success").JSON()
+	ctx.Next()
+}
