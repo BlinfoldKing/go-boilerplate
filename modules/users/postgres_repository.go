@@ -25,6 +25,6 @@ func (repo PostgresRepository) Save(user entity.User) error {
 
 // FindByEmail find user by email
 func (repo PostgresRepository) FindByEmail(email string) (user entity.User, err error) {
-	err = repo.db.Table("users").Where("email = ?", email).Find(&user)
+	_, err = repo.db.SQL("SELECT * FROM users WHERE email = ?", email).Get(&user)
 	return
 }

@@ -26,8 +26,6 @@ func New() Server {
 		logrus.Panic(err)
 	}
 
-	modules.Init(app, adapters)
-
 	err = middlewares.InitJWT(adapters)
 	if err != nil {
 		logrus.Panic(err)
@@ -36,7 +34,7 @@ func New() Server {
 	app.UseGlobal(middlewares.Logger)
 	app.UseGlobal(middlewares.AuthenticateToken)
 
-	app.DoneGlobal(middlewares.GenerateToken)
+	modules.Init(app, adapters)
 
 	return Server{
 		app,

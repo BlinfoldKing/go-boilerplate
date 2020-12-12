@@ -70,19 +70,19 @@ func NewUser(email, password string, config UserConfig) (user User, err error) {
 }
 
 // ComparePassword Compare current password hash and a password
-func (user User) ComparePassword(password string, config UserConfig) bool {
+func (user User) ComparePassword(password string, config UserConfig) (bool, error) {
 	var err error
 
 	if config.HashAlgo == BCRYPT {
 		err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
-		return err == nil
+		return err == nil, err
 	}
 
 	match, err := argon2id.ComparePasswordAndHash(password, user.PasswordHash)
 	if err != nil {
-		return false
+		return false, err
 	}
 
-	return match
+	return match, nil
 
 }

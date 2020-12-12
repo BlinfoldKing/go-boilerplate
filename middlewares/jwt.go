@@ -37,12 +37,6 @@ func InitJWT(adapters adapters.Adapters) error {
 	})
 
 	GenerateToken = func(ctx iris.Context) {
-		path := ctx.Path()
-		if path != "/auth/login" && path != "/auth/register" {
-			ctx.Next()
-			return
-		}
-
 		now := time.Now()
 		duration := time.Duration(config.TOKENDURATION()) * time.Second
 
@@ -57,13 +51,22 @@ func InitJWT(adapters adapters.Adapters) error {
 
 		tokenString, _ := token.SignedString(key)
 
-		data, _ := json.Marshal(user)
+		data, err := json.Marshal(user)
+		if err != nil {
+			helper.
+				CreateErrorResponse(ctx, err).
+				InternalServer().
+				JSON()
+			return
+		}
+
 		err = adapters.Redis.Set(fmt.Sprintf("logged:user:%s", user.ID), data, 0).Err()
 		if err != nil {
 			helper.
 				CreateErrorResponse(ctx, err).
 				InternalServer().
 				JSON()
+			return
 		}
 
 		err = adapters.Redis.Expire(fmt.Sprintf("logged:user:%s", user.ID), duration).Err()
@@ -72,6 +75,7 @@ func InitJWT(adapters adapters.Adapters) error {
 				CreateErrorResponse(ctx, err).
 				InternalServer().
 				JSON()
+			return
 		}
 
 		helper.CreateResponse(ctx).
@@ -81,6 +85,8 @@ func InitJWT(adapters adapters.Adapters) error {
 				"user":  user,
 			}).
 			JSON()
+
+		ctx.Next()
 	}
 
 	AuthenticateToken = func(ctx iris.Context) {
