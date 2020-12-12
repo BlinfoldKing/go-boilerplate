@@ -9,14 +9,11 @@ import (
 	"github.com/casbin/casbin/v2"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-redis/redis"
-
-	// "gorm.io/gorm"
-	"xorm.io/xorm"
 )
 
 // Adapters is wrapper for lib/drivers that needed to be injected
 type Adapters struct {
-	Postgres  *xorm.Engine
+	Postgres  *postgres.Postgres
 	Validator *validator.Validate
 	Redis     *redis.Client
 	Enforcer  *casbin.Enforcer

@@ -26,6 +26,11 @@ func New() Server {
 		logrus.Panic(err)
 	}
 
+	err = middlewares.InitValidator(adapters)
+	if err != nil {
+		logrus.Panic(err)
+	}
+
 	err = middlewares.InitJWT(adapters)
 	if err != nil {
 		logrus.Panic(err)

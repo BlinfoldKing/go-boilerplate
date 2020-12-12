@@ -63,9 +63,7 @@ func Init() (*casbin.Enforcer, error) {
 	}
 
 	for key, items := range conf.Policy {
-		fmt.Println(key)
 		for _, item := range items {
-			fmt.Println(item)
 			enforcer.AddPolicy(key, item.Route, item.Method)
 		}
 	}

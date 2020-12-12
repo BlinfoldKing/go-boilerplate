@@ -18,10 +18,10 @@ func Routes(app *iris.Application, adapters adapters.Adapters) {
 
 	auth := app.Party(name)
 
-	auth.Post("/register", middlewares.ValidateBody(adapters, &RegisterRequest{}),
+	auth.Post("/register", middlewares.ValidateBody(&RegisterRequest{}),
 		handler.Register, middlewares.GenerateToken)
 
-	auth.Post("/login", middlewares.ValidateBody(adapters, &LoginRequest{}),
+	auth.Post("/login", middlewares.ValidateBody(&LoginRequest{}),
 		handler.Login, middlewares.GenerateToken)
 
 	auth.Post("/logout", middlewares.InvalidateToken, handler.Logout)

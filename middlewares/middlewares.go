@@ -1,35 +1,41 @@
 package middlewares
 
 import (
+	"github.com/kataras/iris/v12"
 	"go-boilerplate/adapters"
 	"go-boilerplate/helper"
-
-	"github.com/kataras/iris/v12"
 )
 
 // ValidateBody read and validate body
-func ValidateBody(adapters adapters.Adapters, T interface{}) func(iris.Context) {
-	return func(ctx iris.Context) {
-		err := ctx.ReadJSON(T)
-		if err != nil {
-			helper.
-				CreateErrorResponse(ctx, err).
-				InternalServer().
-				JSON()
-			return
-		}
+var ValidateBody func(T interface{}) func(iris.Context)
 
-		err = adapters.Validator.Struct(T)
-		if err != nil {
-			helper.
-				CreateErrorResponse(ctx, err).
-				InternalServer().
-				JSON()
-			return
-		}
+// InitValidator ini middleware
+func InitValidator(adapters adapters.Adapters) error {
+	ValidateBody = func(T interface{}) func(iris.Context) {
+		return func(ctx iris.Context) {
+			err := ctx.ReadJSON(T)
+			if err != nil {
+				helper.
+					CreateErrorResponse(ctx, err).
+					InternalServer().
+					JSON()
+				return
+			}
 
-		// return nil
-		ctx.Values().Set("body", T)
-		ctx.Next()
+			err = adapters.Validator.Struct(T)
+			if err != nil {
+				helper.
+					CreateErrorResponse(ctx, err).
+					InternalServer().
+					JSON()
+				return
+			}
+
+			// return nil
+			ctx.Values().Set("body", T)
+			ctx.Next()
+		}
 	}
+
+	return nil
 }

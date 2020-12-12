@@ -6,3 +6,6 @@ policy:
           route: /auth/login
         - method: POST
           route: /auth/logout
+    admin:
+        - method: GET
+          route: /users/*
