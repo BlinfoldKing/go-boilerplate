@@ -76,7 +76,7 @@ func REDISPASSWORD() string {
 // TOKENDURATION get redis password
 func TOKENDURATION() int {
 	res := helper.
-		GetEnv("REDIS_PASSWORD", "3600")
+		GetEnv("TOKEN_DURATION", "3600")
 
 	dur, err := strconv.Atoi(res)
 	if err != nil {
