@@ -8,6 +8,6 @@ policy:
           route: /auth/logout
     admin:
         - method: GET
-          route: /users/*
+          route: /users*
         - method: PUT
-          route: /users/
+          route: /users*

@@ -38,9 +38,9 @@ func (repo PostgresRepository) GetList(limit, offset int) (users []entity.User, 
 }
 
 // Update update user
-func (repo PostgresRepository) Update(user entity.User) (entity.User, error) {
-	_, err := repo.db.Table("users").Update(&user)
-	return user, err
+func (repo PostgresRepository) Update(id string, changeset entity.UserChangeSet) error {
+	_, err := repo.db.Table("users").Where("id = ?", id).Update(&changeset)
+	return err
 }
 
 // FindByID find user by id

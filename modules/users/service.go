@@ -53,8 +53,12 @@ func (service Service) GetList(limit, offset int) (users []entity.User, err erro
 }
 
 // Update update user
-func (service Service) Update(user entity.User) (entity.User, error) {
-	return service.repository.Update(user)
+func (service Service) Update(id string, changeset entity.UserChangeSet) (entity.User, error) {
+	err := service.repository.Update(id, changeset)
+	if err != nil {
+		return entity.User{}, err
+	}
+	return service.GetByID(id)
 }
 
 // GetByID find user by id

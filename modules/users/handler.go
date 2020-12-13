@@ -3,6 +3,7 @@ package users
 import (
 	"fmt"
 	"go-boilerplate/adapters"
+	"go-boilerplate/entity"
 	"go-boilerplate/helper"
 
 	"github.com/kataras/iris/v12"
@@ -80,7 +81,9 @@ func (h handler) Update(ctx iris.Context) {
 
 	user.Role = request.Role
 
-	user, err = h.users.Update(user)
+	user, err = h.users.Update(request.ID, entity.UserChangeSet{
+		Role: request.Role,
+	})
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

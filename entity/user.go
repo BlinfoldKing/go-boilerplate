@@ -14,6 +14,11 @@ type User struct {
 	Role         string `xorm:"role" json:"role"`
 }
 
+// UserChangeSet changeset for user
+type UserChangeSet struct {
+	Role string `xorm:"role" json:"role"`
+}
+
 // HashType specifiy hashing for password
 type HashType = string
 
