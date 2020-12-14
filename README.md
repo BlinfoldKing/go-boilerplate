@@ -1,2 +1,0 @@
-# go-clean-boilerplate
-
