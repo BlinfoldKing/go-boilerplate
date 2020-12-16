@@ -17,5 +17,5 @@ func Routes(app *iris.Application, adapters adapters.Adapters) {
 	documents := app.Party(name)
 
 	documents.Post("/upload", handler.Create)
-	documents.Get("/{id:string}", handler.GetByID)
+	documents.Post("/download", handler.GetByName)
 }

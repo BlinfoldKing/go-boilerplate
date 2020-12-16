@@ -13,7 +13,7 @@ type handler struct {
 }
 
 func (h handler) Create(ctx iris.Context) {
-	request := &UploadRequest{}
+	request := &DocumentRequest{}
 	err := ctx.ReadJSON(request)
 	if err != nil {
 		helper.
@@ -58,5 +58,38 @@ func (h handler) GetByID(ctx iris.Context) {
 	}
 
 	helper.CreateResponse(ctx).Ok().WithData(document).JSON()
+	ctx.Next()
+}
+
+func (h handler) GetByName(ctx iris.Context) {
+	request := &DocumentRequest{}
+	err := ctx.ReadJSON(request)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	_, err = h.documents.GetByName(request.ObjectName, request.BucketName)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	presignedURL, err := h.adapters.Minio.GenerateGetURL(request.ObjectName, request.BucketName)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(map[string]interface{}{"url": presignedURL}).JSON()
 	ctx.Next()
 }

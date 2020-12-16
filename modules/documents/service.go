@@ -29,3 +29,8 @@ func (service Service) CreateDocument(objectName, bucketName, presignedURL strin
 func (service Service) GetByID(id string) (document entity.Document, err error) {
 	return service.repository.FindByID(id)
 }
+
+// GetByName find document by objectName and bucketName
+func (service Service) GetByName(objectName, bucketName string) (document entity.Document, err error) {
+	return service.repository.FindByName(objectName, bucketName)
+}

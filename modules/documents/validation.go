@@ -1,7 +1,7 @@
 package documents
 
-// UploadRequest request for upload
-type UploadRequest struct {
+// DocumentRequest request for upload and download
+type DocumentRequest struct {
 	BucketName string `json:"bucket_name" validate:"required"`
 	ObjectName string `json:"object_name" validate:"required"`
 }

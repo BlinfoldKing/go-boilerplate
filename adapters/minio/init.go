@@ -3,6 +3,7 @@ package minio
 import (
 	"context"
 	"go-boilerplate/config"
+	"net/url"
 	"time"
 
 	"github.com/minio/minio-go/v7"
@@ -21,9 +22,18 @@ func Init() (*Minio, error) {
 	return &Minio{client}, err
 }
 
-func (m Minio) GeneratePutURL(objectName, bucketName string) (url string, err error) {
+func (m Minio) GeneratePutURL(objectName, bucketName string) (stringURL string, err error) {
 	expiry := time.Second * 24 * 60 * 60
 	presignedURL, err := m.client.PresignedPutObject(context.Background(), bucketName, objectName, expiry)
-	url = presignedURL.String()
+	stringURL = presignedURL.String()
+	return
+}
+
+func (m Minio) GenerateGetURL(objectName, bucketName string) (stringURL string, err error) {
+	expiry := time.Second * 24 * 60 * 60
+	reqParams := make(url.Values)
+	reqParams.Set("response-content-disposition", "attachment; filename="+objectName)
+	presignedURL, err := m.client.PresignedGetObject(context.Background(), bucketName, objectName, expiry, reqParams)
+	stringURL = presignedURL.String()
 	return
 }

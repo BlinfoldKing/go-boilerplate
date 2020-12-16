@@ -26,3 +26,9 @@ func (repo PostgresRepository) FindByID(id string) (document entity.Document, er
 	_, err = repo.db.SQL("SELECT * FROM documents WHERE id = ?", id).Get(&document)
 	return
 }
+
+// FindByName finds document by objectName and bucketName
+func (repo PostgresRepository) FindByName(objectName, bucketName string) (document entity.Document, err error) {
+	_, err = repo.db.SQL("SELECT * FROM documents WHERE object_name = ? AND bucket_name = ?", objectName, bucketName).Get(&document)
+	return
+}
