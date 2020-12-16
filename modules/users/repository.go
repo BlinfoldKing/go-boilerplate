@@ -1,4 +1,5 @@
 package users
+//go:generate mockgen -package users -source=repository.go -destination repository_mock.go
 
 import "go-boilerplate/entity"
 
