@@ -84,3 +84,21 @@ func TOKENDURATION() int {
 	}
 	return dur
 }
+
+// MINIOENDPOINT gets minio endpoint
+func MINIOENDPOINT() string {
+	return helper.
+		GetEnv("MINIO_ENDPOINT", "play.min.io")
+}
+
+// MINIOACCESSKEY gets access key for minio, default is a public key for default users in minio
+func MINIOACCESSKEY() string {
+	return helper.
+		GetEnv("MINIO_ACCESS_KEY", "Q3AM3UQ867SPQQA43P2F")
+}
+
+// MINIOSECRET gets minio secret key, default is a public key for default users in minio
+func MINIOSECRET() string {
+	return helper.
+		GetEnv("MINIO_SECRET", "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG")
+}

@@ -8,6 +8,7 @@ require (
 	github.com/casbin/casbin v1.9.1
 	github.com/casbin/casbin/v2 v2.19.4
 	github.com/cychiuae/casbin-pg-adapter v0.0.5
+	github.com/go-ini/ini v1.62.0 // indirect
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/snappy v0.0.2 // indirect
@@ -16,10 +17,13 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/kataras/golog v0.1.6 // indirect
+	github.com/kataras/iris v0.0.2
 	github.com/kataras/iris/v12 v12.2.0-alpha.0.20201113181155-4d09475c290d
 	github.com/klauspost/compress v1.11.3 // indirect
 	github.com/lib/pq v1.9.0
 	github.com/mattn/go-colorable v0.1.6 // indirect
+	github.com/minio/minio-go v6.0.14+incompatible
+	github.com/minio/minio-go/v7 v7.0.6
 	github.com/rubenv/sql-migrate v0.0.0-20200616145509-8d140a17f351
 	github.com/satori/uuid v1.2.0
 	github.com/sirupsen/logrus v1.7.0

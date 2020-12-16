@@ -11,3 +11,5 @@ policy:
           route: /users*
         - method: PUT
           route: /users*
+        - method: POST
+          route: /documents*
