@@ -17,7 +17,7 @@ func Routes(app *iris.Application, adapters adapters.Adapters) {
 
 	users := app.Party(name)
 
-	users.Get("/", handler.GetList)
+	users.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)
 	users.Get("/{id:string}", handler.GetByID)
 	users.Delete("/{id:string}", handler.DeleteByID)
 	users.Put("/", middlewares.ValidateBody(&UpdateRequest{}),

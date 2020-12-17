@@ -3,8 +3,12 @@ package postgres
 import (
 	"fmt"
 	"go-boilerplate/config"
+	"go-boilerplate/entity"
 
+	"context"
+	"github.com/sirupsen/logrus"
 	"xorm.io/xorm"
+	"xorm.io/xorm/contexts"
 )
 
 // Postgres extending xorm for extra feature
@@ -12,40 +16,191 @@ type Postgres struct {
 	*xorm.Engine
 }
 
+type loggerHook struct{}
+
+func (hook loggerHook) AfterProcess(c *contexts.ContextHook) error {
+	if c.Err != nil {
+		logrus.Error(c.Err)
+		return nil
+	}
+
+	return nil
+}
+
+func (hook loggerHook) BeforeProcess(c *contexts.ContextHook) (context.Context, error) {
+	logrus.Println(fmt.Sprintf("[pagination] query: %s, args: %v", c.SQL, c.Args))
+	return context.Background(), nil
+}
+
 // Init create data base driver using xorm
 func Init() (db *Postgres, err error) {
 	engine, _ := xorm.NewEngine("postgres", config.DBCONFIG())
+	engine.AddHook(loggerHook{})
 	return &Postgres{engine}, nil
 }
 
-// PaginationOpt pagination options
-type PaginationOpt struct {
-	Limit  *int
-	Offset *int
-}
-
 // Paginate paginate table
-func (postgres Postgres) Paginate(tableName string, data interface{}, opt PaginationOpt) error {
-	limit := 0
-	offset := 0
-
-	if opt.Limit != nil {
-		limit = *opt.Limit
-	}
-
-	if opt.Offset != nil {
-		offset = *opt.Offset
-	}
-
-	query := "SELECT * FROM %s LIMIT $1 OFFSET $2"
+func (postgres Postgres) Paginate(tableName string, data interface{}, opt entity.Pagination) (err error) {
+	query := "SELECT * FROM %s"
 	query = fmt.Sprintf(query, tableName)
 
-	err := postgres.
-		SQL(query, limit, offset).
-		Find(data)
+	values := make([]interface{}, 0)
+	var where, sort string = "", ""
+	if opt.Where != nil {
+		var v []interface{}
+		where, v, err = parseWhere(*opt.Where)
+		if err != nil {
+			return
+		}
 
-	if err != nil {
-		err = fmt.Errorf("query: %s, %s", query, err.Error())
+		values = append(values, v...)
+		where = fmt.Sprintf("WHERE %s", where)
 	}
-	return err
+
+	if opt.Sort != nil {
+		sort, err = parseSort(*opt.Sort)
+		if err != nil {
+			return
+		}
+
+		sort = fmt.Sprintf("ORDER BY %s", sort)
+	}
+
+	limit, v := parseLimit(opt.Limit, opt.Offset)
+	values = append(values, v...)
+
+	query = fmt.Sprintf("%s %s %s %s", query, where, sort, limit)
+
+	err = postgres.SQL(query, values...).Find(data)
+
+	return
+}
+
+func parseLimit(limit *int, offset *int) (query string, val []interface{}) {
+	l := 10
+	o := 0
+
+	if limit != nil {
+		l = *limit
+	}
+
+	if offset != nil {
+		o = *offset
+	}
+
+	return "LIMIT ? OFFSET ?", []interface{}{l, o}
+}
+
+func getOperation(key string, op string) (res string, err error) {
+	switch op {
+	case "lte":
+		res = fmt.Sprintf("%s <= ?", key)
+	case "lt":
+		res = fmt.Sprintf("%s < ?", key)
+	case "gte":
+		res = fmt.Sprintf("%s >= ?", key)
+	case "gt":
+		res = fmt.Sprintf("%s > ?", key)
+	case "eq":
+		res = fmt.Sprintf("%s = ?", key)
+	case "neq":
+		res = fmt.Sprintf("%s != ?", key)
+	case "in":
+		res = fmt.Sprintf("%s IN ?", key)
+	case "nin":
+		res = fmt.Sprintf("%s NOT IN ?", key)
+	default:
+		err = fmt.Errorf("invalid operator: %s", op)
+	}
+
+	return
+}
+
+func parseWhere(where map[string]interface{}) (query string, values []interface{}, err error) {
+	for key, val := range where {
+		switch val.(type) {
+		case map[string]interface{}:
+			switch key {
+			case "or":
+				q := ""
+				vs := make([]interface{}, 0)
+				for k, v := range val.(map[string]interface{}) {
+					switch v.(type) {
+					case map[string]interface{}:
+						for field, v1 := range v.(map[string]interface{}) {
+							var where string
+							where, err = getOperation(k, field)
+							if err != nil {
+								return
+							}
+
+							if q != "" {
+								q = fmt.Sprintf("%s OR %s", q, where)
+								vs = append(values, v1)
+							} else {
+								q = fmt.Sprintf("%s = ?", where)
+								vs = append(values, v1)
+							}
+
+						}
+					default:
+						if q != "" {
+							q = fmt.Sprintf("%s OR %s = ?", q, k)
+							vs = append(vs, v)
+						} else {
+							q = fmt.Sprintf("%s = ?", q)
+							vs = append(vs, v)
+						}
+					}
+
+				}
+				q = fmt.Sprintf("(%s)", q)
+
+				if query != "" {
+					query = fmt.Sprintf("%s AND %s = ?", query, q)
+					values = append(values, vs...)
+				} else {
+					query = fmt.Sprintf("%s = ?", q)
+				}
+			default:
+				for field, v := range val.(map[string]interface{}) {
+					var where string
+					where, err = getOperation(key, field)
+					if err != nil {
+						return
+					}
+
+					if query != "" {
+						query = fmt.Sprintf("%s AND %s", query, where)
+						values = append(values, v)
+					} else {
+						query = fmt.Sprintf("%s = ?", where)
+						values = append(values, v)
+					}
+
+				}
+			}
+		default:
+			if query != "" {
+				query = fmt.Sprintf("%s AND %s = ?", query, key)
+				values = append(values, val)
+			} else {
+				query = fmt.Sprintf("%s = ?", key)
+				values = append(values, val)
+			}
+		}
+	}
+
+	return
+}
+
+func parseSort(sorts map[string]string) (query string, err error) {
+	for key, val := range sorts {
+		if query != "" {
+			query = fmt.Sprintf("%s, %s %s", query, key, val)
+		} else {
+			query = fmt.Sprintf("%s %s", key, val)
+		}
+	}
+	return
 }
