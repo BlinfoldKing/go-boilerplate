@@ -2,6 +2,8 @@ package documents
 
 import (
 	"go-boilerplate/entity"
+
+	"github.com/satori/uuid"
 )
 
 // Service contains business logic for documents
@@ -15,14 +17,11 @@ func CreateService(repo Repository) Service {
 }
 
 // CreateDocument create new document
-func (service Service) CreateDocument(objectName, bucketName, presignedURL string) (entity.DocumentCreateResponse, error) {
-	document, _ := entity.NewDocument(objectName, bucketName)
+func (service Service) CreateDocument(document entity.Document) (entity.Document, error) {
+	document.ID = uuid.NewV4().String()
 	err := service.repository.Save(document)
 
-	return entity.DocumentCreateResponse{
-		Document: document,
-		URL:      presignedURL,
-	}, err
+	return document, err
 }
 
 // GetByID find document by id
@@ -30,7 +29,7 @@ func (service Service) GetByID(id string) (document entity.Document, err error) 
 	return service.repository.FindByID(id)
 }
 
-// GetByName find document by objectName and bucketName
-func (service Service) GetByName(objectName, bucketName string) (document entity.Document, err error) {
-	return service.repository.FindByName(objectName, bucketName)
+// GetByObjectBucketName find document by objectName and bucketName
+func (service Service) GetByObjectBucketName(objectName, bucketName string) (document entity.Document, err error) {
+	return service.repository.FindByObjectBucketName(objectName, bucketName)
 }
