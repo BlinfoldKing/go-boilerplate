@@ -38,7 +38,7 @@ func InitJWT(adapters adapters.Adapters) error {
 		SigningMethod: jwt.SigningMethodHS256,
 	})
 
-	verifyToken := func(ctx iris.Context) (user entity.User, err error) {
+	verifyToken := func(ctx iris.Context) (user map[string]interface{}, err error) {
 
 		if err = j.CheckJWT(ctx); err != nil {
 			return
@@ -119,16 +119,21 @@ func InitJWT(adapters adapters.Adapters) error {
 			return
 		}
 
-		sub = user.Role
-		if ok, err := adapters.Enforcer.Enforce(sub, obj, act); !ok {
-			if err == nil {
-				err = fmt.Errorf("Not Allowed for this role: %s, obj: %s, act: %s", sub, obj, act)
+		fmt.Println(user)
+		roles := user["roles"].([]entity.Role)
+		for _, role := range roles {
+			sub = role.Slug
+			if ok, err := adapters.Enforcer.Enforce(sub, obj, act); err == nil && ok {
+				ctx.Next()
+				return
 			}
-			helper.CreateErrorResponse(ctx, err).Unauthorized().JSON()
-			return
+
 		}
 
-		ctx.Next()
+		err = fmt.Errorf("not authorized for user: %s", user["id"])
+		helper.CreateErrorResponse(ctx, err).Unauthorized().JSON()
+		return
+
 	}
 
 	InvalidateToken = func(ctx iris.Context) {
@@ -138,7 +143,7 @@ func InitJWT(adapters adapters.Adapters) error {
 			return
 		}
 
-		err = adapters.Redis.Del(fmt.Sprintf("logged:user:%s", user.ID)).Err()
+		err = adapters.Redis.Del(fmt.Sprintf("logged:user:%s", user["id"])).Err()
 		if err != nil {
 			helper.CreateErrorResponse(ctx, err).InternalServer().JSON()
 			return

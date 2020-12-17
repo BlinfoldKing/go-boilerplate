@@ -5,9 +5,9 @@ go 1.15
 require (
 	github.com/Joker/hpp v1.0.0 // indirect
 	github.com/alexedwards/argon2id v0.0.0-20200802152012-2464efd3196b
-	github.com/casbin/casbin v1.9.1
 	github.com/casbin/casbin/v2 v2.19.4
 	github.com/cychiuae/casbin-pg-adapter v0.0.5
+	github.com/fatih/structs v1.1.0
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/snappy v0.0.2 // indirect
@@ -29,8 +29,7 @@ require (
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
 	golang.org/x/net v0.0.0-20201209123823-ac852fbbde11 // indirect
 	golang.org/x/sys v0.0.0-20201207223542-d4d67f95c62d // indirect
-	google.golang.org/protobuf v1.25.0
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 	xorm.io/xorm v1.0.5
 )

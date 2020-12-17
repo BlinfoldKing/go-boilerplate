@@ -2,6 +2,6 @@ package users
 
 // UpdateRequest  request for update
 type UpdateRequest struct {
-	ID   string `json:"id" validate:"required"`
-	Role string `json:"role" validate:"required"`
+	ID    string   `json:"id" validate:"required"`
+	Roles []string `json:"roles" validate:"required"`
 }

@@ -79,10 +79,10 @@ func (h handler) Update(ctx iris.Context) {
 		return
 	}
 
-	user.Role = request.Role
+	user.Roles = request.Roles
 
 	user, err = h.users.Update(request.ID, entity.UserChangeSet{
-		Role: request.Role,
+		Roles: request.Roles,
 	})
 	if err != nil {
 		helper.
