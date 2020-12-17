@@ -3,7 +3,6 @@ package postgres
 import (
 	"fmt"
 	"go-boilerplate/config"
-	"go-boilerplate/entity"
 
 	"context"
 	"github.com/sirupsen/logrus"
