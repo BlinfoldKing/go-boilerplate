@@ -2,12 +2,10 @@ package auth
 
 import (
 	"go-boilerplate/adapters"
-	"go-boilerplate/entity"
 	"go-boilerplate/helper"
 	"go-boilerplate/modules/roles"
 	"go-boilerplate/modules/users"
 
-	"github.com/fatih/structs"
 	"github.com/kataras/iris/v12"
 )
 
@@ -30,24 +28,7 @@ func (handler handler) Register(ctx iris.Context) {
 		return
 	}
 
-	roles := make([]entity.Role, 0)
-	for _, id := range user.Roles {
-		role, err := handler.roles.GetByID(id)
-		if err != nil {
-			helper.
-				CreateErrorResponse(ctx, err).
-				InternalServer().
-				JSON()
-			return
-		}
-
-		roles = append(roles, role)
-	}
-
-	userWithRole := structs.Map(user)
-	userWithRole["roles"] = roles
-
-	ctx.Values().Set("user", userWithRole)
+	ctx.Values().Set("user", user)
 	ctx.Next()
 }
 
@@ -64,24 +45,7 @@ func (handler handler) Login(ctx iris.Context) {
 		return
 	}
 
-	roles := make([]entity.Role, 0)
-	for _, id := range user.Roles {
-		role, err := handler.roles.GetByID(id)
-		if err != nil {
-			helper.
-				CreateErrorResponse(ctx, err).
-				InternalServer().
-				JSON()
-			return
-		}
-
-		roles = append(roles, role)
-	}
-
-	userWithRole := structs.Map(user)
-	userWithRole["roles"] = roles
-
-	ctx.Values().Set("user", userWithRole)
+	ctx.Values().Set("user", user)
 	ctx.Next()
 }
 

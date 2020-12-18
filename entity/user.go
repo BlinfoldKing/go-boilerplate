@@ -8,15 +8,21 @@ import (
 
 // User user entity
 type User struct {
-	ID           string   `xorm:"id" json:"id"`
-	Email        string   `xorm:"email" json:"email"`
-	PasswordHash string   `xorm:"password_hash" json:"-"`
-	Roles        []string `xorm:"roles" json:"roles"`
+	ID           string `xorm:"id" json:"id"`
+	Email        string `xorm:"email" json:"email"`
+	PasswordHash string `xorm:"password_hash" json:"-"`
+}
+
+// UserGroup user data with role mapped
+type UserGroup struct {
+	ID    string `json:"id"`
+	Email string `json:"email"`
+	Roles []Role `json:"roles"`
 }
 
 // UserChangeSet changeset for user
 type UserChangeSet struct {
-	Roles []string `xorm:"roles" json:"roles"`
+	Email string `xorm:"email" json:"email"`
 }
 
 // HashType specifiy hashing for password
@@ -53,9 +59,6 @@ func NewUser(email, password string, config UserConfig) (user User, err error) {
 		ID:           id,
 		Email:        email,
 		PasswordHash: string(bytes),
-		Roles: []string{
-			DefaultMEMBER,
-		},
 	}
 
 	return

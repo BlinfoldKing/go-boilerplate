@@ -38,7 +38,7 @@ func InitJWT(adapters adapters.Adapters) error {
 		SigningMethod: jwt.SigningMethodHS256,
 	})
 
-	verifyToken := func(ctx iris.Context) (user map[string]interface{}, err error) {
+	verifyToken := func(ctx iris.Context) (user entity.UserGroup, err error) {
 
 		if err = j.CheckJWT(ctx); err != nil {
 			return
@@ -63,7 +63,7 @@ func InitJWT(adapters adapters.Adapters) error {
 		duration := time.Duration(config.TOKENDURATION()) * time.Second
 
 		u := ctx.Values().Get("user")
-		user := u.(entity.User)
+		user := u.(entity.UserGroup)
 
 		token := jwt.NewTokenWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 			"user_id": user.ID,
@@ -119,8 +119,7 @@ func InitJWT(adapters adapters.Adapters) error {
 			return
 		}
 
-		fmt.Println(user)
-		roles := user["roles"].([]entity.Role)
+		roles := user.Roles
 		for _, role := range roles {
 			sub = role.Slug
 			if ok, err := adapters.Enforcer.Enforce(sub, obj, act); err == nil && ok {
@@ -130,7 +129,7 @@ func InitJWT(adapters adapters.Adapters) error {
 
 		}
 
-		err = fmt.Errorf("not authorized for user: %s", user["id"])
+		err = fmt.Errorf("not authorized for user: %s", user.ID)
 		helper.CreateErrorResponse(ctx, err).Unauthorized().JSON()
 		return
 
@@ -143,7 +142,7 @@ func InitJWT(adapters adapters.Adapters) error {
 			return
 		}
 
-		err = adapters.Redis.Del(fmt.Sprintf("logged:user:%s", user["id"])).Err()
+		err = adapters.Redis.Del(fmt.Sprintf("logged:user:%s", user.ID)).Err()
 		if err != nil {
 			helper.CreateErrorResponse(ctx, err).InternalServer().JSON()
 			return

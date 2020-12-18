@@ -70,19 +70,8 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 
-	user, err := h.users.GetByID(request.ID)
-	if err != nil {
-		helper.
-			CreateErrorResponse(ctx, err).
-			InternalServer().
-			JSON()
-		return
-	}
-
-	user.Roles = request.Roles
-
-	user, err = h.users.Update(request.ID, entity.UserChangeSet{
-		Roles: request.Roles,
+	user, err := h.users.Update(request.ID, entity.UserChangeSet{
+		Email: request.Email,
 	})
 	if err != nil {
 		helper.
