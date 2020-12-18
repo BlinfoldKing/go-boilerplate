@@ -20,8 +20,8 @@ func Routes(app *iris.Application, adapters adapters.Adapters) {
 	policyService := CreateService(policyRepository, roleService)
 	handler := handler{policyService, adapters}
 
-	auth := app.Party(name)
+	policy := app.Party(name)
 
-	auth.Post("/", middlewares.ValidateBody(&AddPolicyRequest{}),
+	policy.Post("/", middlewares.ValidateBody(&AddPolicyRequest{}),
 		handler.AddPolicy)
 }
