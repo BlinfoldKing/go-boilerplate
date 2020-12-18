@@ -24,7 +24,7 @@ func (h handler) Upload(ctx iris.Context) {
 		return
 	}
 
-	presignedURL, err := h.adapters.Minio.GeneratePutURL(request.ObjectName, request.BucketName)
+	presignedURL, err := h.documents.UploadDocument(request.ObjectName, request.BucketName)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -87,7 +87,7 @@ func (h handler) Download(ctx iris.Context) {
 		return
 	}
 
-	presignedURL, err := h.adapters.Minio.GenerateGetURL(request.ObjectName, request.BucketName)
+	presignedURL, err := h.documents.DownloadDocument(request.ObjectName, request.BucketName)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

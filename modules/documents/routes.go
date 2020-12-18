@@ -10,14 +10,15 @@ const name = "/documents"
 
 // Routes init documents
 func Routes(app *iris.Application, adapters adapters.Adapters) {
-	repository := CreatePostgresRepository(adapters.Postgres)
-	service := CreateService(repository)
+	storageRepository := CreatePostgresRepository(adapters.Postgres)
+	fileRepository := CreateMinioRepository(adapters.Minio)
+	service := CreateService(storageRepository, fileRepository)
 	handler := handler{service, adapters}
 
 	documents := app.Party(name)
 
-	documents.Post("/upload", handler.Upload)
-	documents.Post("/download", handler.Download)
+	documents.Post(":upload", handler.Upload)
+	documents.Post(":download", handler.Download)
 
 	documents.Get("/{id:string}", handler.GetByID)
 	documents.Post("/", handler.Create)

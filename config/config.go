@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-boilerplate/helper"
 	"strconv"
+	"time"
 )
 
 // DBUSER get database user
@@ -101,4 +102,10 @@ func MINIOACCESSKEY() string {
 func MINIOSECRET() string {
 	return helper.
 		GetEnv("MINIO_SECRET", "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG")
+}
+
+// MINIOEXPIRE gets minio link expire duration
+func MINIOEXPIRE() time.Duration {
+	exp, _ := time.ParseDuration(helper.GetEnv("MINIO_EXPIRE", "86400s"))
+	return exp
 }
