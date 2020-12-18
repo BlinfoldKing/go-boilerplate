@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"go-boilerplate/config"
 
+	"context"
+	"github.com/sirupsen/logrus"
 	"xorm.io/xorm"
+	"xorm.io/xorm/contexts"
 )
 
 // Postgres extending xorm for extra feature
@@ -12,40 +15,25 @@ type Postgres struct {
 	*xorm.Engine
 }
 
+type loggerHook struct{}
+
+func (hook loggerHook) AfterProcess(c *contexts.ContextHook) error {
+	if c.Err != nil {
+		logrus.Error(c.Err)
+		return nil
+	}
+
+	return nil
+}
+
+func (hook loggerHook) BeforeProcess(c *contexts.ContextHook) (context.Context, error) {
+	logrus.Println(fmt.Sprintf("[pagination] query: %s, args: %v", c.SQL, c.Args))
+	return context.Background(), nil
+}
+
 // Init create data base driver using xorm
 func Init() (db *Postgres, err error) {
 	engine, _ := xorm.NewEngine("postgres", config.DBCONFIG())
+	engine.AddHook(loggerHook{})
 	return &Postgres{engine}, nil
-}
-
-// PaginationOpt pagination options
-type PaginationOpt struct {
-	Limit  *int
-	Offset *int
-}
-
-// Paginate paginate table
-func (postgres Postgres) Paginate(tableName string, data interface{}, opt PaginationOpt) error {
-	limit := 0
-	offset := 0
-
-	if opt.Limit != nil {
-		limit = *opt.Limit
-	}
-
-	if opt.Offset != nil {
-		offset = *opt.Offset
-	}
-
-	query := "SELECT * FROM %s LIMIT $1 OFFSET $2"
-	query = fmt.Sprintf(query, tableName)
-
-	err := postgres.
-		SQL(query, limit, offset).
-		Find(data)
-
-	if err != nil {
-		err = fmt.Errorf("query: %s, %s", query, err.Error())
-	}
-	return err
 }

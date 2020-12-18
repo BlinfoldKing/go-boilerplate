@@ -47,8 +47,8 @@ func (service Service) AuthenticateUser(email, password string) (user entity.Use
 }
 
 // GetList get list of users
-func (service Service) GetList(limit, offset int) (users []entity.User, err error) {
-	users, err = service.repository.GetList(limit, offset)
+func (service Service) GetList(pagination entity.Pagination) (users []entity.User, err error) {
+	users, err = service.repository.GetList(pagination)
 	return
 }
 
