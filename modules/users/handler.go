@@ -15,10 +15,9 @@ type handler struct {
 }
 
 func (h handler) GetList(ctx iris.Context) {
-	limit := ctx.URLParamIntDefault("limit", 10)
-	offset := ctx.URLParamIntDefault("offset", 10)
+	request := ctx.Values().Get("pagination").(*entity.Pagination)
 
-	users, err := h.users.GetList(limit, offset)
+	users, err := h.users.GetList(*request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

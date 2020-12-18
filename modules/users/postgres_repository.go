@@ -28,12 +28,9 @@ func (repo PostgresRepository) FindByEmail(email string) (user entity.User, err 
 }
 
 // GetList get list of users
-func (repo PostgresRepository) GetList(limit, offset int) (users []entity.User, err error) {
+func (repo PostgresRepository) GetList(pagination entity.Pagination) (users []entity.User, err error) {
 	err = repo.db.
-		Paginate("users", &users, postgres.PaginationOpt{
-			Limit:  &limit,
-			Offset: &offset,
-		})
+		Paginate("users", &users, pagination)
 	return
 }
 
