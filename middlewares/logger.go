@@ -11,7 +11,7 @@ import (
 func Logger(ctx iris.Context) {
 	body, _ := ctx.GetBody()
 	log := fmt.Sprintf(
-		"path: %s, method: %s, body: %s",
+		"[http] path: %s, method: %s, body: %s",
 		ctx.Path(), ctx.Request().Method, body)
 
 	logrus.Info(log)

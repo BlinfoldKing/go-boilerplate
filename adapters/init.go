@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"go-boilerplate/adapters/enforcer"
+	"go-boilerplate/adapters/minio"
 	"go-boilerplate/adapters/postgres"
 	rd "go-boilerplate/adapters/redis"
 	validation "go-boilerplate/adapters/validator"
@@ -17,6 +18,7 @@ type Adapters struct {
 	Validator *validator.Validate
 	Redis     *redis.Client
 	Enforcer  *casbin.Enforcer
+	Minio     *minio.Minio
 }
 
 // Init create new Adapters
@@ -41,10 +43,16 @@ func Init() (Adapters, error) {
 		return Adapters{}, err
 	}
 
+	minio, err := minio.Init()
+	if err != nil {
+		return Adapters{}, err
+	}
+
 	return Adapters{
 		postgres,
 		validator,
 		redis,
 		enforcer,
+		minio,
 	}, err
 }
