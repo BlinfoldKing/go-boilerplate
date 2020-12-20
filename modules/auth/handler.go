@@ -3,6 +3,7 @@ package auth
 import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/helper"
+	"go-boilerplate/modules/roles"
 	"go-boilerplate/modules/users"
 
 	"github.com/kataras/iris/v12"
@@ -10,6 +11,7 @@ import (
 
 type handler struct {
 	users    users.Service
+	roles    roles.Service
 	adapters adapters.Adapters
 }
 
