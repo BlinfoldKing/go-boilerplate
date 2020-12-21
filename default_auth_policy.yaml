@@ -6,8 +6,14 @@ policy:
           route: /auth/login
         - method: POST
           route: /auth/logout
-    admin:
-        - method: GET
+    member:
+        - method: (GET) || (POST)
+          route: /documents*
+        - method: (POST) || (PUT) || (GET) || (DELETE)
           route: /users*
-        - method: PUT
-          route: /users*
+        - method: (POST) || (PUT) || (GET) || (DELETE)
+          route: /roles*
+        - method: POST
+          route: /user_roles*
+        - method: POST
+          route: /policy*

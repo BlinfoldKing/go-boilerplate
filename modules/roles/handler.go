@@ -1,4 +1,4 @@
-package users
+package roles
 
 import (
 	"fmt"
@@ -10,14 +10,14 @@ import (
 )
 
 type handler struct {
-	users    Service
+	roles    Service
 	adapters adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
 
-	users, err := h.users.GetList(request)
+	roles, err := h.roles.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -26,14 +26,14 @@ func (h handler) GetList(ctx iris.Context) {
 		return
 	}
 
-	helper.CreateResponse(ctx).Ok().WithData(users).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(roles).JSON()
 	ctx.Next()
 }
 
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 
-	users, err := h.users.GetByID(id)
+	roles, err := h.roles.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -42,14 +42,14 @@ func (h handler) GetByID(ctx iris.Context) {
 		return
 	}
 
-	helper.CreateResponse(ctx).Ok().WithData(users).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(roles).JSON()
 	ctx.Next()
 }
 
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 
-	err := h.users.DeleteByID(id)
+	err := h.roles.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -69,9 +69,11 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 
-	user, err := h.users.Update(request.ID, entity.UserChangeSet{
-		Email: request.Email,
+	role, err := h.roles.Update(request.ID, entity.RoleChangeSet{
+		Slug:        request.Slug,
+		Description: request.Description,
 	})
+
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -83,7 +85,28 @@ func (h handler) Update(ctx iris.Context) {
 	helper.
 		CreateResponse(ctx).
 		Ok().
-		WithData(user).
+		WithData(role).
+		JSON()
+	ctx.Next()
+}
+
+func (h handler) CreateRole(ctx iris.Context) {
+	request := ctx.Values().Get("body").(*CreateRequest)
+
+	role, err := h.roles.CreateRole(request.Slug, request.Description)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.
+		CreateResponse(ctx).
+		Ok().
+		WithData(role).
 		JSON()
 	ctx.Next()
 }
