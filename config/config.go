@@ -45,6 +45,17 @@ func DBPASSWORD() string {
 
 // DBCONFIG get connection string of db
 func DBCONFIG() string {
+	password := DBPASSWORD()
+	if password == "" {
+		return fmt.Sprintf(
+			"dbname=%s user=%s host=%s port=%s sslmode=%s",
+			DBDATABASE(),
+			DBUSER(),
+			DBHOST(),
+			DBPORT(),
+			DBSSLMODE(),
+		)
+	}
 	return fmt.Sprintf(
 		"dbname=%s user=%s password=%s host=%s port=%s sslmode=%s",
 		DBDATABASE(),
