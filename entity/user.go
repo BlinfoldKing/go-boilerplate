@@ -10,33 +10,29 @@ import (
 type User struct {
 	ID           string `xorm:"id" json:"id"`
 	Email        string `xorm:"email" json:"email"`
-	PasswordHash string `xorm:"password_hash" json:"password_hash"`
-	Role         string `xorm:"role" json:"role"`
+	PasswordHash string `xorm:"password_hash" json:"-"`
+}
+
+// UserGroup user data with role mapped
+type UserGroup struct {
+	ID    string `json:"id"`
+	Email string `json:"email"`
+	Roles []Role `json:"roles"`
 }
 
 // UserChangeSet changeset for user
 type UserChangeSet struct {
-	Role string `xorm:"role" json:"role"`
+	Email string `xorm:"email" json:"email"`
 }
 
 // HashType specifiy hashing for password
 type HashType = string
-
-// UserRole specify available role
-type UserRole = string
 
 const (
 	// ARGO2ID using argo2id
 	ARGO2ID HashType = "argo2id"
 	// BCRYPT using bcrypt
 	BCRYPT HashType = "bcrypt"
-
-	// ADMIN admin role
-	ADMIN UserRole = "admin"
-	// MEMBER member role
-	MEMBER UserRole = "member"
-	// PUBLIC public role
-	PUBLIC UserRole = "public"
 )
 
 // UserConfig specify optional config
@@ -59,16 +55,10 @@ func NewUser(email, password string, config UserConfig) (user User, err error) {
 		bytes = []byte(hash)
 	}
 
-	role := ADMIN // set default role to admin
-	if config.Role != "" {
-		role = config.Role
-	}
-
 	user = User{
 		ID:           id,
 		Email:        email,
 		PasswordHash: string(bytes),
-		Role:         role,
 	}
 
 	return

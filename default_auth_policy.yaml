@@ -6,8 +6,12 @@ policy:
           route: /auth/login
         - method: POST
           route: /auth/logout
-    admin:
+    member:
         - method: GET
           route: /users*
         - method: PUT
           route: /users*
+        - method: POST
+          route: /documents*
+        - method: GET
+          route: /documents*
