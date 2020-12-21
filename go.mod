@@ -3,11 +3,13 @@ module go-boilerplate
 go 1.15
 
 require (
+	firebase.google.com/go v3.13.0+incompatible
 	github.com/Joker/hpp v1.0.0 // indirect
 	github.com/alexedwards/argon2id v0.0.0-20200802152012-2464efd3196b
 	github.com/casbin/casbin/v2 v2.19.4
 	github.com/cychiuae/casbin-pg-adapter v0.0.5
 	github.com/dave/jennifer v1.4.1
+	github.com/fatih/structs v1.1.0
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/mock v1.4.4
