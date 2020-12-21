@@ -23,7 +23,7 @@ func ValidatePaginationQuery(ctx iris.Context) {
 				BadRequest().
 				JSON()
 		}
-		ctx.Values().Set("pagination", &opts)
+		ctx.Values().Set("pagination", opts)
 
 	}
 
