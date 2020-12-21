@@ -11,16 +11,21 @@ import (
 // ValidatePaginationQuery get and validate url params for pagination query
 func ValidatePaginationQuery(ctx iris.Context) {
 	query := ctx.URLParam("query")
+	paginationType := ctx.URLParamDefault("type", "offset")
 
-	bquery := []byte(query)
-	var opts entity.Pagination
-	err := json.Unmarshal(bquery, &opts)
-	if err != nil {
-		helper.CreateErrorResponse(ctx, err).
-			BadRequest().
-			JSON()
+	switch paginationType {
+	default:
+		bquery := []byte(query)
+		var opts entity.OffsetPagination
+		err := json.Unmarshal(bquery, &opts)
+		if err != nil {
+			helper.CreateErrorResponse(ctx, err).
+				BadRequest().
+				JSON()
+		}
+		ctx.Values().Set("pagination", opts)
+
 	}
 
-	ctx.Values().Set("pagination", &opts)
 	ctx.Next()
 }

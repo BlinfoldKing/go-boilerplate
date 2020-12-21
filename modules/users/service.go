@@ -113,8 +113,8 @@ func (service Service) AuthenticateUser(email, password string) (entity.UserGrou
 }
 
 // GetList get list of users
-func (service Service) GetList(limit, offset int) ([]entity.UserGroup, error) {
-	users, err := service.repository.GetList(limit, offset)
+func (service Service) GetList(pagination entity.Pagination) ([]entity.UserGroup, error) {
+	users, err := service.repository.GetList(pagination)
 	if err != nil {
 		return []entity.UserGroup{}, err
 	}

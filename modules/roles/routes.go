@@ -19,7 +19,7 @@ func Routes(app *iris.Application, adapters adapters.Adapters) {
 
 	roles.Post("/", middlewares.ValidateBody(&CreateRequest{}),
 		handler.CreateRole)
-	roles.Get("/", handler.GetList)
+	roles.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)
 	roles.Get("/{id:string}", handler.GetByID)
 	roles.Delete("/{id:string}", handler.DeleteByID)
 	roles.Put("/", middlewares.ValidateBody(&UpdateRequest{}),

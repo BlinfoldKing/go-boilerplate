@@ -15,3 +15,5 @@ policy:
           route: /documents*
         - method: GET
           route: /documents*
+        - method: GET
+          route: /roles*
