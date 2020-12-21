@@ -49,8 +49,7 @@ func (service Service) mapUserToUserGroup(user entity.User) (ug entity.UserGroup
 	}
 
 	ug = entity.UserGroup{
-		ID:    user.ID,
-		Email: user.Email,
+		User:  user,
 		Roles: roles,
 	}
 

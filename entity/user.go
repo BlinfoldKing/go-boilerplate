@@ -15,8 +15,7 @@ type User struct {
 
 // UserGroup user data with role mapped
 type UserGroup struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
+	User
 	Roles []Role `json:"roles"`
 }
 
