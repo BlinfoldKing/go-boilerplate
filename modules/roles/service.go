@@ -33,8 +33,8 @@ func (service Service) FindBySlug(slug string) (role entity.Role, err error) {
 }
 
 // GetList get list of roles
-func (service Service) GetList(limit, offset int) (roles []entity.Role, err error) {
-	roles, err = service.repository.GetList(limit, offset)
+func (service Service) GetList(pagination entity.Pagination) (roles []entity.Role, err error) {
+	roles, err = service.repository.GetList(pagination)
 	return
 }
 
