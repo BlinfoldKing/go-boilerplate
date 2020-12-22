@@ -150,7 +150,7 @@ func getOperation(key string, op string) (res string, err error) {
 	case "nin":
 		res = fmt.Sprintf("%s NOT IN ?", key)
 	default:
-		err = fmt.Errorf("invalid operator: %s", op)
+		err = fmt.Errorf("%s = ?", key)
 	}
 
 	return
@@ -169,20 +169,21 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 					case map[string]interface{}:
 						for field, v1 := range v.(map[string]interface{}) {
 							var where string
-							where, err = getOperation(k, field)
+							where, err = getOperation(field, k)
 							if err != nil {
 								return
 							}
 
 							if q != "" {
 								q = fmt.Sprintf("%s OR %s", q, where)
-								vs = append(values, v1)
+								vs = append(vs, v1)
 							} else {
-								q = fmt.Sprintf("%s = ?", where)
-								vs = append(values, v1)
+								q = fmt.Sprintf("%s", where)
+								vs = append(vs, v1)
 							}
 
 						}
+
 					default:
 						if q != "" {
 							q = fmt.Sprintf("%s OR %s = ?", q, k)
@@ -197,15 +198,18 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 				q = fmt.Sprintf("(%s)", q)
 
 				if query != "" {
-					query = fmt.Sprintf("%s AND %s = ?", query, q)
+					query = fmt.Sprintf("%s AND %s", query, q)
 					values = append(values, vs...)
 				} else {
-					query = fmt.Sprintf("%s = ?", q)
+					query = fmt.Sprintf("%s", q)
+					values = append(values, vs...)
 				}
 			default:
 				for field, v := range val.(map[string]interface{}) {
 					var where string
-					where, err = getOperation(key, field)
+					where, err = getOperation(field, key)
+
+					fmt.Println("error here", key, field)
 					if err != nil {
 						return
 					}
@@ -214,7 +218,7 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 						query = fmt.Sprintf("%s AND %s", query, where)
 						values = append(values, v)
 					} else {
-						query = fmt.Sprintf("%s = ?", where)
+						query = fmt.Sprintf("%s", where)
 						values = append(values, v)
 					}
 
