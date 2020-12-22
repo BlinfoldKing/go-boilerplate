@@ -9,7 +9,6 @@ type Pagination interface {
 
 // OffsetPagination pagination parameters
 type OffsetPagination struct {
-	Type   *string
 	Offset *int
 	Limit  *int
 	Sort   *map[string]string
@@ -43,13 +42,73 @@ func (opt OffsetPagination) GetSQL(tableName string) (sql string, args []interfa
 		sort = fmt.Sprintf("ORDER BY %s", sort)
 	}
 
-	if opt.Type != nil && *opt.Type == "cursor" {
+	var v []interface{}
+	limit, v = parseLimit(opt.Limit, opt.Offset)
+	values = append(values, v...)
 
+	sql = fmt.Sprintf("%s %s %s %s", query, where, sort, limit)
+	args = values
+
+	return
+}
+
+// CursorPagination pagination parameters
+type CursorPagination struct {
+	ID    *string
+	Limit *int
+	Seek  *string
+	Sort  *map[string]string
+	Where *map[string]interface{}
+}
+
+// GetSQL generate sql
+func (opt CursorPagination) GetSQL(tableName string) (sql string, args []interface{}, err error) {
+	query := ""
+	if opt.Seek != nil && *opt.Seek == "prev" {
+		query = "SELECT * FROM %s WHERE \"order\" <= (SELECT \"order\" FROM %s WHERE id = ?)"
 	} else {
-		var v []interface{}
-		limit, v = parseLimit(opt.Limit, opt.Offset)
-		values = append(values, v...)
+		query = "SELECT * FROM %s WHERE \"order\" >= (SELECT \"order\" FROM %s WHERE id = ?)"
 	}
+	query = fmt.Sprintf(query, tableName, tableName)
+	query = fmt.Sprintf("SELECT * FROM (%s)", query)
+
+	values := []interface{}{
+		*opt.ID,
+	}
+
+	var where, sort, limit string = "", "", ""
+	if opt.Where != nil {
+		var v []interface{}
+		where, v, err = parseWhere(*opt.Where)
+		if err != nil {
+			return
+		}
+
+		values = append(values, v...)
+		where = fmt.Sprintf("WHERE %s", where)
+	}
+
+	if opt.Sort != nil {
+		sort, err = parseSort(*opt.Sort)
+		if err != nil {
+			return
+		}
+
+		sort = fmt.Sprintf("ORDER BY %s", sort)
+
+		if opt.Seek != nil && *opt.Seek == "prev" {
+			sort += ", \"order\" DESC"
+		}
+	} else {
+		if opt.Seek != nil && *opt.Seek == "prev" {
+			sort = "ORDER BY \"order\" DESC"
+		}
+
+	}
+
+	var v []interface{}
+	limit, v = parseLimit(opt.Limit, nil)
+	values = append(values, v...)
 
 	sql = fmt.Sprintf("%s %s %s %s", query, where, sort, limit)
 	args = values
