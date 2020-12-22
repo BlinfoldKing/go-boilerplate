@@ -2,6 +2,7 @@ package documents
 
 import (
 	"go-boilerplate/entity"
+	"time"
 
 	"github.com/satori/uuid"
 )
@@ -37,6 +38,7 @@ func (service Service) GetByObjectBucketName(objectName, bucketName string) (doc
 
 // UploadDocument gets the presigned put link for the object
 func (service Service) UploadDocument(objectName, bucketName string) (url string, err error) {
+	objectName = time.Now().Format(time.RFC3339) + "_" + objectName
 	return service.fileRepository.GeneratePutURL(objectName, bucketName)
 }
 

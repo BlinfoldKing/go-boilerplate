@@ -2,25 +2,35 @@ package documents
 
 import (
 	"context"
-	"go-boilerplate/adapters/minio"
+	mn "go-boilerplate/adapters/minio"
 	"go-boilerplate/config"
 	"net/url"
+
+	"github.com/minio/minio-go/v7"
 )
 
 // MinioRepository repository implementation on postgres
 type MinioRepository struct {
-	client *minio.Minio
+	client *mn.Minio
 }
 
 // CreateMinioRepository init MinioRepository
-func CreateMinioRepository(client *minio.Minio) FileRepository {
+func CreateMinioRepository(client *mn.Minio) FileRepository {
 	return MinioRepository{client}
 }
 
 // GeneratePutURL generates presigned put url for the object
 func (m MinioRepository) GeneratePutURL(objectName, bucketName string) (stringURL string, err error) {
 	expiry := config.MINIOEXPIRE()
-	presignedURL, err := m.client.PresignedPutObject(context.Background(), bucketName, objectName, expiry)
+	ctx := context.Background()
+	exists, err := m.client.BucketExists(ctx, bucketName)
+	if !exists {
+		err = m.client.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: config.MINIOREGION()})
+		if err != nil {
+			return
+		}
+	}
+	presignedURL, err := m.client.PresignedPutObject(ctx, bucketName, objectName, expiry)
 	stringURL = presignedURL.String()
 	return
 }

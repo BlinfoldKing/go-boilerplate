@@ -2,12 +2,19 @@ package console
 
 import (
 	"fmt"
-	"go-boilerplate/migration"
-	"strconv"
-
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"go-boilerplate/migration"
+	"io/ioutil"
+	"strconv"
+	"time"
 )
+
+var migrationCmd = &cobra.Command{
+	Use:   "migration",
+	Short: "manage migration",
+	Run:   processMigration,
+}
 
 var migrateCmd = &cobra.Command{
 	Use:   "migrate",
@@ -16,10 +23,26 @@ var migrateCmd = &cobra.Command{
 	Run:   processMigration,
 }
 
+var createCmd = &cobra.Command{
+	Use:   "create",
+	Short: "create migration",
+	Long:  `create new migration file on migrations/`,
+	Run:   createMigration,
+}
+
 func init() {
 	migrateCmd.PersistentFlags().Int("step", 0, "maximum migration steps")
 	migrateCmd.PersistentFlags().String("direction", "up", "migration direction, up to apply and down to redo")
-	Root.AddCommand(migrateCmd)
+
+	createCmd.PersistentFlags().String("label", "new_migration", "migration label")
+
+	migrationCmd.PersistentFlags().Int("step", 0, "maximum migration steps")
+	migrationCmd.PersistentFlags().String("direction", "up", "migration direction, up to apply and down to redo")
+
+	migrationCmd.AddCommand(migrateCmd)
+	migrationCmd.AddCommand(createCmd)
+
+	Root.AddCommand(migrationCmd)
 }
 
 func processMigration(cmd *cobra.Command, args []string) {
@@ -36,4 +59,26 @@ func processMigration(cmd *cobra.Command, args []string) {
 	}
 
 	logrus.Info(fmt.Sprintf("%d migration(s) done", n))
+}
+
+func createMigration(cmd *cobra.Command, args []string) {
+	name := cmd.Flag("label").Value.String()
+	now := time.Now()
+	timestamp := fmt.Sprintf("%d%d%d%02d%02d%02d",
+		now.Year(), int(now.Month()), now.Day(),
+		now.Hour(), now.Minute(), now.Second())
+	filename := fmt.Sprintf("migration/%s_%s.sql", timestamp, name)
+	ioutil.WriteFile(filename,
+		[]byte(
+			`-- +migrate Up
+CREATE TABLE IF NOT EXISTS "new_table" (
+    "id" UUID NOT NULL PRIMARY KEY,
+);
+
+-- +migrate Down
+DROP TABLE IF EXISTS "new_table";`,
+		),
+		0755)
+
+	logrus.Printf("%s created\n", filename)
 }
