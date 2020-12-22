@@ -26,7 +26,7 @@ func (h handler) GetList(ctx iris.Context) {
 		return
 	}
 
-	helper.CreateResponse(ctx).Ok().WithData(roles).JSON()
+	helper.CreatePaginationResponse(ctx, request, roles).JSON()
 	ctx.Next()
 }
 
