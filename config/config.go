@@ -120,3 +120,9 @@ func MINIOEXPIRE() time.Duration {
 	exp, _ := time.ParseDuration(helper.GetEnv("MINIO_EXPIRE", "86400s"))
 	return exp
 }
+
+// MINIOREGION gets minio bucket region
+func MINIOREGION() string {
+	return helper.
+		GetEnv("MINIO_REGION", "us-east-1")
+}
