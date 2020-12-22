@@ -9,10 +9,10 @@ type Pagination interface {
 
 // OffsetPagination pagination parameters
 type OffsetPagination struct {
-	Offset *int
-	Limit  *int
-	Sort   *map[string]string
-	Where  *map[string]interface{}
+	Offset *int                    `json:"offset"`
+	Limit  *int                    `json:"limit"`
+	Sort   *map[string]string      `json:"sort"`
+	Where  *map[string]interface{} `json:"where"`
 }
 
 // GetSQL generate sql
@@ -54,11 +54,11 @@ func (opt OffsetPagination) GetSQL(tableName string) (sql string, args []interfa
 
 // CursorPagination pagination parameters
 type CursorPagination struct {
-	ID    *string
-	Limit *int
-	Seek  *string
-	Sort  *map[string]string
-	Where *map[string]interface{}
+	ID    string                  `json:"id"`
+	Limit *int                    `json:"limit"`
+	Seek  *string                 `json:"seek"`
+	Sort  *map[string]string      `json:"sort"`
+	Where *map[string]interface{} `json:"where"`
 }
 
 // GetSQL generate sql
@@ -73,7 +73,7 @@ func (opt CursorPagination) GetSQL(tableName string) (sql string, args []interfa
 	query = fmt.Sprintf("SELECT * FROM (%s)", query)
 
 	values := []interface{}{
-		*opt.ID,
+		opt.ID,
 	}
 
 	var where, sort, limit string = "", "", ""
