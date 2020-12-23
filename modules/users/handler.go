@@ -17,7 +17,7 @@ type handler struct {
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
 
-	users, err := h.users.GetList(request)
+	users, count, err := h.users.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -26,7 +26,7 @@ func (h handler) GetList(ctx iris.Context) {
 		return
 	}
 
-	helper.CreateResponse(ctx).Ok().WithData(users).JSON()
+	helper.CreatePaginationResponse(ctx, request, users, count).JSON()
 	ctx.Next()
 }
 

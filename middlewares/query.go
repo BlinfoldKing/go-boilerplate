@@ -14,6 +14,17 @@ func ValidatePaginationQuery(ctx iris.Context) {
 	paginationType := ctx.URLParamDefault("type", "offset")
 
 	switch paginationType {
+	case "cursor":
+		bquery := []byte(query)
+		var opts entity.CursorPagination
+		err := json.Unmarshal(bquery, &opts)
+		if err != nil {
+			helper.CreateErrorResponse(ctx, err).
+				BadRequest().
+				JSON()
+			return
+		}
+		ctx.Values().Set("pagination", opts)
 	default:
 		bquery := []byte(query)
 		var opts entity.OffsetPagination
@@ -25,7 +36,6 @@ func ValidatePaginationQuery(ctx iris.Context) {
 			return
 		}
 		ctx.Values().Set("pagination", opts)
-
 	}
 
 	ctx.Next()

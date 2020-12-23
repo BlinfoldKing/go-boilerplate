@@ -7,6 +7,7 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
+// Minio extends minio
 type Minio struct {
 	*minio.Client
 }

@@ -9,11 +9,10 @@ type Pagination interface {
 
 // OffsetPagination pagination parameters
 type OffsetPagination struct {
-	Type   *string
-	Offset *int
-	Limit  *int
-	Sort   *map[string]string
-	Where  *map[string]interface{}
+	Offset *int                    `json:"offset"`
+	Limit  *int                    `json:"limit"`
+	Sort   *map[string]string      `json:"sort"`
+	Where  *map[string]interface{} `json:"where"`
 }
 
 // GetSQL generate sql
@@ -43,13 +42,73 @@ func (opt OffsetPagination) GetSQL(tableName string) (sql string, args []interfa
 		sort = fmt.Sprintf("ORDER BY %s", sort)
 	}
 
-	if opt.Type != nil && *opt.Type == "cursor" {
+	var v []interface{}
+	limit, v = parseLimit(opt.Limit, opt.Offset)
+	values = append(values, v...)
 
+	sql = fmt.Sprintf("%s %s %s %s", query, where, sort, limit)
+	args = values
+
+	return
+}
+
+// CursorPagination pagination parameters
+type CursorPagination struct {
+	ID    string                  `json:"id"`
+	Limit *int                    `json:"limit"`
+	Seek  *string                 `json:"seek"`
+	Sort  *map[string]string      `json:"sort"`
+	Where *map[string]interface{} `json:"where"`
+}
+
+// GetSQL generate sql
+func (opt CursorPagination) GetSQL(tableName string) (sql string, args []interface{}, err error) {
+	query := ""
+	if opt.Seek != nil && *opt.Seek == "prev" {
+		query = "SELECT * FROM %s WHERE \"order\" <= (SELECT \"order\" FROM %s WHERE id = ?)"
 	} else {
-		var v []interface{}
-		limit, v = parseLimit(opt.Limit, opt.Offset)
-		values = append(values, v...)
+		query = "SELECT * FROM %s WHERE \"order\" >= (SELECT \"order\" FROM %s WHERE id = ?)"
 	}
+	query = fmt.Sprintf(query, tableName, tableName)
+	query = fmt.Sprintf("SELECT * FROM (%s)", query)
+
+	values := []interface{}{
+		opt.ID,
+	}
+
+	var where, sort, limit string = "", "", ""
+	if opt.Where != nil {
+		var v []interface{}
+		where, v, err = parseWhere(*opt.Where)
+		if err != nil {
+			return
+		}
+
+		values = append(values, v...)
+		where = fmt.Sprintf("WHERE %s", where)
+	}
+
+	if opt.Sort != nil {
+		sort, err = parseSort(*opt.Sort)
+		if err != nil {
+			return
+		}
+
+		sort = fmt.Sprintf("ORDER BY %s", sort)
+
+		if opt.Seek != nil && *opt.Seek == "prev" {
+			sort += ", \"order\" DESC"
+		}
+	} else {
+		if opt.Seek != nil && *opt.Seek == "prev" {
+			sort = "ORDER BY \"order\" DESC"
+		}
+
+	}
+
+	var v []interface{}
+	limit, v = parseLimit(opt.Limit, nil)
+	values = append(values, v...)
 
 	sql = fmt.Sprintf("%s %s %s %s", query, where, sort, limit)
 	args = values
@@ -91,7 +150,7 @@ func getOperation(key string, op string) (res string, err error) {
 	case "nin":
 		res = fmt.Sprintf("%s NOT IN ?", key)
 	default:
-		err = fmt.Errorf("invalid operator: %s", op)
+		err = fmt.Errorf("%s = ?", key)
 	}
 
 	return
@@ -110,20 +169,21 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 					case map[string]interface{}:
 						for field, v1 := range v.(map[string]interface{}) {
 							var where string
-							where, err = getOperation(k, field)
+							where, err = getOperation(field, k)
 							if err != nil {
 								return
 							}
 
 							if q != "" {
 								q = fmt.Sprintf("%s OR %s", q, where)
-								vs = append(values, v1)
+								vs = append(vs, v1)
 							} else {
-								q = fmt.Sprintf("%s = ?", where)
-								vs = append(values, v1)
+								q = fmt.Sprintf("%s", where)
+								vs = append(vs, v1)
 							}
 
 						}
+
 					default:
 						if q != "" {
 							q = fmt.Sprintf("%s OR %s = ?", q, k)
@@ -138,15 +198,18 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 				q = fmt.Sprintf("(%s)", q)
 
 				if query != "" {
-					query = fmt.Sprintf("%s AND %s = ?", query, q)
+					query = fmt.Sprintf("%s AND %s", query, q)
 					values = append(values, vs...)
 				} else {
-					query = fmt.Sprintf("%s = ?", q)
+					query = fmt.Sprintf("%s", q)
+					values = append(values, vs...)
 				}
 			default:
 				for field, v := range val.(map[string]interface{}) {
 					var where string
-					where, err = getOperation(key, field)
+					where, err = getOperation(field, key)
+
+					fmt.Println("error here", key, field)
 					if err != nil {
 						return
 					}
@@ -155,7 +218,7 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 						query = fmt.Sprintf("%s AND %s", query, where)
 						values = append(values, v)
 					} else {
-						query = fmt.Sprintf("%s = ?", where)
+						query = fmt.Sprintf("%s", where)
 						values = append(values, v)
 					}
 
