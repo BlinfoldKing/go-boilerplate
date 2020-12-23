@@ -8,7 +8,6 @@ type CreateRequest struct {
 
 // UpdateRequest update new role
 type UpdateRequest struct {
-	ID          string  `json:"id" validate:"required"`
 	Slug        string  `json:"slug" validate:"required"`
 	Description *string `json:"description" validate:"required"`
 }

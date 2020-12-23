@@ -9,7 +9,6 @@ require (
 	github.com/casbin/casbin/v2 v2.19.4
 	github.com/cychiuae/casbin-pg-adapter v0.0.5
 	github.com/dave/jennifer v1.4.1
-	github.com/fatih/structs v1.1.0
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/mock v1.4.4

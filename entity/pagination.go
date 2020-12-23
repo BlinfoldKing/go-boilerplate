@@ -65,9 +65,9 @@ type CursorPagination struct {
 func (opt CursorPagination) GetSQL(tableName string) (sql string, args []interface{}, err error) {
 	query := ""
 	if opt.Seek != nil && *opt.Seek == "prev" {
-		query = "SELECT * FROM %s WHERE \"order\" <= (SELECT \"order\" FROM %s WHERE id = ?)"
+		query = `SELECT * FROM %s WHERE "order" <= (SELECT "order" FROM %s WHERE id = ?)`
 	} else {
-		query = "SELECT * FROM %s WHERE \"order\" >= (SELECT \"order\" FROM %s WHERE id = ?)"
+		query = `SELECT * FROM %s WHERE "order" >= (SELECT "order" FROM %s WHERE id = ?)`
 	}
 	query = fmt.Sprintf(query, tableName, tableName)
 	query = fmt.Sprintf("SELECT * FROM (%s)", query)

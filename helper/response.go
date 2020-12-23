@@ -1,9 +1,12 @@
 package helper
 
-import "github.com/kataras/iris/v12"
+import (
+	"github.com/kataras/iris/v12"
+)
 
 // Response represent http reponse
 type Response struct {
+	ok      bool
 	content struct {
 		Status  int         `json:"status"`
 		Data    interface{} `json:"data"`
@@ -47,5 +50,8 @@ func (response Response) WithMessage(message string) Response {
 
 // JSON send response as JSON
 func (response Response) JSON() {
+	Logger.
+		WithField("content", response.content).
+		Debug()
 	response.context.JSON(response.content)
 }

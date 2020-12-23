@@ -1,10 +1,11 @@
 package postgres
 
 import (
-	"fmt"
 	"go-boilerplate/config"
+	"go-boilerplate/helper"
 
 	"context"
+
 	"github.com/sirupsen/logrus"
 	"xorm.io/xorm"
 	"xorm.io/xorm/contexts"
@@ -19,7 +20,7 @@ type loggerHook struct{}
 
 func (hook loggerHook) AfterProcess(c *contexts.ContextHook) error {
 	if c.Err != nil {
-		logrus.Error(c.Err)
+		helper.Logger.Error(c.Err)
 		return nil
 	}
 
@@ -27,7 +28,11 @@ func (hook loggerHook) AfterProcess(c *contexts.ContextHook) error {
 }
 
 func (hook loggerHook) BeforeProcess(c *contexts.ContextHook) (context.Context, error) {
-	logrus.Println(fmt.Sprintf("[pagination] query: %s, args: %v", c.SQL, c.Args))
+	helper.Logger.WithFields(
+		logrus.Fields{
+			"query": c.SQL,
+			"args":  c.Args,
+		}).Debug("SQL")
 	return context.Background(), nil
 }
 

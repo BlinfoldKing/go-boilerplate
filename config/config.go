@@ -7,6 +7,12 @@ import (
 	"time"
 )
 
+// ENV get env
+func ENV() string {
+	return helper.
+		GetEnv("ENV", "development")
+}
+
 // DBUSER get database user
 func DBUSER() string {
 	return helper.
