@@ -1,7 +1,6 @@
 package helper
 
 import "github.com/kataras/iris/v12"
-import "github.com/sirupsen/logrus"
 
 // ErrResponse represent error response
 type ErrResponse struct {
@@ -10,7 +9,7 @@ type ErrResponse struct {
 
 // CreateErrorResponse create error response
 func CreateErrorResponse(ctx iris.Context, err error) ErrResponse {
-	logrus.Error(err)
+	Logger.Error(err)
 	return ErrResponse{
 		CreateResponse(ctx).WithMessage(err.Error()),
 	}

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"go-boilerplate/adapters"
 	"go-boilerplate/config"
+	"go-boilerplate/helper"
 	"go-boilerplate/middlewares"
 	"go-boilerplate/modules"
 
 	"github.com/kataras/iris/v12"
-	"github.com/sirupsen/logrus"
 )
 
 // Server wrapper
@@ -23,17 +23,17 @@ func New() Server {
 
 	adapters, err := adapters.Init()
 	if err != nil {
-		logrus.Panic(err)
+		helper.Logger.Panic(err)
 	}
 
 	err = middlewares.InitValidator(adapters)
 	if err != nil {
-		logrus.Panic(err)
+		helper.Logger.Panic(err)
 	}
 
 	err = middlewares.InitJWT(adapters)
 	if err != nil {
-		logrus.Panic(err)
+		helper.Logger.Panic(err)
 	}
 
 	app.UseGlobal(middlewares.Logger)
