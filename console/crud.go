@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"github.com/dave/jennifer/jen"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/stoewer/go-strcase"
+	"go-boilerplate/helper"
 )
 
 var crudCmd = &cobra.Command{
@@ -28,65 +28,65 @@ func moduleGenerator(cmd *cobra.Command, args []string) {
 
 	currentDir, err := os.Getwd()
 	if err != nil {
-		logrus.Info(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Info(fmt.Sprintf("Error: %s", err))
 	}
 
 	base := currentDir + string(os.PathSeparator) + directory + string(os.PathSeparator)
 	// create entity
 	err = generateEntity(name, currentDir+string(os.PathSeparator)+"entity"+string(os.PathSeparator))
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
 	} else {
-		logrus.Println("entity created")
+		helper.Logger.Println("entity created")
 	}
 
 	// create directory
 	err = os.Mkdir(base+"/"+name, 0755)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
 		os.Remove(base + "/" + name)
 	}
 
 	err = generateRepository(name, base)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
 	} else {
-		logrus.Println("repository created")
+		helper.Logger.Println("repository created")
 	}
 
 	err = generateValidation(name, base)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
 	} else {
-		logrus.Println("validation created")
+		helper.Logger.Println("validation created")
 	}
 
 	err = generateService(name, base)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
 	} else {
-		logrus.Println("service created")
+		helper.Logger.Println("service created")
 	}
 
 	err = generateRoutes(name, base)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
 	} else {
-		logrus.Println("routes created")
+		helper.Logger.Println("routes created")
 	}
 
 	err = generatePostgresRepository(name, base)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
 	} else {
-		logrus.Println("postgres repository created")
+		helper.Logger.Println("postgres repository created")
 	}
 
 	err = generateHandler(name, base)
 	if err != nil {
-		logrus.Error(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
 	} else {
-		logrus.Println("handler created")
+		helper.Logger.Println("handler created")
 	}
 }
 
