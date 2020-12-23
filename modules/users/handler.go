@@ -68,8 +68,9 @@ func (h handler) DeleteByID(ctx iris.Context) {
 
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
+	id := ctx.Params().GetString("id")
 
-	user, err := h.users.Update(request.ID, entity.UserChangeSet{
+	user, err := h.users.Update(id, entity.UserChangeSet{
 		Email: request.Email,
 	})
 	if err != nil {

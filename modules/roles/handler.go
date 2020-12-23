@@ -68,8 +68,9 @@ func (h handler) DeleteByID(ctx iris.Context) {
 
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
+	id := ctx.Params().GetString("id")
 
-	role, err := h.roles.Update(request.ID, entity.RoleChangeSet{
+	role, err := h.roles.Update(id, entity.RoleChangeSet{
 		Slug:        request.Slug,
 		Description: request.Description,
 	})
