@@ -3,7 +3,7 @@ package console
 import (
 	"go-boilerplate/adapters/firebase"
 	"go-boilerplate/entity"
-	"go-boilerplate/helper"
+	firebaseService "go-boilerplate/modules/firebase"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -54,7 +54,7 @@ func sendToToken(cmd *cobra.Command, args []string) {
 	if err != nil {
 		logrus.Error(err)
 	}
-	err = helper.SendToMultipleDevices(app, token, data)
+	err = firebaseService.SendToMultipleDevices(app, token, data)
 	if err != nil {
 		logrus.Error(err)
 	}
@@ -67,7 +67,7 @@ func subscribe(cmd *cobra.Command, args []string) {
 	if err != nil {
 		logrus.Error(err)
 	}
-	err = helper.SubscribeToTopic(app, topic, token)
+	err = firebaseService.SubscribeToTopic(app, topic, token)
 	if err != nil {
 		logrus.Error(err)
 	}
@@ -83,7 +83,7 @@ func sendToTopic(cmd *cobra.Command, args []string) {
 	if err != nil {
 		logrus.Error(err)
 	}
-	err = helper.SendToTopic(app, topic, data)
+	err = firebaseService.SendToTopic(app, topic, data)
 	if err != nil {
 		logrus.Error(err)
 	}
