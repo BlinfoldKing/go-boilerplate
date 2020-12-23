@@ -3,6 +3,7 @@ module go-boilerplate
 go 1.15
 
 require (
+	firebase.google.com/go v3.13.0+incompatible
 	github.com/Joker/hpp v1.0.0 // indirect
 	github.com/alexedwards/argon2id v0.0.0-20200802152012-2464efd3196b
 	github.com/casbin/casbin/v2 v2.19.4

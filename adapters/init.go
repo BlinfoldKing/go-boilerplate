@@ -2,10 +2,13 @@ package adapters
 
 import (
 	"go-boilerplate/adapters/enforcer"
+	fb "go-boilerplate/adapters/firebase"
 	"go-boilerplate/adapters/minio"
 	"go-boilerplate/adapters/postgres"
 	rd "go-boilerplate/adapters/redis"
 	validation "go-boilerplate/adapters/validator"
+
+	firebase "firebase.google.com/go"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/go-playground/validator/v10"
@@ -19,6 +22,7 @@ type Adapters struct {
 	Redis     *redis.Client
 	Enforcer  *casbin.Enforcer
 	Minio     *minio.Minio
+	Firebase  *firebase.App
 }
 
 // Init create new Adapters
@@ -48,11 +52,17 @@ func Init() (Adapters, error) {
 		return Adapters{}, err
 	}
 
+	firebase, err := fb.Init()
+	if err != nil {
+		return Adapters{}, err
+	}
+
 	return Adapters{
 		postgres,
 		validator,
 		redis,
 		enforcer,
 		minio,
+		firebase,
 	}, err
 }
