@@ -41,6 +41,8 @@ func New() Server {
 		AllowedOrigins:   []string{"*"},
 		AllowCredentials: true,
 		AllowedMethods:   []string{"GET", "POST", "HEAD", "PUT", "DELETE", "PATCH"},
+		AllowedHeaders:   []string{"*"},
+		Debug:            false,
 	})
 
 	app.UseGlobal(middlewares.Logger)
