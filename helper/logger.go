@@ -109,7 +109,7 @@ var Logger logger
 
 // InitLogger create logger
 func InitLogger(env string) {
-
+	os.Mkdir(".logs/", os.ModePerm)
 	l := logrus.New()
 	now := time.Now()
 	timestamp := now.Format(time.RFC3339)
