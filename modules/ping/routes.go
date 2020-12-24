@@ -14,5 +14,5 @@ func Routes(app *iris.Application, adapters adapters.Adapters) {
 
 	ping := app.Party(name)
 	ping.Get("/", handler.Ping)
-	ping.Get("/authorized", handler.Ping)
+	ping.Get("/nats", handler.PingNats)
 }

@@ -4,6 +4,7 @@ import (
 	"go-boilerplate/adapters/enforcer"
 	fb "go-boilerplate/adapters/firebase"
 	"go-boilerplate/adapters/minio"
+	"go-boilerplate/adapters/nats"
 	"go-boilerplate/adapters/postgres"
 	rd "go-boilerplate/adapters/redis"
 	validation "go-boilerplate/adapters/validator"
@@ -23,6 +24,7 @@ type Adapters struct {
 	Enforcer  *casbin.Enforcer
 	Minio     *minio.Minio
 	Firebase  *firebase.App
+	Nats      *nats.Nats
 }
 
 // Init create new Adapters
@@ -57,6 +59,11 @@ func Init() (Adapters, error) {
 		return Adapters{}, err
 	}
 
+	nats, err := nats.Init()
+	if err != nil {
+		return Adapters{}, err
+	}
+
 	return Adapters{
 		postgres,
 		validator,
@@ -64,5 +71,6 @@ func Init() (Adapters, error) {
 		enforcer,
 		minio,
 		firebase,
+		nats,
 	}, err
 }

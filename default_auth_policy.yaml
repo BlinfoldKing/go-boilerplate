@@ -6,6 +6,8 @@ policy:
           route: /auth/login
         - method: POST
           route: /auth/logout
+        - method: GET
+          route: /ping*
     member:
         - method: (GET) || (POST)
           route: /documents*

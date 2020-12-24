@@ -15,6 +15,7 @@ import (
 
 // Init init modules
 func Init(app *iris.Application, adapters adapters.Adapters) {
+	// init routes
 	auth.Routes(app, adapters)
 	documents.Routes(app, adapters)
 	users.Routes(app, adapters)
@@ -22,4 +23,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	policy.Routes(app, adapters)
 	userroles.Routes(app, adapters)
 	ping.Routes(app, adapters)
+
+	// init queues
+	ping.Queue(adapters)
 }

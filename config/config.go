@@ -132,3 +132,10 @@ func MINIOREGION() string {
 	return helper.
 		GetEnv("MINIO_REGION", "us-east-1")
 }
+
+// NATSURI gets nats uri
+func NATSURI() string {
+	return helper.
+		GetEnv("NATS_URI", "nats://localhost:4222")
+
+}
