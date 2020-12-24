@@ -132,3 +132,13 @@ func MINIOREGION() string {
 	return helper.
 		GetEnv("MINIO_REGION", "us-east-1")
 }
+
+func MAILGUNDOMAIN() string {
+	return helper.
+		GetEnv("MAILGUN_DOMAIN", " ")
+}
+
+func MAILGUNAPIKEY() string {
+	return helper.
+		GetEnv("MAILGUN_API_KEY", " ")
+}

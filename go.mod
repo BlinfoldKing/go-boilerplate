@@ -22,11 +22,13 @@ require (
 	github.com/kataras/iris/v12 v12.2.0-alpha.0.20201113181155-4d09475c290d
 	github.com/klauspost/compress v1.11.3 // indirect
 	github.com/lib/pq v1.9.0
-	github.com/mailgun/mailgun-go v2.0.0+incompatible // indirect
+	github.com/mailgun/mailgun-go v2.0.0+incompatible
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/minio/minio-go/v7 v7.0.6
 	github.com/rubenv/sql-migrate v0.0.0-20200616145509-8d140a17f351
 	github.com/satori/uuid v1.2.0
+	github.com/sendgrid/rest v2.6.2+incompatible // indirect
+	github.com/sendgrid/sendgrid-go v3.7.2+incompatible
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/cobra v1.1.1
 	github.com/stoewer/go-strcase v1.2.0
