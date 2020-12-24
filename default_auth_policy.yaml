@@ -13,6 +13,12 @@ policy:
           route: /users*
         - method: (POST) || (PUT) || (GET) || (DELETE)
           route: /roles*
+        - method: (POST) || (PUT) || (GET) || (DELETE)
+          route: /product*
+        - method: (POST) || (PUT) || (GET) || (DELETE)
+          route: /company*
+        - method: (POST) || (PUT) || (GET) || (DELETE)
+          route: /asset*
         - method: POST
           route: /user_roles*
         - method: POST

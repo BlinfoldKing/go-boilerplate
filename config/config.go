@@ -13,6 +13,12 @@ func ENV() string {
 		GetEnv("ENV", "development")
 }
 
+// PREFIX get env
+func PREFIX() string {
+	return helper.
+		GetEnv("PREFIX", "/v1")
+}
+
 // DBUSER get database user
 func DBUSER() string {
 	return helper.

@@ -10,12 +10,12 @@ import (
 const name = "/roles"
 
 // Routes init roles
-func Routes(app *iris.Application, adapters adapters.Adapters) {
+func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	repository := CreatePosgresRepository(adapters.Postgres)
 	service := CreateService(repository)
 	handler := handler{service, adapters}
 
-	roles := app.Party(name)
+	roles := prefix.Party(name)
 
 	roles.Post("/", middlewares.ValidateBody(&CreateRequest{}),
 		handler.CreateRole)
