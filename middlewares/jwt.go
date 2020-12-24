@@ -107,8 +107,6 @@ func InitJWT(adapters adapters.Adapters) error {
 		path := ctx.Path()
 		path = strings.Replace(path, config.PREFIX(), "", 1)
 
-		helper.Logger.Debug(path)
-
 		sub := "public"
 		obj := path
 		act := ctx.Method()

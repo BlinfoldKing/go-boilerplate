@@ -265,7 +265,7 @@ func generateRoutes(pkg, dest string) error {
 
 		jen.Id(pkg).Op(":=").Id("prefix.Party(name)"),
 
-		jen.Id(pkg+`.Get("/", handler.GetList)`),
+		jen.Id(pkg+`.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)`),
 		jen.Id(pkg+`.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)`),
 		jen.Id(pkg+`.Get("/{id:string}", handler.GetByID)`),
 		jen.Id(pkg+`.Delete("/{id:string}", handler.DeleteByID)`),
