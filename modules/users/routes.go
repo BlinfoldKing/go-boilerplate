@@ -12,7 +12,7 @@ import (
 const name = "/users"
 
 // Routes init users
-func Routes(app *iris.Application, adapters adapters.Adapters) {
+func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	roleRepository := roles.CreatePosgresRepository(adapters.Postgres)
 	roleService := roles.CreateService(roleRepository)
 
@@ -23,7 +23,7 @@ func Routes(app *iris.Application, adapters adapters.Adapters) {
 	service := CreateService(repository, roleService, userRoleService)
 	handler := handler{service, adapters}
 
-	users := app.Party(name)
+	users := prefix.Party(name)
 
 	users.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)
 	users.Get("/{id:string}", handler.GetByID)

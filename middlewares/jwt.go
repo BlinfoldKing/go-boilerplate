@@ -8,6 +8,7 @@ import (
 	"go-boilerplate/entity"
 	"go-boilerplate/helper"
 	"io/ioutil"
+	"strings"
 	"time"
 
 	"github.com/iris-contrib/middleware/jwt"
@@ -104,6 +105,9 @@ func InitJWT(adapters adapters.Adapters) error {
 
 	AuthenticateToken = func(ctx iris.Context) {
 		path := ctx.Path()
+		path = strings.Replace(path, config.PREFIX(), "", 1)
+
+		helper.Logger.Debug(path)
 
 		sub := "public"
 		obj := path

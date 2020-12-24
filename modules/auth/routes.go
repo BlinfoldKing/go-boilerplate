@@ -13,7 +13,7 @@ import (
 const name = "/auth"
 
 // Routes init auth
-func Routes(app *iris.Application, adapters adapters.Adapters) {
+func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	userRepository := users.CreatePosgresRepository(adapters.Postgres)
 
 	roleRepository := roles.CreatePosgresRepository(adapters.Postgres)
@@ -25,7 +25,7 @@ func Routes(app *iris.Application, adapters adapters.Adapters) {
 	userService := users.CreateService(userRepository, roleService, userRoleService)
 	handler := handler{userService, roleService, adapters}
 
-	auth := app.Party(name)
+	auth := prefix.Party(name)
 
 	auth.Post("/register", middlewares.ValidateBody(&RegisterRequest{}),
 		handler.Register, middlewares.GenerateToken)
