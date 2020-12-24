@@ -21,6 +21,7 @@ import (
 func Init(app *iris.Application, adapters adapters.Adapters) {
 	prefix := app.Party(config.PREFIX())
 
+	// init routes
 	auth.Routes(prefix, adapters)
 	documents.Routes(prefix, adapters)
 	users.Routes(prefix, adapters)
@@ -31,4 +32,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	product.Routes(prefix, adapters)
 	company.Routes(prefix, adapters)
 	asset.Routes(prefix, adapters)
+
+	// init queues
+	ping.Queue(adapters)
 }
