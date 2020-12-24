@@ -256,16 +256,16 @@ func generateRoutes(pkg, dest string) error {
 
 	file.Comment("Routes init " + pkg)
 	file.Func().Id("Routes").Params(
-		jen.Id("app").Id("*iris.Application"),
+		jen.Id("prefix").Id("iris.Party"),
 		jen.Id("adapters").Id("adapters.Adapters"),
 	).Block(
 		jen.Id("repository").Op(":=").Id("CreatePosgresRepository(adapters.Postgres)"),
 		jen.Id("service").Op(":=").Id("CreateService(repository)"),
 		jen.Id("handler").Op(":=").Id("handler{service, adapters}"),
 
-		jen.Id(pkg).Op(":=").Id("app.Party(name)"),
+		jen.Id(pkg).Op(":=").Id("prefix.Party(name)"),
 
-		jen.Id(pkg+`.Get("/", handler.GetList)`),
+		jen.Id(pkg+`.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)`),
 		jen.Id(pkg+`.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)`),
 		jen.Id(pkg+`.Get("/{id:string}", handler.GetByID)`),
 		jen.Id(pkg+`.Delete("/{id:string}", handler.DeleteByID)`),
