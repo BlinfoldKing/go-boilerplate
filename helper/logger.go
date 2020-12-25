@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"sort"
 	"strings"
@@ -115,7 +114,7 @@ func InitLogger(env string) {
 	timestamp := now.Format(time.RFC3339)
 	filename := fmt.Sprintf("%s_%s.log", env, timestamp)
 	_, _ = os.Create(".logs/" + filename)
-	file, _ := os.OpenFile(".logs/"+filename, os.O_RDWR, os.ModePerm)
+	// file, _ := os.OpenFile(".logs/"+filename, os.O_RDWR, os.ModePerm)
 
 	if GetEnv("ENV", "development") == "development" {
 		l.SetLevel(logrus.DebugLevel)
@@ -123,7 +122,7 @@ func InitLogger(env string) {
 
 	l.SetFormatter(&formatter{env})
 
-	l.SetOutput(io.MultiWriter(file, os.Stdout))
+	// l.SetOutput(io.MultiWriter(file, os.Stdout))
 
 	l.SetReportCaller(true)
 	Logger = logger{l}

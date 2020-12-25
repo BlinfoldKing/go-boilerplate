@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS "otps" (
     "token" UUID NOT NULL PRIMARY KEY,
     "email" TEXT NOT NULL,
-    "purpose" int NOT NULL,
+    "purpose" INT NOT NULL,
     "expired_at" TIMESTAMP WITH TIME ZONE,
     "created_at" TIMESTAMP WITH TIME ZONE,
     "updated_at" TIMESTAMP WITH TIME ZONE,
