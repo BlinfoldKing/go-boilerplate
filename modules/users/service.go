@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"fmt"
 	"go-boilerplate/entity"
 	"go-boilerplate/modules/roles"
 	userroles "go-boilerplate/modules/user_roles"
@@ -30,7 +31,8 @@ func (service Service) mapUserRolesToRoles(ur []entity.UserRole) (roles []entity
 		if err != nil {
 			return
 		}
-
+		x := "asasa"
+		fmt.Println(x)
 		roles = append(roles, r)
 	}
 
