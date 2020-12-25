@@ -57,7 +57,12 @@ func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
 	product, err := h.products.Update(id, entity.ProductChangeSet{
-		Name: request.Name,
+		Name:                request.Name,
+		BrandID:             request.BrandID,
+		ProductCategoryID:   request.ProductCategoryID,
+		Type:                request.Type,
+		Lifetime:            request.Lifetime,
+		MaintenanceInterval: request.MaintenanceInterval,
 	})
 	if err != nil {
 		helper.
@@ -71,7 +76,14 @@ func (h handler) Update(ctx iris.Context) {
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	product, err := h.products.CreateProduct(request.Name)
+	product, err := h.products.CreateProduct(
+		request.Name,
+		request.BrandID,
+		request.ProductCategoryID,
+		request.Type,
+		request.Lifetime,
+		request.MaintenanceInterval,
+	)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
