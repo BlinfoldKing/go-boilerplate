@@ -30,7 +30,7 @@ func (service Service) mapUserRolesToRoles(ur []entity.UserRole) (roles []entity
 		if err != nil {
 			return
 		}
-		x := "asasa"
+
 		roles = append(roles, r)
 	}
 
