@@ -8,39 +8,14 @@ import (
 	"text/template"
 )
 
-// GenerateResetPasswordHTML generates reset password html using template and required data
-func GenerateResetPasswordHTML(name, resetLink string) (result string, err error) {
-	emailTemplate, err := getTemplate("reset_passowrd")
-	if err != nil {
-		Logger.Error(err)
-		return
-	}
-	var data = map[string]interface{}{
-		"name": name,
-		"link": resetLink,
-	}
-	var temp bytes.Buffer
-	err = emailTemplate.Execute(&temp, data)
+// GenerateHTMLTemplate generate html template
+func GenerateHTMLTemplate(template string, data map[string]interface{}) (result string, err error) {
+	emailTemplate, err := getTemplate(template)
 	if err != nil {
 		Logger.Error(err)
 		return
 	}
 
-	result = temp.String()
-	return
-}
-
-// GenerateActivationHTML generates account activation html using template and required data
-func GenerateActivationHTML(name, activateLink string) (result string, err error) {
-	emailTemplate, err := getTemplate("activation_email")
-	if err != nil {
-		Logger.Error(err)
-		return
-	}
-	var data = map[string]interface{}{
-		"name": name,
-		"link": activateLink,
-	}
 	var temp bytes.Buffer
 	err = emailTemplate.Execute(&temp, data)
 	if err != nil {

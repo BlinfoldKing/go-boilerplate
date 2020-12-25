@@ -5,15 +5,12 @@ import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/config"
 	"go-boilerplate/helper"
-	"go-boilerplate/modules/roles"
-	"go-boilerplate/modules/users"
 
 	"github.com/kataras/iris/v12"
 )
 
 type handler struct {
-	users    users.Service
-	roles    roles.Service
+	auth     Service
 	adapters adapters.Adapters
 }
 
@@ -21,7 +18,7 @@ type handler struct {
 func (handler handler) Register(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*RegisterRequest)
 
-	user, err := handler.users.CreateUser(request.Email, request.Password)
+	user, err := handler.auth.Register(request.Email, request.Password)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -42,11 +39,33 @@ func (handler handler) Register(ctx iris.Context) {
 		JSON()
 }
 
+// ResetPasswordRequest
+func (handler handler) ResetPasswordRequest(ctx iris.Context) {
+	request := ctx.Values().Get("body").(*ResetPasswordRequest)
+
+	err := handler.auth.RequestResetPassword(request.Email)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.
+		CreateResponse(ctx).
+		Ok().
+		WithMessage("an email for your request has been sent").
+		JSON()
+
+	ctx.Next()
+}
+
 // Login login with email
 func (handler handler) Login(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*LoginRequest)
 
-	user, err := handler.users.AuthenticateUser(request.Email, request.Password)
+	user, err := handler.auth.Login(request.Email, request.Password)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

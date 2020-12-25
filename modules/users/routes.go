@@ -3,8 +3,6 @@ package users
 import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/middlewares"
-	"go-boilerplate/modules/mail"
-	"go-boilerplate/modules/otps"
 	"go-boilerplate/modules/roles"
 	userroles "go-boilerplate/modules/user_roles"
 
@@ -20,14 +18,9 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 
 	userRoleRepository := userroles.CreatePosgresRepository(adapters.Postgres)
 	userRoleService := userroles.CreateService(userRoleRepository)
-
-	otpsRepository := otps.CreatePostgresRepository(adapters.Postgres)
-	otpsService := otps.CreateService(otpsRepository)
-
-	mailService := mail.CreateMailgunService(adapters.Mailgun)
-
 	repository := CreatePosgresRepository(adapters.Postgres)
-	service := CreateService(repository, roleService, userRoleService, otpsService, mailService)
+
+	service := CreateService(repository, roleService, userRoleService)
 	handler := handler{service, adapters}
 
 	users := prefix.Party(name)
