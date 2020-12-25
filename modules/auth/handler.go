@@ -32,13 +32,14 @@ func (handler handler) Register(ctx iris.Context) {
 
 	if !config.EMAILACTIVATION() {
 		ctx.Values().Set("user", user)
+		ctx.Next()
+		return
 	}
 	helper.
 		CreateResponse(ctx).
 		Ok().
 		WithData(map[string]interface{}{"message": fmt.Sprintf("activation email has been sent to %s", request.Email)}).
 		JSON()
-	ctx.Next()
 }
 
 // Login login with email

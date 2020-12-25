@@ -157,6 +157,18 @@ func MAILGUNAPIKEY() string {
 		GetEnv("MAILGUN_API_KEY", " ")
 }
 
+// MAILGUNPUBLICAPIKEY gets mailgun api key
+func MAILGUNPUBLICAPIKEY() string {
+	return helper.
+		GetEnv("MAILGUN_PUBLIC_API_KEY", " ")
+}
+
+// MAILGUNURL gets mailgun url
+func MAILGUNURL() string {
+	return helper.
+		GetEnv("MAILGUN_URL", " ")
+}
+
 // NATSURI gets nats uri
 func NATSURI() string {
 	return helper.

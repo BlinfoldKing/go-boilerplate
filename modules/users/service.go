@@ -121,7 +121,7 @@ func (service Service) CreateUser(email, password string) (res entity.UserGroup,
 		if err != nil {
 			return entity.UserGroup{}, err
 		}
-		_, err = service.mail.SendEmail("semeru", "Account Activation", emailBody, email)
+		_, err = service.mail.SendEmail("Semeru", "Account Activation", emailBody, email)
 		if err != nil {
 			return entity.UserGroup{}, err
 		}
