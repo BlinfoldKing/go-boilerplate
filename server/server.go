@@ -51,7 +51,7 @@ func New() Server {
 // Listen start server
 func (server Server) Listen() {
 	server.app.Run(
-		iris.Addr(fmt.Sprintf(":%s", config.PORT())),
+		iris.Addr(fmt.Sprintf("%s:%s", config.APPURL(), config.PORT())),
 		iris.WithoutBodyConsumptionOnUnmarshal,
 	)
 }

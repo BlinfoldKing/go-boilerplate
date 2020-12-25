@@ -6,15 +6,11 @@ import (
 	"github.com/mailgun/mailgun-go"
 )
 
-type Mailgun struct {
-	client *mailgun.MailgunImpl
-}
-
 // Init creates mailgun client
-func Init() *Mailgun {
+func Init() *mailgun.MailgunImpl {
 	domain := config.MAILGUNDOMAIN()
 	apiKey := config.MAILGUNAPIKEY()
 
 	client := mailgun.NewMailgun(domain, apiKey)
-	return &Mailgun{client}
+	return client
 }

@@ -3,6 +3,8 @@ package auth
 import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/middlewares"
+	"go-boilerplate/modules/mail"
+	"go-boilerplate/modules/otps"
 	"go-boilerplate/modules/roles"
 	userroles "go-boilerplate/modules/user_roles"
 	"go-boilerplate/modules/users"
@@ -22,7 +24,12 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	userRoleRepository := userroles.CreatePosgresRepository(adapters.Postgres)
 	userRoleService := userroles.CreateService(userRoleRepository)
 
-	userService := users.CreateService(userRepository, roleService, userRoleService)
+	otpsRepository := otps.CreatePostgresRepository(adapters.Postgres)
+	otpsService := otps.CreateService(otpsRepository)
+
+	mailService := mail.CreateMailgunService(adapters.Mailgun)
+
+	userService := users.CreateService(userRepository, roleService, userRoleService, otpsService, mailService)
 	handler := handler{userService, roleService, adapters}
 
 	auth := prefix.Party(name)

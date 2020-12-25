@@ -1,7 +1,9 @@
 package auth
 
 import (
+	"fmt"
 	"go-boilerplate/adapters"
+	"go-boilerplate/config"
 	"go-boilerplate/helper"
 	"go-boilerplate/modules/roles"
 	"go-boilerplate/modules/users"
@@ -28,8 +30,16 @@ func (handler handler) Register(ctx iris.Context) {
 		return
 	}
 
-	ctx.Values().Set("user", user)
-	ctx.Next()
+	if !config.EMAILACTIVATION() {
+		ctx.Values().Set("user", user)
+		ctx.Next()
+		return
+	}
+	helper.
+		CreateResponse(ctx).
+		Ok().
+		WithData(map[string]interface{}{"message": fmt.Sprintf("activation email has been sent to %s", request.Email)}).
+		JSON()
 }
 
 // Login login with email
