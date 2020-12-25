@@ -139,14 +139,17 @@ func MINIOREGION() string {
 		GetEnv("MINIO_REGION", "us-east-1")
 }
 
+// MAILGUNDOMAIN gets mailgun domain
 func MAILGUNDOMAIN() string {
 	return helper.
 		GetEnv("MAILGUN_DOMAIN", " ")
 }
 
+// MAILGUNAPIKEY gets mailgun api key
 func MAILGUNAPIKEY() string {
 	return helper.
 		GetEnv("MAILGUN_API_KEY", " ")
+}
 
 // NATSURI gets nats uri
 func NATSURI() string {
