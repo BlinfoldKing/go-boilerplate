@@ -107,15 +107,36 @@ func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 // Logger instance of logger
 var Logger logger
 
+func pathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+// FormatDate format date
+func FormatDate(time time.Time) string {
+	return fmt.Sprintf("%d%02d%02d%02d%02d%02d",
+		time.Year(), int(time.Month()), time.Day(),
+		time.Hour(), time.Minute(), time.Second())
+
+}
+
 // InitLogger create logger
 func InitLogger(env string) {
-	os.Mkdir(".logs/", os.ModePerm)
+	if ok, _ := pathExists(".logs"); !ok {
+		os.Mkdir(".logs", os.ModePerm)
+	}
 	l := logrus.New()
 	now := time.Now()
-	timestamp := now.Format(time.RFC3339)
-	filename := fmt.Sprintf("%s_%s.log", env, timestamp)
-	_, _ = os.Create(".logs/" + filename)
-	file, _ := os.OpenFile(".logs/"+filename, os.O_RDWR, os.ModePerm)
+	filename := fmt.Sprintf("%s_%s.log", env, FormatDate(now))
+	// separator := string(os.PathSeparator)
+	path := fmt.Sprintf(".logs/%s", filename)
+	file, _ := os.Create(path)
 
 	if GetEnv("ENV", "development") == "development" {
 		l.SetLevel(logrus.DebugLevel)
