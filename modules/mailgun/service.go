@@ -1,8 +1,8 @@
 package mailgun
 
 import (
-	"fmt"
 	"go-boilerplate/config"
+	"go-boilerplate/helper"
 
 	"github.com/mailgun/mailgun-go"
 )
@@ -16,7 +16,7 @@ func SendEmail(client *mailgun.MailgunImpl, sender, subject, body, recipient str
 	_, id, err := client.Send(message)
 
 	if err != nil {
-		fmt.Printf(err.Error())
+		helper.Logger.Error(err)
 	}
 
 	return id, err

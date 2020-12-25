@@ -12,6 +12,7 @@ import (
 func GenerateResetPasswordHTML(name, resetLink string) (result string, err error) {
 	emailTemplate, err := getTemplate("reset_passowrd")
 	if err != nil {
+		Logger.Error(err)
 		return
 	}
 	var data = map[string]interface{}{
@@ -21,7 +22,7 @@ func GenerateResetPasswordHTML(name, resetLink string) (result string, err error
 	var temp bytes.Buffer
 	err = emailTemplate.Execute(&temp, data)
 	if err != nil {
-		fmt.Println(err.Error())
+		Logger.Error(err)
 		return
 	}
 
@@ -34,7 +35,7 @@ func getTemplate(templateName string) (emailTemplate *template.Template, err err
 	filepath := path.Join(root, fmt.Sprintf("/html-templates/%s.html", templateName))
 	emailTemplate, err = template.ParseFiles(filepath)
 	if err != nil {
-		fmt.Println(err.Error())
+		Logger.Error(err)
 		return
 	}
 	return
