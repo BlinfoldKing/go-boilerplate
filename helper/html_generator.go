@@ -32,7 +32,7 @@ func GenerateResetPasswordHTML(name, resetLink string) (result string, err error
 
 func getTemplate(templateName string) (emailTemplate *template.Template, err error) {
 	root, _ := os.Getwd()
-	filepath := path.Join(root, fmt.Sprintf("/html-templates/%s.html", templateName))
+	filepath := path.Join(root, fmt.Sprintf("/templates/%s.html", templateName))
 	emailTemplate, err = template.ParseFiles(filepath)
 	if err != nil {
 		Logger.Error(err)
