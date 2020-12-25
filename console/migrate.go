@@ -64,9 +64,7 @@ func processMigration(cmd *cobra.Command, args []string) {
 func createMigration(cmd *cobra.Command, args []string) {
 	name := cmd.Flag("label").Value.String()
 	now := time.Now()
-	timestamp := fmt.Sprintf("%d%d%d%02d%02d%02d",
-		now.Year(), int(now.Month()), now.Day(),
-		now.Hour(), now.Minute(), now.Second())
+	timestamp := helper.FormatDate(now)
 	filename := fmt.Sprintf("migration/%s_%s.sql", timestamp, name)
 	ioutil.WriteFile(filename,
 		[]byte(
