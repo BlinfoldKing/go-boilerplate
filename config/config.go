@@ -13,6 +13,12 @@ func ENV() string {
 		GetEnv("ENV", "development")
 }
 
+// PREFIX get env
+func PREFIX() string {
+	return helper.
+		GetEnv("PREFIX", "/v1")
+}
+
 // DBUSER get database user
 func DBUSER() string {
 	return helper.
@@ -141,4 +147,10 @@ func MAILGUNDOMAIN() string {
 func MAILGUNAPIKEY() string {
 	return helper.
 		GetEnv("MAILGUN_API_KEY", " ")
+
+// NATSURI gets nats uri
+func NATSURI() string {
+	return helper.
+		GetEnv("NATS_URI", "nats://localhost:4222")
+
 }

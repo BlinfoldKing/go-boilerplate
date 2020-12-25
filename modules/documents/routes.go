@@ -9,13 +9,13 @@ import (
 const name = "/documents"
 
 // Routes init documents
-func Routes(app *iris.Application, adapters adapters.Adapters) {
+func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	storageRepository := CreatePostgresRepository(adapters.Postgres)
 	fileRepository := CreateMinioRepository(adapters.Minio)
 	service := CreateService(storageRepository, fileRepository)
 	handler := handler{service, adapters}
 
-	documents := app.Party(name)
+	documents := prefix.Party(name)
 
 	documents.Post(":upload", handler.Upload)
 	documents.Post(":download", handler.Download)
