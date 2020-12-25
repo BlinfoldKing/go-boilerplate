@@ -3,6 +3,7 @@ package adapters
 import (
 	"go-boilerplate/adapters/enforcer"
 	fb "go-boilerplate/adapters/firebase"
+	mg "go-boilerplate/adapters/mailgun"
 	"go-boilerplate/adapters/minio"
 	"go-boilerplate/adapters/nats"
 	"go-boilerplate/adapters/postgres"
@@ -14,6 +15,7 @@ import (
 	"github.com/casbin/casbin/v2"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-redis/redis"
+	"github.com/mailgun/mailgun-go"
 )
 
 // Adapters is wrapper for lib/drivers that needed to be injected
@@ -25,6 +27,7 @@ type Adapters struct {
 	Minio     *minio.Minio
 	Firebase  *firebase.App
 	Nats      *nats.Nats
+	Mailgun   *mailgun.MailgunImpl
 }
 
 // Init create new Adapters
@@ -64,6 +67,8 @@ func Init() (Adapters, error) {
 		return Adapters{}, err
 	}
 
+	mailgun := mg.Init()
+
 	return Adapters{
 		postgres,
 		validator,
@@ -72,5 +77,6 @@ func Init() (Adapters, error) {
 		minio,
 		firebase,
 		nats,
+		mailgun,
 	}, err
 }

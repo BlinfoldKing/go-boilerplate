@@ -19,6 +19,12 @@ func PREFIX() string {
 		GetEnv("PREFIX", "/v1")
 }
 
+// APPURL gets app url
+func APPURL() string {
+	return helper.
+		GetEnv("APP_URL", "localhost")
+}
+
 // DBUSER get database user
 func DBUSER() string {
 	return helper.
@@ -156,4 +162,18 @@ func NATSURI() string {
 	return helper.
 		GetEnv("NATS_URI", "nats://localhost:4222")
 
+}
+
+// EMAILACTIVATION gets whether or not email activation is needed
+func EMAILACTIVATION() bool {
+	activation, _ := strconv.ParseBool(
+		helper.
+			GetEnv("EMAIL_ACTIVATION", "true"))
+	return activation
+}
+
+// OTPDURATION gets otp expire duration
+func OTPDURATION() time.Duration {
+	dur, _ := time.ParseDuration(helper.GetEnv("OTP_DURATION", "3600s"))
+	return dur
 }

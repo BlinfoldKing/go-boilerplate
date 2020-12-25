@@ -2,7 +2,12 @@ package users
 
 import (
 	"errors"
+	"fmt"
+	"go-boilerplate/config"
 	"go-boilerplate/entity"
+	"go-boilerplate/helper"
+	"go-boilerplate/modules/mail"
+	"go-boilerplate/modules/otps"
 	"go-boilerplate/modules/roles"
 	userroles "go-boilerplate/modules/user_roles"
 )
@@ -12,14 +17,18 @@ type Service struct {
 	repository Repository
 	roles      roles.Service
 	userRoles  userroles.Service
+	otps       otps.Service
+	mail       mail.Service
 }
 
 // CreateService init service
 func CreateService(repo Repository,
 	roles roles.Service,
 	userRoles userroles.Service,
+	otps otps.Service,
+	mail mail.Service,
 ) Service {
-	return Service{repo, roles, userRoles}
+	return Service{repo, roles, userRoles, otps, mail}
 }
 
 // helper
@@ -70,6 +79,21 @@ func (service Service) mapUsersToUserGroups(users []entity.User) (ug []entity.Us
 	return
 }
 
+func (service Service) generateLink(purpose int, token, email string) string {
+	path := "request-activation"
+	if purpose == entity.ResetPassword {
+		path = "reset-password"
+	}
+	return fmt.Sprintf(
+		"%s%s/auth/%s?token=%s&email=%s",
+		config.APPURL(),
+		config.PREFIX(),
+		path,
+		token,
+		email,
+	)
+}
+
 // CreateUser create new user
 func (service Service) CreateUser(email, password string) (res entity.UserGroup, err error) {
 	user, err := entity.NewUser(email, password, entity.UserConfig{})
@@ -85,6 +109,22 @@ func (service Service) CreateUser(email, password string) (res entity.UserGroup,
 	_, err = service.userRoles.CreateRole(user.ID, entity.DefaultMEMBER)
 	if err != nil {
 		return
+	}
+
+	if config.EMAILACTIVATION() {
+		otp, err := service.otps.CreateOTP(email, entity.AccountActivation)
+		if err != nil {
+			return entity.UserGroup{}, err
+		}
+		activateLink := service.generateLink(entity.AccountActivation, otp.Token, email)
+		emailBody, err := helper.GenerateActivationHTML(email, activateLink)
+		if err != nil {
+			return entity.UserGroup{}, err
+		}
+		_, err = service.mail.SendEmail("semeru", "Account Activation", emailBody, email)
+		if err != nil {
+			return entity.UserGroup{}, err
+		}
 	}
 
 	res, err = service.mapUserToUserGroup(user)
