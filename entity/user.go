@@ -22,7 +22,8 @@ type UserGroup struct {
 
 // UserChangeSet changeset for user
 type UserChangeSet struct {
-	Email string `xorm:"email" json:"email"`
+	Email        string `xorm:"email" json:"email"`
+	ActiveStatus int    `xorm:"active_status" json:"active_status"`
 }
 
 // HashType specifiy hashing for password

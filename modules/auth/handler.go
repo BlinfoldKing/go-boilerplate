@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"go-boilerplate/adapters"
 	"go-boilerplate/config"
 	"go-boilerplate/helper"
@@ -35,8 +34,53 @@ func (handler handler) Register(ctx iris.Context) {
 	helper.
 		CreateResponse(ctx).
 		Ok().
-		WithData(map[string]interface{}{"message": fmt.Sprintf("activation email has been sent to %s", request.Email)}).
+		WithMessage("an account activation email for your request has been sent").
 		JSON()
+}
+
+// VerifyActivationRequest handles activation verification requests
+func (handler handler) VerifyActivationRequest(ctx iris.Context) {
+	token := ctx.FormValue("token")
+	email := ctx.FormValue("email")
+
+	err := handler.auth.RequestVerifyActivation(token, email)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.
+		CreateResponse(ctx).
+		Ok().
+		WithMessage("account is now activated, you can login now").
+		JSON()
+
+	ctx.Next()
+}
+
+// ActivateAccountRequest handles account activation requests
+func (handler handler) ActivateAccountRequest(ctx iris.Context) {
+	request := ctx.Values().Get("body").(*ActivateAccountRequest)
+
+	err := handler.auth.RequestActivateAccount(request.Email)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.
+		CreateResponse(ctx).
+		Ok().
+		WithMessage("an email for your request has been sent").
+		JSON()
+
+	ctx.Next()
 }
 
 // ResetPasswordRequest

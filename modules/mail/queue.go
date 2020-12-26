@@ -20,8 +20,7 @@ var PublishToQueue func(msg Message) error
 
 // Queue init ping queue
 func Queue(adapters adapters.Adapters) {
-	var service Service
-	// ini service here
+	service := CreateMailgunService(adapters.Mailgun)
 
 	push := adapters.Nats.NewQueue(
 		topic,

@@ -6,6 +6,10 @@ policy:
           route: /auth/login
         - method: POST
           route: /auth/logout
+        - method: POST
+          route: /auth/activate*
+        - method: POST
+          route: /auth/reset-password*
         - method: GET
           route: /ping*
     member:

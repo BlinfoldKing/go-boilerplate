@@ -7,6 +7,7 @@ import (
 	"github.com/mailgun/mailgun-go"
 )
 
+// MailgunService is implementation of mail service
 type MailgunService struct {
 	client *mailgun.MailgunImpl
 }
