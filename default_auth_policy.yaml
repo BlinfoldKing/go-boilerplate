@@ -7,7 +7,7 @@ policy:
         - method: POST
           route: /auth/logout
         - method: POST
-          route: /auth/activate*
+          route: /auth/activation*
         - method: POST
           route: /auth/reset-password*
         - method: GET
