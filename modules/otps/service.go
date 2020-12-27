@@ -21,3 +21,8 @@ func (service Service) CreateOTP(email string, purpose int) (otp entity.OTP, err
 	err = service.repository.Save(otp)
 	return
 }
+
+// GetByTokenAndEmail gets otp by token and email
+func (service Service) GetByTokenAndEmail(token, email string) (entity.OTP, error) {
+	return service.repository.FindByTokenAndEmail(token, email)
+}
