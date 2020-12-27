@@ -29,7 +29,7 @@ func CreateAuthService(
 func generateLink(token entity.OTP, email string) string {
 	path := "activation:verify"
 	if token.Purpose == entity.ResetPassword {
-		path = "reset-password/request"
+		path = "reset-password/verify"
 	}
 	return fmt.Sprintf(
 		"%s%s/auth/%s?token=%s&email=%s",
