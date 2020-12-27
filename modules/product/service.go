@@ -2,6 +2,7 @@ package product
 
 import (
 	"go-boilerplate/entity"
+	"time"
 )
 
 // Service contains business logic
@@ -15,8 +16,22 @@ func CreateService(repo Repository) Service {
 }
 
 // CreateProduct create new product
-func (service Service) CreateProduct(name string) (product entity.Product, err error) {
-	product, err = entity.NewProduct(name)
+func (service Service) CreateProduct(
+	name string,
+	brandID string,
+	productCategoryID string,
+	productType string,
+	lifetime time.Time,
+	maintenanceInterval int,
+) (product entity.Product, err error) {
+	product, err = entity.NewProduct(
+		name,
+		brandID,
+		productCategoryID,
+		productType,
+		lifetime,
+		maintenanceInterval,
+	)
 	if err != nil {
 		return
 	}

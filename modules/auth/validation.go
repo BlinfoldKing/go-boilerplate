@@ -11,3 +11,8 @@ type LoginRequest struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 }
+
+// ResetPasswordRequest request for reset request
+type ResetPasswordRequest struct {
+	Email string `json:"email" validate:"required,email"`
+}

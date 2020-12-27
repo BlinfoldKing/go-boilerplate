@@ -3,7 +3,6 @@ package auth
 import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/middlewares"
-	"go-boilerplate/modules/mail"
 	"go-boilerplate/modules/otps"
 	"go-boilerplate/modules/roles"
 	userroles "go-boilerplate/modules/user_roles"
@@ -27,10 +26,11 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	otpsRepository := otps.CreatePostgresRepository(adapters.Postgres)
 	otpsService := otps.CreateService(otpsRepository)
 
-	mailService := mail.CreateMailgunService(adapters.Mailgun)
+	userService := users.CreateService(userRepository, roleService, userRoleService)
 
-	userService := users.CreateService(userRepository, roleService, userRoleService, otpsService, mailService)
-	handler := handler{userService, roleService, adapters}
+	authService := CreateAuthService(userService, otpsService)
+
+	handler := handler{authService, adapters}
 
 	auth := prefix.Party(name)
 
@@ -41,5 +41,8 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 		handler.Login, middlewares.GenerateToken)
 
 	auth.Post("/logout", middlewares.InvalidateToken, handler.Logout)
+
+	auth.Post("/reset-password/request", middlewares.ValidateBody(&ResetPasswordRequest{}),
+		handler.ResetPasswordRequest)
 
 }

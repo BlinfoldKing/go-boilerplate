@@ -57,7 +57,10 @@ func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
 	company, err := h.companys.Update(id, entity.CompanyChangeSet{
-		Name: request.Name,
+		Name:        request.Name,
+		Type:        request.Type,
+		Address:     request.Address,
+		PhoneNumber: request.PhoneNumber,
 	})
 	if err != nil {
 		helper.
@@ -71,7 +74,12 @@ func (h handler) Update(ctx iris.Context) {
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	company, err := h.companys.CreateCompany(request.Name)
+	company, err := h.companys.CreateCompany(
+		request.Name,
+		request.Type,
+		request.Address,
+		request.PhoneNumber,
+	)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

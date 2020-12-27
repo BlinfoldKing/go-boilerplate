@@ -15,8 +15,18 @@ func CreateService(repo Repository) Service {
 }
 
 // CreateCompany create new company
-func (service Service) CreateCompany(name string) (company entity.Company, err error) {
-	company, err = entity.NewCompany(name)
+func (service Service) CreateCompany(
+	name string,
+	companyType entity.CompanyType,
+	address string,
+	phoneNumber string,
+) (company entity.Company, err error) {
+	company, err = entity.NewCompany(
+		name,
+		companyType,
+		address,
+		phoneNumber,
+	)
 	if err != nil {
 		return
 	}

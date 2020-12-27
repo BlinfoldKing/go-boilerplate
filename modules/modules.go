@@ -7,6 +7,7 @@ import (
 	"go-boilerplate/modules/auth"
 	"go-boilerplate/modules/company"
 	"go-boilerplate/modules/documents"
+	"go-boilerplate/modules/mail"
 	"go-boilerplate/modules/ping"
 	"go-boilerplate/modules/policy"
 	"go-boilerplate/modules/product"
@@ -35,4 +36,5 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 
 	// init queues
 	ping.Queue(adapters)
+	mail.Queue(adapters)
 }
