@@ -19,6 +19,11 @@ type Notification struct {
 	DeletedAt *time.Time `json:"deleted_at"`
 }
 
+// NotificationChangeSet change set fornotification
+type NotificationChangeSet struct {
+	Title string `json:"title" xorm:"title"`
+}
+
 // NewNotification used to create a new notification
 func NewNotification(userID, title, subtitle, urlLink, body string) (notification Notification) {
 	id := uuid.NewV4().String()
