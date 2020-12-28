@@ -1,4 +1,4 @@
-package notification
+package notifications
 
 import (
 	"go-boilerplate/adapters/postgres"

@@ -1,4 +1,4 @@
-package notification
+package notifications
 
 // CreateRequest request for create new notification
 type CreateRequest struct {

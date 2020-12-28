@@ -32,6 +32,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	product.Routes(prefix, adapters)
 	company.Routes(prefix, adapters)
 	asset.Routes(prefix, adapters)
+	notificiations.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)

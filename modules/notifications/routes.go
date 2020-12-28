@@ -1,4 +1,4 @@
-package notification
+package notifications
 
 import (
 	"go-boilerplate/adapters"
@@ -7,7 +7,7 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-const name = "/notification"
+const name = "/notifications"
 
 // Routes init notification
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
