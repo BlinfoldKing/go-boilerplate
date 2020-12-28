@@ -12,10 +12,13 @@ import (
 
 	firebase "firebase.google.com/go"
 
+	neo "go-boilerplate/adapters/neo4j"
+
 	"github.com/casbin/casbin/v2"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-redis/redis"
 	"github.com/mailgun/mailgun-go"
+	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
 // Adapters is wrapper for lib/drivers that needed to be injected
@@ -28,6 +31,7 @@ type Adapters struct {
 	Firebase  *firebase.App
 	Nats      *nats.Nats
 	Mailgun   *mailgun.MailgunImpl
+	Neo4j     neo4j.Driver
 }
 
 // Init create new Adapters
@@ -69,6 +73,12 @@ func Init() (Adapters, error) {
 
 	mailgun := mg.Init()
 
+	neo4j, err := neo.Init()
+	if err != nil {
+		return Adapters{}, err
+	}
+
+
 	return Adapters{
 		postgres,
 		validator,
@@ -78,5 +88,6 @@ func Init() (Adapters, error) {
 		firebase,
 		nats,
 		mailgun,
+		neo4j,
 	}, err
 }

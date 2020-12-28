@@ -30,6 +30,7 @@ require (
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/minio/minio-go/v7 v7.0.6
 	github.com/nats-io/nats.go v1.9.2
+	github.com/neo4j/neo4j-go-driver v1.8.3
 	github.com/rubenv/sql-migrate v0.0.0-20200616145509-8d140a17f351
 	github.com/satori/uuid v1.2.0
 	github.com/sendgrid/rest v2.6.2+incompatible // indirect
