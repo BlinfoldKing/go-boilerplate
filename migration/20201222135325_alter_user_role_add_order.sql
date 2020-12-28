@@ -1,0 +1,7 @@
+-- +migrate Up
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "order" SERIAL NOT NULL;
+ALTER TABLE "roles" ADD COLUMN IF NOT EXISTS "order" SERIAL NOT NULL;
+
+-- +migrate Down
+ALTER TABLE "users" DROP COLUMN IF EXISTS "order";
+ALTER TABLE "roles" DROP COLUMN IF EXISTS "order";

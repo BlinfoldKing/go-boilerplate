@@ -11,7 +11,7 @@ import (
 const name = "/policy"
 
 // Routes init auth
-func Routes(app *iris.Application, adapters adapters.Adapters) {
+func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	policyRepository := CreateEnforcerRepository(adapters.Enforcer)
 
 	roleRepository := roles.CreatePosgresRepository(adapters.Postgres)
@@ -20,7 +20,7 @@ func Routes(app *iris.Application, adapters adapters.Adapters) {
 	policyService := CreateService(policyRepository, roleService)
 	handler := handler{policyService, adapters}
 
-	policy := app.Party(name)
+	policy := prefix.Party(name)
 
 	policy.Post("/", middlewares.ValidateBody(&AddPolicyRequest{}),
 		handler.AddPolicy)

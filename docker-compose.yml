@@ -16,4 +16,10 @@ services:
             - "6379:6379"
         volumes:
             - ".docker/redis:/bitnami/redis/data"
+    nats:
+        image: "nats:0.8.0"
+        entrypoint: "/gnatsd -DV"
+        ports:
+            - "4222:4222"
+            - "8222:8222"
 

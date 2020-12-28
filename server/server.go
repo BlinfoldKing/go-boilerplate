@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"go-boilerplate/adapters"
 	"go-boilerplate/config"
+	"go-boilerplate/helper"
 	"go-boilerplate/middlewares"
 	"go-boilerplate/modules"
 
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris/v12"
-	"github.com/sirupsen/logrus"
 )
 
 // Server wrapper
@@ -24,17 +24,17 @@ func New() Server {
 
 	adapters, err := adapters.Init()
 	if err != nil {
-		logrus.Panic(err)
+		helper.Logger.Panic(err)
 	}
 
 	err = middlewares.InitValidator(adapters)
 	if err != nil {
-		logrus.Panic(err)
+		helper.Logger.Panic(err)
 	}
 
 	err = middlewares.InitJWT(adapters)
 	if err != nil {
-		logrus.Panic(err)
+		helper.Logger.Panic(err)
 	}
 
 	crs := cors.New(cors.Options{
@@ -62,7 +62,7 @@ func New() Server {
 // Listen start server
 func (server Server) Listen() {
 	server.app.Run(
-		iris.Addr(fmt.Sprintf(":%s", config.PORT())),
+		iris.Addr(fmt.Sprintf("%s:%s", config.APPURL(), config.PORT())),
 		iris.WithoutBodyConsumptionOnUnmarshal,
 	)
 }

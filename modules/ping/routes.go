@@ -9,10 +9,10 @@ import (
 const name = "/ping"
 
 // Routes init ping
-func Routes(app *iris.Application, adapters adapters.Adapters) {
+func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	handler := handler{adapters}
 
-	ping := app.Party(name)
+	ping := prefix.Party(name)
 	ping.Get("/", handler.Ping)
-	ping.Get("/authorized", handler.Ping)
+	ping.Get("/nats", handler.PingNats)
 }

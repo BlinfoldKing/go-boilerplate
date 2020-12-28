@@ -28,8 +28,8 @@ func (repo PostgresRepository) FindBySlug(slug string) (role entity.Role, err er
 }
 
 // GetList get list of users
-func (repo PostgresRepository) GetList(pagination entity.Pagination) (roles []entity.Role, err error) {
-	err = repo.db.
+func (repo PostgresRepository) GetList(pagination entity.Pagination) (roles []entity.Role, count int, err error) {
+	count, err = repo.db.
 		Paginate("roles", &roles, pagination)
 	return
 }

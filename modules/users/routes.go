@@ -12,22 +12,22 @@ import (
 const name = "/users"
 
 // Routes init users
-func Routes(app *iris.Application, adapters adapters.Adapters) {
+func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	roleRepository := roles.CreatePosgresRepository(adapters.Postgres)
 	roleService := roles.CreateService(roleRepository)
 
 	userRoleRepository := userroles.CreatePosgresRepository(adapters.Postgres)
 	userRoleService := userroles.CreateService(userRoleRepository)
-
 	repository := CreatePosgresRepository(adapters.Postgres)
+
 	service := CreateService(repository, roleService, userRoleService)
 	handler := handler{service, adapters}
 
-	users := app.Party(name)
+	users := prefix.Party(name)
 
 	users.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)
 	users.Get("/{id:string}", handler.GetByID)
 	users.Delete("/{id:string}", handler.DeleteByID)
-	users.Put("/", middlewares.ValidateBody(&UpdateRequest{}),
+	users.Put("/{id:string}", middlewares.ValidateBody(&UpdateRequest{}),
 		handler.Update)
 }

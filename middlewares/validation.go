@@ -1,9 +1,10 @@
 package middlewares
 
 import (
-	"github.com/kataras/iris/v12"
 	"go-boilerplate/adapters"
 	"go-boilerplate/helper"
+
+	"github.com/kataras/iris/v12"
 )
 
 // ValidateBody read and validate body

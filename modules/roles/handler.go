@@ -17,7 +17,7 @@ type handler struct {
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
 
-	roles, err := h.roles.GetList(request)
+	roles, count, err := h.roles.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -26,7 +26,7 @@ func (h handler) GetList(ctx iris.Context) {
 		return
 	}
 
-	helper.CreateResponse(ctx).Ok().WithData(roles).JSON()
+	helper.CreatePaginationResponse(ctx, request, roles, count).JSON()
 	ctx.Next()
 }
 
@@ -68,8 +68,9 @@ func (h handler) DeleteByID(ctx iris.Context) {
 
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
+	id := ctx.Params().GetString("id")
 
-	role, err := h.roles.Update(request.ID, entity.RoleChangeSet{
+	role, err := h.roles.Update(id, entity.RoleChangeSet{
 		Slug:        request.Slug,
 		Description: request.Description,
 	})

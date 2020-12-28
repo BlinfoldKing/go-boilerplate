@@ -11,6 +11,7 @@ type User struct {
 	ID           string `xorm:"id" json:"id"`
 	Email        string `xorm:"email" json:"email"`
 	PasswordHash string `xorm:"password_hash" json:"-"`
+	ActiveStatus int    `xorm:"active_status" json:"-"`
 }
 
 // UserGroup user data with role mapped
@@ -21,7 +22,8 @@ type UserGroup struct {
 
 // UserChangeSet changeset for user
 type UserChangeSet struct {
-	Email string `xorm:"email" json:"email"`
+	Email        string `xorm:"email" json:"email"`
+	ActiveStatus int    `xorm:"active_status" json:"active_status"`
 }
 
 // HashType specifiy hashing for password
@@ -32,6 +34,13 @@ const (
 	ARGO2ID HashType = "argo2id"
 	// BCRYPT using bcrypt
 	BCRYPT HashType = "bcrypt"
+)
+
+const (
+	// Inactive means account is inactive
+	Inactive = 0
+	// Active means account is active
+	Active = 1
 )
 
 // UserConfig specify optional config
