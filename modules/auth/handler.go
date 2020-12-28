@@ -40,8 +40,8 @@ func (handler handler) Register(ctx iris.Context) {
 
 // VerifyActivationRequest handles activation verification requests
 func (handler handler) VerifyActivationRequest(ctx iris.Context) {
-	token := ctx.FormValue("token")
-	email := ctx.FormValue("email")
+	token := ctx.URLParam("token")
+	email := ctx.URLParam("email")
 
 	err := handler.auth.RequestVerifyActivation(token, email)
 	if err != nil {
