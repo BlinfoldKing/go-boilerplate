@@ -2,14 +2,12 @@ package console
 
 import (
 	"fmt"
-	"go-boilerplate/entity"
 	"os"
-	"reflect"
 
 	"github.com/dave/jennifer/jen"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/stoewer/go-strcase"
+	"go-boilerplate/helper"
 )
 
 var crudCmd = &cobra.Command{
@@ -21,57 +19,103 @@ var crudCmd = &cobra.Command{
 
 func init() {
 	crudCmd.PersistentFlags().String("name", "example", "module name")
-	crudCmd.PersistentFlags().String("directory", "modules", "modules directory")
 	Root.AddCommand(crudCmd)
 }
 
 func moduleGenerator(cmd *cobra.Command, args []string) {
 	name := cmd.Flag("name").Value.String()
-	directory := cmd.Flag("directory").Value.String()
+	directory := "modules"
 
 	currentDir, err := os.Getwd()
 	if err != nil {
-		logrus.Info(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Info(fmt.Sprintf("Error: %s", err))
 	}
 
 	base := currentDir + string(os.PathSeparator) + directory + string(os.PathSeparator)
+	// create entity
+	err = generateEntity(name, currentDir+string(os.PathSeparator)+"entity"+string(os.PathSeparator))
+	if err != nil {
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
+	} else {
+		helper.Logger.Println("entity created")
+	}
 
 	// create directory
 	err = os.Mkdir(base+"/"+name, 0755)
 	if err != nil {
-		logrus.Info(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
 		os.Remove(base + "/" + name)
 	}
 
 	err = generateRepository(name, base)
 	if err != nil {
-		logrus.Info(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
+	} else {
+		helper.Logger.Println("repository created")
 	}
 
 	err = generateValidation(name, base)
 	if err != nil {
-		logrus.Info(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
+	} else {
+		helper.Logger.Println("validation created")
 	}
 
 	err = generateService(name, base)
 	if err != nil {
-		logrus.Info(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
+	} else {
+		helper.Logger.Println("service created")
 	}
 
 	err = generateRoutes(name, base)
 	if err != nil {
-		logrus.Info(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
+	} else {
+		helper.Logger.Println("routes created")
 	}
 
 	err = generatePostgresRepository(name, base)
 	if err != nil {
-		logrus.Info(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
+	} else {
+		helper.Logger.Println("postgres repository created")
 	}
 
 	err = generateHandler(name, base)
 	if err != nil {
-		logrus.Info(fmt.Sprintf("Error: %s", err))
+		helper.Logger.Error(fmt.Sprintf("Error: %s", err))
+	} else {
+		helper.Logger.Println("handler created")
 	}
+}
+
+func generateEntity(pkg, dest string) error {
+	file := jen.NewFilePathName(dest, "entity")
+	upperPkg := strcase.UpperCamelCase(pkg)
+
+	file.Add(jen.Id("import").Parens(jen.Id("\n").Id(`"github.com/satori/uuid"`).Id("\n")))
+
+	file.Comment(upperPkg + " " + pkg + " entity")
+	file.Type().Id(upperPkg).Struct(
+		jen.Id("ID").Id("string").Tag(map[string]string{"json": "id", "xorm": "id"}),
+		jen.Id("Name").Id("string").Tag(map[string]string{"json": "name", "xorm": "name"}),
+	)
+
+	file.Comment(upperPkg + "ChangeSet change set for" + pkg)
+	file.Type().Id(upperPkg + "ChangeSet").Struct(
+		jen.Id("Name").Id("string").Tag(map[string]string{"json": "name", "xorm": "name"}),
+	)
+
+	file.Comment("New" + upperPkg + " create new" + pkg)
+	file.Func().Id("New"+upperPkg).Params(jen.Id("name").Id("string")).
+		Parens(jen.List(jen.Id(pkg).Id(upperPkg), jen.Id("err").Id("error"))).Block(
+		jen.Id(pkg).Id("=").Id(upperPkg+`{uuid.NewV4().String(), name}`),
+		jen.Return(),
+	)
+
+	err := file.Save(dest + "/" + pkg + ".go")
+	return err
 }
 
 func generateRepository(pkg, dest string) error {
@@ -79,7 +123,6 @@ func generateRepository(pkg, dest string) error {
 
 	upperPkg := strcase.UpperCamelCase(pkg)
 
-	file.Comment("//go:generate mockgen -package " + pkg + " -source=repository.go -destination repository_mock.go")
 	file.Add(jen.Id("import").Parens(jen.Id(`"go-boilerplate/entity"`)))
 
 	file.Comment("Repository abstraction for storage")
@@ -94,9 +137,8 @@ func generateRepository(pkg, dest string) error {
 		).Error(),
 
 		jen.Id("GetList").Params(
-			jen.Id("limit"),
-			jen.Id("offset").Id("int"),
-		).Params(jen.Id("[]entity."+upperPkg), jen.Id("error")),
+			jen.Id("pagination").Id("entity.Pagination"),
+		).Params(jen.Id(upperPkg+"s").Id("[]entity."+upperPkg), jen.Id("count").Id("int"), jen.Id("err").Id("error")),
 	)
 
 	err := file.Save(dest + pkg + "/repository.go")
@@ -106,8 +148,15 @@ func generateRepository(pkg, dest string) error {
 func generateValidation(pkg, dest string) error {
 	file := jen.NewFilePathName(dest, pkg)
 
-	file.Type().Id("CreateRequest").Struct()
-	file.Type().Id("UpdateRequest").Struct()
+	file.Comment("CreateRequest request for create new " + pkg)
+	file.Type().Id("CreateRequest").Struct(
+		jen.Id("Name").Id("string").Tag(map[string]string{"json": "name", "validate": "required"}),
+	)
+
+	file.Comment("UpdateRequest request for update " + pkg)
+	file.Type().Id("UpdateRequest").Struct(
+		jen.Id("Name").Id("string").Tag(map[string]string{"json": "name", "validate": "required"}),
+	)
 
 	err := file.Save(dest + pkg + "/validation.go")
 	return err
@@ -134,21 +183,12 @@ func generateService(pkg, dest string) error {
 		jen.Return(jen.Id("Service{repo}")),
 	)
 
-	e := reflect.ValueOf(&entity.User{}).Elem()
-
-	for i := 0; i < e.NumField(); i++ {
-		varName := e.Type().Field(i).Name
-		varType := e.Type().Field(i).Type
-		varValue := e.Field(i).Interface()
-		fmt.Printf("%v %v %v\n", varName, varType, varValue)
-	}
-
 	file.Comment("Create" + upperPkg + " create new " + pkg)
-	file.Func().Params(jen.Id("service").Id("Service")).Id("Create"+upperPkg).Params(jen.Id("dataset").Id("entity."+upperPkg)).Params(
+	file.Func().Params(jen.Id("service").Id("Service")).Id("Create"+upperPkg).Params(jen.Id("name").Id("string")).Params(
 		jen.Id(pkg).Id("entity."+upperPkg),
 		jen.Id("err").Id("error"),
 	).Block(
-		jen.List(jen.Id(pkg), jen.Err()).Op(":=").Id("entity.New"+upperPkg+"(dataset)"),
+		jen.List(jen.Id(pkg), jen.Err()).Op(":=").Id("entity.New"+upperPkg+"(name)"),
 		jen.If(jen.Id("err").Op("!=").Nil()).Block(
 			jen.Return(),
 		),
@@ -159,11 +199,12 @@ func generateService(pkg, dest string) error {
 	)
 
 	file.Comment("GetList get list of " + pkg)
-	file.Func().Params(jen.Id("service").Id("Service")).Id("GetList").Params(jen.Id("limit"), jen.Id("offset").Id("int")).Params(
+	file.Func().Params(jen.Id("service").Id("Service")).Id("GetList").Params(jen.Id("pagination").Id("entity.Pagination")).Params(
 		jen.Id(pkg).Id("[]entity."+upperPkg),
+		jen.Id("count").Id("int"),
 		jen.Id("err").Id("error"),
 	).Block(
-		jen.List(jen.Id(pkg), jen.Err()).Op(":=").Id("service.repository.GetList(limit, offset)"),
+		jen.List(jen.Id(pkg), jen.Id("count"), jen.Err()).Op("=").Id("service.repository.GetList(pagination)"),
 
 		jen.Return(),
 	)
@@ -173,7 +214,7 @@ func generateService(pkg, dest string) error {
 		jen.Id(pkg).Id("entity."+upperPkg),
 		jen.Id("err").Id("error"),
 	).Block(
-		jen.List(jen.Err()).Op(":=").Id("service.repository.Update(id, changeset)"),
+		jen.List(jen.Err()).Op("=").Id("service.repository.Update(id, changeset)"),
 		jen.If(jen.Id("err").Op("!=").Nil()).Block(
 			jen.Return(jen.Id("entity."+upperPkg+"{}"), jen.Id("err")),
 		),
@@ -215,20 +256,20 @@ func generateRoutes(pkg, dest string) error {
 
 	file.Comment("Routes init " + pkg)
 	file.Func().Id("Routes").Params(
-		jen.Id("app").Id("*iris.Application"),
+		jen.Id("prefix").Id("iris.Party"),
 		jen.Id("adapters").Id("adapters.Adapters"),
 	).Block(
 		jen.Id("repository").Op(":=").Id("CreatePosgresRepository(adapters.Postgres)"),
 		jen.Id("service").Op(":=").Id("CreateService(repository)"),
 		jen.Id("handler").Op(":=").Id("handler{service, adapters}"),
 
-		jen.Id(pkg).Op(":=").Id("app.Party(name)"),
+		jen.Id(pkg).Op(":=").Id("prefix.Party(name)"),
 
-		jen.Id(pkg+`.Get("/", handler.GetList)`),
+		jen.Id(pkg+`.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)`),
 		jen.Id(pkg+`.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)`),
 		jen.Id(pkg+`.Get("/{id:string}", handler.GetByID)`),
 		jen.Id(pkg+`.Delete("/{id:string}", handler.DeleteByID)`),
-		jen.Id(pkg+`.Put("/", middlewares.ValidateBody(&UpdateRequest{}), handler.Update)`),
+		jen.Id(pkg+`.Put("/{id:string}", middlewares.ValidateBody(&UpdateRequest{}), handler.Update)`),
 	)
 
 	err := file.Save(dest + pkg + "/routes.go")
@@ -263,12 +304,9 @@ func generatePostgresRepository(pkg, dest string) error {
 	)
 
 	file.Comment("GetList get list of " + pkg)
-	file.Func().Params(jen.Id("repo").Id("PostgresRepository")).Id("GetList").Params(jen.Id("limit"), jen.Id("offset").Id("int")).Params(jen.Id(pkgWithS).Id("[]entity."+upperPkg), jen.Id("err").Id("error")).Block(
-		jen.Id("err").Op("=").Id(`repo.db.
-		Paginate("`+pkgWithS+`", &`+pkgWithS+`, postgres.PaginationOpt{
-			Limit:  &limit,
-			Offset: &offset,
-		})`),
+	file.Func().Params(jen.Id("repo").Id("PostgresRepository")).Id("GetList").Params(jen.Id("pagination").Id("entity.Pagination")).Params(jen.Id(pkgWithS).Id("[]entity."+upperPkg), jen.Id("count").Id("int"), jen.Id("err").Id("error")).Block(
+		jen.List(jen.Id("count"), jen.Id("err")).Op("=").Id(`repo.db.
+		Paginate("`+pkgWithS+`", &`+pkgWithS+`, pagination)`),
 		jen.Return(),
 	)
 
@@ -303,7 +341,7 @@ func generateHandler(pkg, dest string) error {
 	CreateErrorResponse(ctx, err).
 	InternalServer().
 	JSON()`
-	successResponse := `helper.CreateResponse(ctx).Ok().WithData(" + pkg + ").JSON()`
+	successResponse := "helper.CreateResponse(ctx).Ok().WithData(" + pkg + ").JSON()"
 
 	file.Add(jen.Id("import").Params(
 		jen.Id(`"fmt"
@@ -319,11 +357,24 @@ func generateHandler(pkg, dest string) error {
 		jen.Id("adapters").Id("adapters.Adapters"),
 	)
 
-	file.Func().Params(jen.Id("h").Id("handler")).Id("GetList").Params(jen.Id("ctx").Id("iris.Contenxt")).Block(
-		jen.Id("limit").Op(":=").Id(`ctx.URLParamIntDefault("limit", 10)`),
-		jen.Id("offset").Op(":=").Id(`ctx.URLParamIntDefault("offset", 10)`),
+	file.Func().Params(jen.Id("h").Id("handler")).Id("GetList").Params(jen.Id("ctx").Id("iris.Context")).Block(
+		jen.Id("request").Op(":=").Id(`ctx.Values().Get("pagination").(entity.Pagination)`),
 
-		jen.List(jen.Id(pkg), jen.Id("err")).Op(":=").Id("h." + pkgWithS + ".GetList(limit, offset)"),
+		jen.List(jen.Id(pkgWithS), jen.Id("count"), jen.Id("err")).Op(":=").Id("h."+pkgWithS+".GetList(request)"),
+
+		jen.If(jen.Id("err").Op("!=").Nil()).Block(
+			jen.Id(errResponse),
+			jen.Return(),
+		),
+
+		jen.Id("helper.CreatePaginationResponse(ctx, request,"+pkgWithS+", count).JSON()"),
+		jen.Id("ctx.Next()"),
+	)
+
+	file.Func().Params(jen.Id("h").Id("handler")).Id("GetByID").Params(jen.Id("ctx").Id("iris.Context")).Block(
+		jen.Id("id").Op(":=").Id(`ctx.Params().GetString("id")`),
+
+		jen.List(jen.Id(pkg), jen.Id("err")).Op(":=").Id("h."+pkgWithS+".GetByID(id)"),
 
 		jen.If(jen.Id("err").Op("!=").Nil()).Block(
 			jen.Id(errResponse),
@@ -334,24 +385,10 @@ func generateHandler(pkg, dest string) error {
 		jen.Id("ctx.Next()"),
 	)
 
-	file.Func().Params(jen.Id("h").Id("handler")).Id("GetByID").Params(jen.Id("ctx").Id("iris.Contenxt")).Block(
+	file.Func().Params(jen.Id("h").Id("handler")).Id("DeleteByID").Params(jen.Id("ctx").Id("iris.Context")).Block(
 		jen.Id("id").Op(":=").Id(`ctx.Params().GetString("id")`),
 
-		jen.List(jen.Id(pkg), jen.Id("err")).Op(":=").Id("h." + pkgWithS + ".GetByID(id)"),
-
-		jen.If(jen.Id("err").Op("!=").Nil()).Block(
-			jen.Id(errResponse),
-			jen.Return(),
-		),
-
-		jen.Id(successResponse),
-		jen.Id("ctx.Next()"),
-	)
-
-	file.Func().Params(jen.Id("h").Id("handler")).Id("DeleteByID").Params(jen.Id("ctx").Id("iris.Contenxt")).Block(
-		jen.Id("id").Op(":=").Id(`ctx.Params().GetString("id")`),
-
-		jen.Id("err").Op(":=").Id("h." + pkgWithS + ".DeleteByID(id)"),
+		jen.Id("err").Op(":=").Id("h."+pkgWithS+".DeleteByID(id)"),
 
 		jen.If(jen.Id("err").Op("!=").Nil()).Block(
 			jen.Id(errResponse),
@@ -362,17 +399,11 @@ func generateHandler(pkg, dest string) error {
 		jen.Id("ctx.Next()"),
 	)
 
-	file.Func().Params(jen.Id("h").Id("handler")).Id("Update").Params(jen.Id("ctx").Id("iris.Contenxt")).Block(
+	file.Func().Params(jen.Id("h").Id("handler")).Id("Update").Params(jen.Id("ctx").Id("iris.Context")).Block(
 		jen.Id("request").Op(":=").Id(`ctx.Values().Get("body").(*UpdateRequest)`),
+		jen.Id("id").Op(":=").Id(`ctx.Params().GetString("id")`),
 
-		jen.List(jen.Id(pkg), jen.Id("err")).Op(":=").Id("h." + pkgWithS + ".GetByID(id)"),
-
-		jen.If(jen.Id("err").Op("!=").Nil()).Block(
-			jen.Id(errResponse),
-			jen.Return(),
-		),
-
-		jen.List(jen.Id(pkg), jen.Id("err")).Op("=").Id("h." + pkgWithS + ".Update(request.ID, entity." + upperPkg + "ChangeSet{})"),
+		jen.List(jen.Id(pkg), jen.Id("err")).Op(":=").Id("h."+pkgWithS+".Update(id, entity."+upperPkg+"ChangeSet{\nName: request.Name,\n})"),
 
 		jen.If(jen.Id("err").Op("!=").Nil()).Block(
 			jen.Id(errResponse),
@@ -383,10 +414,10 @@ func generateHandler(pkg, dest string) error {
 		jen.Id("ctx.Next()"),
 	)
 
-	file.Func().Params(jen.Id("h").Id("handler")).Id("Create").Params(jen.Id("ctx").Id("iris.Contenxt")).Block(
+	file.Func().Params(jen.Id("h").Id("handler")).Id("Create").Params(jen.Id("ctx").Id("iris.Context")).Block(
 		jen.Id("request").Op(":=").Id(`ctx.Values().Get("body").(*CreateRequest)`),
 
-		jen.List(jen.Id(pkg), jen.Id("err")).Op(":=").Id("h." + pkgWithS + ".Create(entity." + upperPkg + "{})"),
+		jen.List(jen.Id(pkg), jen.Id("err")).Op(":=").Id("h."+pkgWithS+".Create"+upperPkg+"(request.Name)"),
 
 		jen.If(jen.Id("err").Op("!=").Nil()).Block(
 			jen.Id(errResponse),

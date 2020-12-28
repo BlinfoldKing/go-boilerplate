@@ -3,8 +3,8 @@ package console
 import (
 	"os"
 
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"go-boilerplate/helper"
 )
 
 // Root base root cli
@@ -18,7 +18,7 @@ var Root = &cobra.Command{
 func Execute() {
 	err := Root.Execute()
 	if err != nil {
-		logrus.Error(err)
+		helper.Logger.Error(err)
 		os.Exit(1)
 	}
 }

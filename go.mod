@@ -3,11 +3,15 @@ module go-boilerplate
 go 1.15
 
 require (
+	firebase.google.com/go v3.13.0+incompatible
 	github.com/Joker/hpp v1.0.0 // indirect
 	github.com/alexedwards/argon2id v0.0.0-20200802152012-2464efd3196b
 	github.com/casbin/casbin/v2 v2.19.4
 	github.com/cychiuae/casbin-pg-adapter v0.0.5
 	github.com/dave/jennifer v1.4.1
+	github.com/facebookgo/ensure v0.0.0-20200202191622-63f1cf65ac4c // indirect
+	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect
+	github.com/facebookgo/subset v0.0.0-20200203212716-c811ad88dec4 // indirect
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/mock v1.4.4
@@ -22,10 +26,14 @@ require (
 	github.com/kataras/iris/v12 v12.2.0-alpha.0.20201113181155-4d09475c290d
 	github.com/klauspost/compress v1.11.3 // indirect
 	github.com/lib/pq v1.9.0
+	github.com/mailgun/mailgun-go v2.0.0+incompatible
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/minio/minio-go/v7 v7.0.6
+	github.com/nats-io/nats.go v1.9.2
 	github.com/rubenv/sql-migrate v0.0.0-20200616145509-8d140a17f351
 	github.com/satori/uuid v1.2.0
+	github.com/sendgrid/rest v2.6.2+incompatible // indirect
+	github.com/sendgrid/sendgrid-go v3.7.2+incompatible
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/cobra v1.1.1
 	github.com/stoewer/go-strcase v1.2.0

@@ -111,14 +111,25 @@ func (service Service) AuthenticateUser(email, password string) (entity.UserGrou
 	return service.mapUserToUserGroup(user)
 }
 
-// GetList get list of users
-func (service Service) GetList(pagination entity.Pagination) ([]entity.UserGroup, error) {
-	users, err := service.repository.GetList(pagination)
+// GetByEmail get user by email
+func (service Service) GetByEmail(email string) (entity.UserGroup, error) {
+	user, err := service.repository.FindByEmail(email)
 	if err != nil {
-		return []entity.UserGroup{}, err
+		return entity.UserGroup{}, err
 	}
 
-	return service.mapUsersToUserGroups(users)
+	return service.mapUserToUserGroup(user)
+}
+
+// GetList get list of users
+func (service Service) GetList(pagination entity.Pagination) (ug []entity.UserGroup, count int, err error) {
+	users, count, err := service.repository.GetList(pagination)
+	if err != nil {
+		return
+	}
+
+	ug, err = service.mapUsersToUserGroups(users)
+	return
 }
 
 // Update update user

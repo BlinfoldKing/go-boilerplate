@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"fmt"
+	"go-boilerplate/helper"
 
 	"github.com/kataras/iris/v12"
 	"github.com/sirupsen/logrus"
@@ -9,12 +9,16 @@ import (
 
 // Logger Basic logger
 func Logger(ctx iris.Context) {
-	body, _ := ctx.GetBody()
-	log := fmt.Sprintf(
-		"[http] path: %s, method: %s, body: %s",
-		ctx.Path(), ctx.Request().Method, body)
+	var body map[string]interface{}
+	ctx.ReadJSON(&body)
 
-	logrus.Info(log)
+	helper.Logger.
+		WithFields(
+			logrus.Fields{
+				"method": ctx.Request().Method,
+				"path":   ctx.Path(),
+				"body":   body,
+			}).Info("HTTP")
 
 	ctx.Next()
 }

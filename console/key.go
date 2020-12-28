@@ -3,7 +3,6 @@ package console
 import (
 	"go-boilerplate/helper"
 
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -21,6 +20,6 @@ func init() {
 func generateKey(cmd *cobra.Command, args []string) {
 	err := helper.GenerateRSAKeyPair(".keys")
 	if err != nil {
-		logrus.Error(err)
+		helper.Logger.Error(err)
 	}
 }

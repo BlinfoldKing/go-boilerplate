@@ -2,8 +2,8 @@ package console
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"go-boilerplate/helper"
 	"go-boilerplate/migration"
 	"io/ioutil"
 	"strconv"
@@ -50,23 +50,21 @@ func processMigration(cmd *cobra.Command, args []string) {
 	stepStr := cmd.Flag("step").Value.String()
 	step, err := strconv.Atoi(stepStr)
 	if err != nil {
-		logrus.WithField("stepStr", stepStr).Fatal("Failed to parse step to int: ", err)
+		helper.Logger.WithField("stepStr", stepStr).Fatal("Failed to parse step to int: ", err)
 	}
 
 	n, err := migration.Migrate(direction, step)
 	if err != nil {
-		logrus.Error(err)
+		helper.Logger.Error(err)
 	}
 
-	logrus.Info(fmt.Sprintf("%d migration(s) done", n))
+	helper.Logger.Info(fmt.Sprintf("%d migration(s) done", n))
 }
 
 func createMigration(cmd *cobra.Command, args []string) {
 	name := cmd.Flag("label").Value.String()
 	now := time.Now()
-	timestamp := fmt.Sprintf("%d%d%d%02d%02d%02d",
-		now.Year(), int(now.Month()), now.Day(),
-		now.Hour(), now.Minute(), now.Second())
+	timestamp := helper.FormatDate(now)
 	filename := fmt.Sprintf("migration/%s_%s.sql", timestamp, name)
 	ioutil.WriteFile(filename,
 		[]byte(
@@ -80,5 +78,5 @@ DROP TABLE IF EXISTS "new_table";`,
 		),
 		0755)
 
-	logrus.Printf("%s created\n", filename)
+	helper.Logger.Printf("%s created\n", filename)
 }
