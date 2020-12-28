@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"go-boilerplate/config"
 	"go-boilerplate/entity"
 	"go-boilerplate/modules/roles"
 	userroles "go-boilerplate/modules/user_roles"
@@ -77,6 +78,10 @@ func (service Service) CreateUser(email, password string) (res entity.UserGroup,
 		return
 	}
 
+	if !config.EMAILACTIVATION() {
+		user.ActiveStatus = entity.Active
+	}
+
 	err = service.repository.Save(user)
 	if err != nil {
 		return
@@ -97,6 +102,10 @@ func (service Service) AuthenticateUser(email, password string) (entity.UserGrou
 	user, err := service.repository.FindByEmail(email)
 	if err != nil {
 		return entity.UserGroup{}, err
+	}
+
+	if user.ActiveStatus == entity.Inactive {
+		return entity.UserGroup{}, errors.New("user is inactive")
 	}
 
 	ok, err := user.ComparePassword(password, entity.UserConfig{})
