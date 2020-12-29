@@ -8,6 +8,7 @@ import (
 	"go-boilerplate/middlewares"
 	"go-boilerplate/modules"
 
+	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris/v12"
 )
 
@@ -36,8 +37,18 @@ func New() Server {
 		helper.Logger.Panic(err)
 	}
 
+	crs := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "POST", "HEAD", "PUT", "DELETE", "PATCH"},
+		AllowedHeaders:   []string{"*"},
+		Debug:            false,
+	})
+
 	app.UseGlobal(middlewares.Logger)
 	app.UseGlobal(middlewares.AuthenticateToken)
+
+	app.UseRouter(crs)
 
 	modules.Init(app, adapters)
 

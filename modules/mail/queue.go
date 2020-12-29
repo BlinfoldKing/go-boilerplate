@@ -5,7 +5,7 @@ import (
 	"go-boilerplate/helper"
 )
 
-const topic = "ping"
+const topic = "mail"
 
 // Message message for ping
 type Message struct {

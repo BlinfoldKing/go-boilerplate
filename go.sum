@@ -357,6 +357,9 @@ github.com/iris-contrib/httpexpect/v2 v2.0.5 h1:b2Orx2FXRhnmZil4td66C8zzkHnssSoF
 github.com/iris-contrib/httpexpect/v2 v2.0.5/go.mod h1:JpRu+DEVVCA6KHLKUAs72QoaevQESqLHuG5s1CQ+QiA=
 github.com/iris-contrib/jade v1.1.4 h1:WoYdfyJFfZIUgqNAeOyRfTNQZOksSlZ6+FnXR3AEpX0=
 github.com/iris-contrib/jade v1.1.4/go.mod h1:EDqR+ur9piDl6DUgs6qRrlfzmlx/D5UybogqrXvJTBE=
+github.com/iris-contrib/middleware v12.1.2+incompatible h1:c1cZShMYVo3qlprxmNvidMZ8JJgDzFLkSrQqKdaVTTg=
+github.com/iris-contrib/middleware/cors v0.0.0-20201115103636-07e8bced147f h1:egpC0zm2V79kp2dB5N7NsW1K9HA76Ct5nZdiC6Yl8oM=
+github.com/iris-contrib/middleware/cors v0.0.0-20201115103636-07e8bced147f/go.mod h1:cTRC+mqE9DMe5yztNGSYRxITu+ACqgk0OlIaAfCvWyw=
 github.com/iris-contrib/middleware/jwt v0.0.0-20201115103636-07e8bced147f h1:w/bLX0dNh8nZ61kG6cnluxhMAMW/WEs/mQo/Uuy3lCM=
 github.com/iris-contrib/middleware/jwt v0.0.0-20201115103636-07e8bced147f/go.mod h1:V/A6KIROLHtRNF8UyJZJOZuAMs+JlvjIkKjqvieIIvU=
 github.com/iris-contrib/schema v0.0.6 h1:CPSBLyx2e91H2yJzPuhGuifVRnZBBJ3pCOMbOvPZaTw=
