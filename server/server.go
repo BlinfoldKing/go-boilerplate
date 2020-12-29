@@ -23,7 +23,7 @@ func New() Server {
 
 	adapters, err := adapters.Init()
 	if err != nil {
-		helper.Logger.Panic(err)
+		helper.Logger.Warn(err)
 	}
 
 	err = middlewares.InitValidator(adapters)
