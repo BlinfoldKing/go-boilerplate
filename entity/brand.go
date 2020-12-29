@@ -16,6 +16,12 @@ type Brand struct {
 	DeletedAt     *time.Time `json:"deleted_at" xorm:"deleted_at"`
 }
 
+// BrandGroup user data with role mapped
+type BrandGroup struct {
+	Brand
+	Companies []Company `json:"companies"`
+}
+
 // BrandChangeSet change set forbrand
 type BrandChangeSet struct {
 	Name          string `json:"name" xorm:"name"`

@@ -80,7 +80,7 @@ func (h handler) Update(ctx iris.Context) {
 // Create creates brand with values from body
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	brand, err := h.brands.CreateBrand(request.Name, request.OriginCountry)
+	brand, err := h.brands.CreateBrand(request.Name, request.OriginCountry, request.CompanyIDs)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
