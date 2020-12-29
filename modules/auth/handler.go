@@ -40,8 +40,8 @@ func (handler handler) Register(ctx iris.Context) {
 
 // VerifyActivationRequest handles activation verification requests
 func (handler handler) VerifyActivationRequest(ctx iris.Context) {
-	token := ctx.FormValue("token")
-	email := ctx.FormValue("email")
+	token := ctx.URLParamDefault("token", "")
+	email := ctx.URLParamDefault("email", "")
 
 	err := handler.auth.RequestVerifyActivation(token, email)
 	if err != nil {
@@ -108,7 +108,6 @@ func (handler handler) ResetPasswordRequest(ctx iris.Context) {
 // ResetPassword
 func (handler handler) ResetPassword(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*ResetPasswordSubmit)
-
 	err := handler.auth.ResetPassword(
 		request.Token,
 		request.Email,

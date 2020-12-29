@@ -9,7 +9,7 @@ policy:
         - method: POST
           route: /auth/activation*
         - method: POST
-          route: /auth/reset-password*
+          route: /auth/password:*
         - method: GET
           route: /ping*
     member:

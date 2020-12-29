@@ -126,8 +126,7 @@ func (service Service) ResetPassword(otp string, email string, password string) 
 		return errors.New("invalid token")
 	}
 
-	passwordHash, err := entity.GeneratePasswordHash(password, entity.UserConfig{})
-
+	passwordHash, err := entity.GeneratePasswordHash(password, entity.ARGO2ID)
 	if err != nil {
 		return err
 	}
@@ -152,13 +151,19 @@ func (service Service) RequestResetPassword(email string) error {
 	}
 
 	token, err := service.otps.CreateOTP(email, entity.ResetPassword)
+	if err != nil {
+		return err
+	}
 
 	data := map[string]interface{}{
 		"name":  email,
 		"token": token.Token,
 	}
 
-	template, _ := helper.GenerateHTMLTemplate("reset_password", data)
+	template, err := helper.GenerateHTMLTemplate("reset_password", data)
+	if err != nil {
+		return err
+	}
 
 	err = mail.PublishToQueue(mail.Message{
 		Sender:    "admin",
@@ -166,6 +171,9 @@ func (service Service) RequestResetPassword(email string) error {
 		Subject:   "Reset Password",
 		Body:      template,
 	})
+	if err != nil {
+		return err
+	}
 
 	return err
 }

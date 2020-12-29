@@ -92,10 +92,10 @@ func (user User) ComparePassword(password string, config UserConfig) (bool, erro
 }
 
 // GeneratePasswordHash generate passwordhash for user
-func GeneratePasswordHash(password string, config UserConfig) (hash string, err error) {
+func GeneratePasswordHash(password string, algo HashType) (hash string, err error) {
 	var bytes []byte
 
-	if config.HashAlgo == BCRYPT {
+	if algo == BCRYPT {
 		bytes, err = bcrypt.GenerateFromPassword([]byte(password), 14)
 	} else {
 		hash, err = argon2id.CreateHash(password, argon2id.DefaultParams)

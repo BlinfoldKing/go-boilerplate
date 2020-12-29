@@ -19,11 +19,11 @@ func CreateGomailService(client *gomail.Dialer) Service {
 // SendEmail will send email using mailgun
 func (service GomailService) SendEmail(sender, subject, body, recipient string) (string, error) {
 	mailer := gomail.NewMessage()
-	mailer.SetHeader("From", config.GOMAILAUTHPASSWORD())
+	mailer.SetHeader("From", config.GOMAILAUTHEMAIL())
 	mailer.SetHeader("To", recipient)
 	mailer.SetHeader("Subject", subject)
 	mailer.SetBody("text/html", body)
 
-	err := service.client.DialAndSend()
+	err := service.client.DialAndSend(mailer)
 	return "", err
 }
