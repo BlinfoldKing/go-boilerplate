@@ -98,6 +98,10 @@ func (service Service) RequestVerifyActivation(token, email string) (err error) 
 
 // RequestActivateAccount requests activate account
 func (service Service) RequestActivateAccount(email string) (err error) {
+	_, err = service.users.GetByEmail(email)
+	if err != nil {
+		return
+	}
 	token, err := service.otps.CreateOTP(email, entity.AccountActivation)
 	if err != nil {
 		return
@@ -121,6 +125,10 @@ func (service Service) RequestActivateAccount(email string) (err error) {
 
 // RequestResetPassword request password reset
 func (service Service) RequestResetPassword(email string) error {
+	_, err := service.users.GetByEmail(email)
+	if err != nil {
+		return err
+	}
 	token, err := service.otps.CreateOTP(email, entity.ResetPassword)
 
 	data := map[string]interface{}{
