@@ -1,7 +1,6 @@
-package brand_company
+package brandcompany
 
 import (
-	"errors"
 	"go-boilerplate/entity"
 )
 
@@ -16,23 +15,23 @@ func CreateService(repo Repository) Service {
 }
 
 // CreateBrandCompany create new brand_company
-func (service Service) CreateBrandCompany(name string) (brand_company entity.BrandCompany, err error) {
-	brand_company, err := entity.NewBrandCompany(name)
+func (service Service) CreateBrandCompany(brandID, companyID string) (brandCompany entity.BrandCompany, err error) {
+	brandCompany, err = entity.NewBrandCompany(brandID, companyID)
 	if err != nil {
 		return
 	}
-	err = service.repository.Save(brand_company)
+	err = service.repository.Save(brandCompany)
 	return
 }
 
 // GetList get list of brand_company
-func (service Service) GetList(pagination entity.Pagination) (brand_company []entity.BrandCompany, count int, err error) {
-	brand_company, count, err = service.repository.GetList(pagination)
+func (service Service) GetList(pagination entity.Pagination) (brandCompany []entity.BrandCompany, count int, err error) {
+	brandCompany, count, err = service.repository.GetList(pagination)
 	return
 }
 
 // Update update brand_company
-func (service Service) Update(id string, changeset entity.BrandCompanyChangeSet) (brand_company entity.BrandCompany, err error) {
+func (service Service) Update(id string, changeset entity.BrandCompanyChangeSet) (brandCompany entity.BrandCompany, err error) {
 	err = service.repository.Update(id, changeset)
 	if err != nil {
 		return entity.BrandCompany{}, err
@@ -41,7 +40,7 @@ func (service Service) Update(id string, changeset entity.BrandCompanyChangeSet)
 }
 
 // GetByID find brand_companyby id
-func (service Service) GetByID(id string) (brand_company entity.BrandCompany, err error) {
+func (service Service) GetByID(id string) (brandCompany entity.BrandCompany, err error) {
 	return service.repository.FindByID(id)
 }
 

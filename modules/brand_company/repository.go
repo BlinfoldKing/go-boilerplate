@@ -1,4 +1,4 @@
-package brand_company
+package brandcompany
 
 import (
 	"go-boilerplate/entity"

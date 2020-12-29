@@ -1,4 +1,4 @@
-package brand_company
+package brandcompany
 
 // CreateRequest request for create new brand_company
 type CreateRequest struct {

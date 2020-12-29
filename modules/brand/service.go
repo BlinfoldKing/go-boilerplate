@@ -1,7 +1,6 @@
 package brand
 
 import (
-	"errors"
 	"go-boilerplate/entity"
 )
 
@@ -16,8 +15,8 @@ func CreateService(repo Repository) Service {
 }
 
 // CreateBrand create new brand
-func (service Service) CreateBrand(name string) (brand entity.Brand, err error) {
-	brand, err := entity.NewBrand(name)
+func (service Service) CreateBrand(name, originCountry string) (brand entity.Brand, err error) {
+	brand, err = entity.NewBrand(name, originCountry)
 	if err != nil {
 		return
 	}
