@@ -24,6 +24,7 @@ type UserGroup struct {
 type UserChangeSet struct {
 	Email        string `xorm:"email" json:"email"`
 	ActiveStatus int    `xorm:"active_status" json:"active_status"`
+	PasswordHash string `xorm:"password_hash" json:"password_hash"`
 }
 
 // HashType specifiy hashing for password
@@ -88,4 +89,18 @@ func (user User) ComparePassword(password string, config UserConfig) (bool, erro
 
 	return match, nil
 
+}
+
+// GeneratePasswordHash generate passwordhash for user
+func GeneratePasswordHash(password string, config UserConfig) (hash string, err error) {
+	var bytes []byte
+
+	if config.HashAlgo == BCRYPT {
+		bytes, err = bcrypt.GenerateFromPassword([]byte(password), 14)
+	} else {
+		hash, err = argon2id.CreateHash(password, argon2id.DefaultParams)
+		bytes = []byte(hash)
+	}
+
+	return string(bytes), err
 }

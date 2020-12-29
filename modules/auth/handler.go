@@ -105,6 +105,33 @@ func (handler handler) ResetPasswordRequest(ctx iris.Context) {
 	ctx.Next()
 }
 
+// ResetPassword
+func (handler handler) ResetPassword(ctx iris.Context) {
+	request := ctx.Values().Get("body").(*ResetPasswordSubmit)
+
+	err := handler.auth.ResetPassword(
+		request.Token,
+		request.Email,
+		request.Password,
+	)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.
+		CreateResponse(ctx).
+		Ok().
+		WithMessage("password changed").
+		JSON()
+
+	ctx.Next()
+}
+
 // Login login with email
 func (handler handler) Login(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*LoginRequest)
