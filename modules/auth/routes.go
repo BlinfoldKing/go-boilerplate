@@ -42,8 +42,11 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 
 	auth.Post("/logout", middlewares.InvalidateToken, handler.Logout)
 
-	auth.Post("/reset-password/request", middlewares.ValidateBody(&ResetPasswordRequest{}),
+	auth.Post("/password:request", middlewares.ValidateBody(&ResetPasswordRequest{}),
 		handler.ResetPasswordRequest)
+
+	auth.Post("/password:submit", middlewares.ValidateBody(&ResetPasswordSubmit{}),
+		handler.ResetPassword)
 
 	auth.Post("/activation:request", middlewares.ValidateBody(&ActivateAccountRequest{}),
 		handler.ActivateAccountRequest)

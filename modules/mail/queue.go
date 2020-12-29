@@ -20,7 +20,7 @@ var PublishToQueue func(msg Message) error
 
 // Queue init ping queue
 func Queue(adapters adapters.Adapters) {
-	service := CreateMailgunService(adapters.Mailgun)
+	service := CreateService(adapters)
 
 	push := adapters.Nats.NewQueue(
 		topic,
@@ -29,6 +29,11 @@ func Queue(adapters adapters.Adapters) {
 			_, err := service.SendEmail(msg.Sender, msg.Subject, msg.Body, msg.Recipient)
 			if err != nil {
 				helper.Logger.Error(err)
+			} else {
+				helper.
+					Logger.
+					WithField("mail", msg).
+					Debug("Mail sent")
 			}
 		},
 		&Message{},
