@@ -36,12 +36,12 @@ func (repo PostgresRepository) Update(id string, changeset entity.ProductSpecifi
 
 // FindByID find productSpecification by id
 func (repo PostgresRepository) FindByID(id string) (productSpecification entity.ProductSpecification, err error) {
-	_, err = repo.db.SQL("SELECT * FROM product_specifications WHERE id = ?", id).Get(&productSpecification)
+	_, err = repo.db.SQL("SELECT * FROM product_specifications WHERE id = ? AND deleted_at = nil", id).Get(&productSpecification)
 	return
 }
 
 // DeleteByID delete productSpecification by id
 func (repo PostgresRepository) DeleteByID(id string) error {
-	_, err := repo.db.Exec("DELETE FROM product_specifications WHERE id = ?", id)
+	_, err := repo.db.Table("product_specifications").Where("id = ?", id).Delete(&entity.ProductSpecification{})
 	return err
 }
