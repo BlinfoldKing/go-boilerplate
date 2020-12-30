@@ -36,7 +36,7 @@ func (repo PostgresRepository) Update(id string, changeset entity.ProductCategor
 
 // FindByID find productCategory by id
 func (repo PostgresRepository) FindByID(id string) (productCategory entity.ProductCategory, err error) {
-	_, err = repo.db.SQL("SELECT * FROM product_categories WHERE id = ? AND deleted_at = nil", id).Get(&productCategory)
+	_, err = repo.db.SQL("SELECT * FROM product_categories WHERE id = ? AND deleted_at = null", id).Get(&productCategory)
 	return
 }
 
