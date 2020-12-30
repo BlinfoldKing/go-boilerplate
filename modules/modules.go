@@ -12,8 +12,9 @@ import (
 	"go-boilerplate/modules/ping"
 	"go-boilerplate/modules/policy"
 	"go-boilerplate/modules/product"
+	productcategory "go-boilerplate/modules/product_category"
 	"go-boilerplate/modules/roles"
-	"go-boilerplate/modules/user_roles"
+	userroles "go-boilerplate/modules/user_roles"
 	"go-boilerplate/modules/users"
 
 	"github.com/kataras/iris/v12"
@@ -35,6 +36,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	company.Routes(prefix, adapters)
 	asset.Routes(prefix, adapters)
 	notifications.Routes(prefix, adapters)
+	productcategory.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)
