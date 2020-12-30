@@ -9,7 +9,7 @@ policy:
         - method: POST
           route: /auth/activation*
         - method: POST
-          route: /auth/reset-password*
+          route: /auth/password:*
         - method: GET
           route: /ping*
     member:
@@ -25,6 +25,8 @@ policy:
           route: /company*
         - method: (POST) || (PUT) || (GET) || (DELETE)
           route: /asset*
+        - method: (POST) || (PUT) || (GET) || (DELETE)
+          route: /notifications*
         - method: POST
           route: /user_roles*
         - method: POST

@@ -17,6 +17,13 @@ type ResetPasswordRequest struct {
 	Email string `json:"email" validate:"required,email"`
 }
 
+// ResetPasswordSubmit request for reset request
+type ResetPasswordSubmit struct {
+	Token    string `json:"token" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	Email    string `json:"email" validate:"required,email"`
+}
+
 // VerifyActivationRequest requests for activation verification
 type VerifyActivationRequest struct {
 	Token string `json:"token" validate:"required,token"`
