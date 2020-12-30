@@ -1,0 +1,30 @@
+image: registry.gitlab.com/pt-proclub-studio/boilerplate/go-clean-boilerplate
+
+cache:
+    paths:
+        - /apt-cache
+        - /go/src
+        - /go/bin
+
+stages:
+    - init
+    - lint
+    - build
+
+get:
+    stage: init
+    script:
+        - go get -v
+lint:
+    stage: lint
+    script:
+        - golint ./...
+
+compile:
+    stage: build
+    script:
+        - go build -o $CI_PROJECT_DIR/binary
+    artifacts:
+        paths:
+            - binary
+

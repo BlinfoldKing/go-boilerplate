@@ -5,6 +5,7 @@ import (
 	"go-boilerplate/config"
 	"go-boilerplate/modules/asset"
 	"go-boilerplate/modules/auth"
+	"go-boilerplate/modules/brand"
 	"go-boilerplate/modules/company"
 	"go-boilerplate/modules/documents"
 	"go-boilerplate/modules/mail"
@@ -36,6 +37,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	company.Routes(prefix, adapters)
 	asset.Routes(prefix, adapters)
 	notifications.Routes(prefix, adapters)
+	brand.Routes(prefix, adapters)
 	productspecification.Routes(prefix, adapters)
 
 	// init queues

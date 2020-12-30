@@ -1,4 +1,4 @@
-package company
+package brand
 
 import (
 	"fmt"
@@ -10,13 +10,14 @@ import (
 )
 
 type handler struct {
-	companies Service
-	adapters  adapters.Adapters
+	brands   Service
+	adapters adapters.Adapters
 }
 
+// GetList gets a list of brands
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	companies, count, err := h.companies.GetList(request)
+	brands, count, err := h.brands.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,12 +25,14 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, companies, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, brands, count).JSON()
 	ctx.Next()
 }
+
+// GetByID gets a list of IDs
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	company, err := h.companies.GetByID(id)
+	brand, err := h.brands.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -37,12 +40,14 @@ func (h handler) GetByID(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(company).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(brand).JSON()
 	ctx.Next()
 }
+
+// DeleteByID deletes a brand by ID
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.companies.DeleteByID(id)
+	err := h.brands.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -53,14 +58,13 @@ func (h handler) DeleteByID(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithMessage(fmt.Sprintf("%s deleted", id)).JSON()
 	ctx.Next()
 }
+
+// Update updates a brand by id
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	company, err := h.companies.Update(id, entity.CompanyChangeSet{
-		Name:        request.Name,
-		Type:        request.Type,
-		Address:     request.Address,
-		PhoneNumber: request.PhoneNumber,
+	brand, err := h.brands.Update(id, entity.BrandChangeSet{
+		Name: request.Name,
 	})
 	if err != nil {
 		helper.
@@ -69,17 +73,14 @@ func (h handler) Update(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(company).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(brand).JSON()
 	ctx.Next()
 }
+
+// Create creates brand with values from body
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	company, err := h.companies.CreateCompany(
-		request.Name,
-		request.Type,
-		request.Address,
-		request.PhoneNumber,
-	)
+	brand, err := h.brands.CreateBrand(request.Name, request.OriginCountry, request.CompanyIDs)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -87,6 +88,6 @@ func (h handler) Create(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(company).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(brand).JSON()
 	ctx.Next()
 }
