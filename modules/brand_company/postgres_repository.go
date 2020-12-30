@@ -42,18 +42,18 @@ func (repo PostgresRepository) Update(id string, changeset entity.BrandCompanyCh
 
 // FindByID find brand_company by id
 func (repo PostgresRepository) FindByID(id string) (brandCompany entity.BrandCompany, err error) {
-	_, err = repo.db.SQL("SELECT * FROM brand_companies WHERE id = ?", id).Get(&brandCompany)
+	_, err = repo.db.SQL("SELECT * FROM brand_companies WHERE id = ? AND deleted_at = null", id).Get(&brandCompany)
 	return
 }
 
 // DeleteByID delete brand_company by id
 func (repo PostgresRepository) DeleteByID(id string) error {
-	_, err := repo.db.Exec("DELETE FROM brand_companies WHERE id = ?", id)
+	_, err := repo.db.Table("brand_companies").Where("id = ?", id).Delete(&entity.BrandCompany{})
 	return err
 }
 
 // DeleteByBrandID deletes all brandcompany with brand ID
 func (repo PostgresRepository) DeleteByBrandID(brandID string) error {
-	_, err := repo.db.Exec("DELETE FROM brand_companies WHERE brand_id = ?", brandID)
+	_, err := repo.db.Table("brand_companies").Where("brand_id = ?", brandID).Delete(&entity.BrandCompany{})
 	return err
 }
