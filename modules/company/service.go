@@ -54,6 +54,11 @@ func (service Service) GetByID(id string) (company entity.Company, err error) {
 	return service.repository.FindByID(id)
 }
 
+// GetByBrandID finds companies by brandID
+func (service Service) GetByBrandID(brandID string) (companies []entity.Company, err error) {
+	return service.repository.FindByBrandID(brandID)
+}
+
 // DeleteByID delete companyby id
 func (service Service) DeleteByID(id string) (err error) {
 	return service.repository.DeleteByID(id)

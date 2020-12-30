@@ -5,6 +5,7 @@ import (
 	"go-boilerplate/config"
 	"go-boilerplate/modules/asset"
 	"go-boilerplate/modules/auth"
+	"go-boilerplate/modules/brand"
 	"go-boilerplate/modules/company"
 	"go-boilerplate/modules/documents"
 	"go-boilerplate/modules/mail"
@@ -13,7 +14,7 @@ import (
 	"go-boilerplate/modules/policy"
 	"go-boilerplate/modules/product"
 	"go-boilerplate/modules/roles"
-	"go-boilerplate/modules/user_roles"
+	userroles "go-boilerplate/modules/user_roles"
 	"go-boilerplate/modules/users"
 
 	"github.com/kataras/iris/v12"
@@ -35,6 +36,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	company.Routes(prefix, adapters)
 	asset.Routes(prefix, adapters)
 	notifications.Routes(prefix, adapters)
+	brand.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)

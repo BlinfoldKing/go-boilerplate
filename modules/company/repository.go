@@ -10,5 +10,6 @@ type Repository interface {
 	DeleteByID(id string) error
 	FindByID(id string) (entity.Company, error)
 	Update(id string, changeset entity.CompanyChangeSet) error
-	GetList(pagination entity.Pagination) (Companys []entity.Company, count int, err error)
+	GetList(pagination entity.Pagination) (Companies []entity.Company, count int, err error)
+	FindByBrandID(brandID string) (Companies []entity.Company, err error)
 }

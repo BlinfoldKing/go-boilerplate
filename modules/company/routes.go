@@ -11,7 +11,7 @@ const name = "/company"
 
 // Routes init company
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	repository := CreatePosgresRepository(adapters.Postgres)
+	repository := CreatePostgresRepository(adapters.Postgres)
 	service := CreateService(repository)
 	handler := handler{service, adapters}
 	company := prefix.Party(name)
