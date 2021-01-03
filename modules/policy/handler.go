@@ -36,9 +36,26 @@ func (h handler) GetAllPolicies(ctx iris.Context) {
 	ctx.Next()
 }
 
-func (h handler) GetAllRoutes(ctx iris.Context) {
-	routes := h.policy.GetAllRoutes(ctx)
+func (h handler) DeletePolicy(ctx iris.Context) {
+	policies, err := h.policy.GetAllPolicies()
+	if err != nil {
+		helper.CreateErrorResponse(ctx, err).InternalServer().JSON()
+		return
+	}
 
-	helper.CreateResponse(ctx).Ok().WithData(routes).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(policies).JSON()
+	ctx.Next()
+}
+
+func (h handler) GetAllRoutes(ctx iris.Context) {
+	request := ctx.Values().Get("body").(*DeletePolicyRequest)
+
+	err := h.policy.DeletePolicy(request.RoleID, request.Path, request.Method)
+	if err != nil {
+		helper.CreateErrorResponse(ctx, err).InternalServer().JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithMessage("policy deleted").JSON()
 	ctx.Next()
 }
