@@ -24,4 +24,10 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 
 	policy.Post("/", middlewares.ValidateBody(&AddPolicyRequest{}),
 		handler.AddPolicy)
+
+	policy.Get("/", handler.GetAllPolicies)
+
+	policy.Get(":routes", middlewares.ValidateBody(&AddPolicyRequest{}),
+		handler.GetAllRoutes)
+
 }

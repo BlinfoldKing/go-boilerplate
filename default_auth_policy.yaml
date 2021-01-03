@@ -29,5 +29,5 @@ policy:
           route: /notifications*
         - method: POST
           route: /user_roles*
-        - method: POST
+        - method: (POST) || (PUT) || (GET) || (DELETE)
           route: /policy*
