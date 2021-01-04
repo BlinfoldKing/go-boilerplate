@@ -11,7 +11,13 @@ func CreateService(repo Repository) Service {
 }
 
 // CreateNode create new node
-func (service Service) CreateNode(name string) (err error)  {
-	err = service.repository.CreateNode(name)
+func (service Service) CreateNode(label string, data map[string]interface{}) (err error)  {
+	err = service.repository.CreateNode(label, data)
+	return
+}
+
+// CreateRelation create new relation
+func (service Service) CreateRelation(sourceProps PropertiesVal, destProp PropertiesVal) (err error)  {
+	err = service.repository.CreateRelation(sourceProps, destProp)
 	return
 }

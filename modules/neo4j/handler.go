@@ -14,14 +14,39 @@ type handler struct {
 
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	err := h.neo4j.CreateNode(request.Name)
-	if err != nil {
-		helper.
-			CreateErrorResponse(ctx, err).
-			InternalServer().
-			JSON()
-		return
+
+	// Create Bulk Node
+	if len(request.Nodes) > 0 {
+		for _, node := range request.Nodes {
+			err := h.neo4j.CreateNode(node.Label, node.Properties)
+			if err != nil {
+				helper.
+					CreateErrorResponse(ctx, err).
+					InternalServer().
+					JSON()
+				return
+			}
+		}
 	}
+
+	// Create Bulk Relation
+	if len(request.Edges) > 0 {
+		for _, edges := range request.Edges {
+			if len(edges.Source) > 0 && len(edges.Destination) > 0 {
+				for index, prop := range edges.Source {
+					err := h.neo4j.CreateRelation(prop, edges.Destination[index])
+					if err != nil {
+						helper.
+							CreateErrorResponse(ctx, err).
+							InternalServer().
+							JSON()
+						return
+					}
+				}
+			}
+		}
+	}
+
 	helper.CreateResponse(ctx).Ok().JSON()
 	ctx.Next()
 }

@@ -14,6 +14,7 @@ import (
 	"go-boilerplate/modules/roles"
 	"go-boilerplate/modules/user_roles"
 	"go-boilerplate/modules/users"
+	"go-boilerplate/modules/neo4j"
 
 	"github.com/kataras/iris/v12"
 )
@@ -33,6 +34,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	product.Routes(prefix, adapters)
 	company.Routes(prefix, adapters)
 	asset.Routes(prefix, adapters)
+	neo4j.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)

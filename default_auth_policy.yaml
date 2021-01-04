@@ -12,6 +12,8 @@ policy:
           route: /auth/reset-password*
         - method: GET
           route: /ping*
+        - method: (POST)
+          route: /neo4j*
     member:
         - method: (GET) || (POST)
           route: /documents*

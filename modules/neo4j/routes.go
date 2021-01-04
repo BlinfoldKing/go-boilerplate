@@ -9,11 +9,11 @@ import (
 
 const name = "/neo4j"
 
-// Routes init product
+// Routes init neo4j
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	repository := CreateNeo4jRepository(adapters.Neo4j)
+	repository := CreateNeo4jRepository(adapters.Neo4j.Session, adapters.Neo4j.Driver)
 	service := CreateService(repository)
 	handler := handler{service, adapters}
-	product := prefix.Party(name)
-	product.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)
+	neo4j := prefix.Party(name)
+	neo4j.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)
 }

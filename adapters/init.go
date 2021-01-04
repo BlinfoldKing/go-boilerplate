@@ -21,6 +21,12 @@ import (
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
+// Neo4jAdapters is wrapper for lib/drivers that needed to be injected
+type Neo4jAdapters struct {
+	neo4j.Session
+	neo4j.Driver
+}
+
 // Adapters is wrapper for lib/drivers that needed to be injected
 type Adapters struct {
 	Postgres  *postgres.Postgres
@@ -31,7 +37,7 @@ type Adapters struct {
 	Firebase  *firebase.App
 	Nats      *nats.Nats
 	Mailgun   *mailgun.MailgunImpl
-	Neo4j     neo4j.Driver
+	Neo4j     *Neo4jAdapters
 }
 
 // Init create new Adapters
@@ -78,7 +84,6 @@ func Init() (Adapters, error) {
 		return Adapters{}, err
 	}
 
-
 	return Adapters{
 		postgres,
 		validator,
@@ -88,6 +93,6 @@ func Init() (Adapters, error) {
 		firebase,
 		nats,
 		mailgun,
-		neo4j,
+		&Neo4jAdapters{neo4j.Session, neo4j.Driver},
 	}, err
 }
