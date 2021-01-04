@@ -31,5 +31,5 @@ policy:
           route: /brand*
         - method: POST
           route: /user_roles*
-        - method: POST
+        - method: (POST) || (PUT) || (GET) || (DELETE)
           route: /policy*

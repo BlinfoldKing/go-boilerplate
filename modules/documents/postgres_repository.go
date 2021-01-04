@@ -27,6 +27,20 @@ func (repo PostgresRepository) FindByID(id string) (document entity.Document, er
 	return
 }
 
+// FindByProdcutID find documents by product id
+func (repo PostgresRepository) FindByProductID(productID string) (documents []entity.Document, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				d.*
+			FROM 
+				product_documents pd
+			INNER JOIN documents d
+				ON pd.product_id = ?
+				AND pd.document_id = d.id`,
+			productID).Find(&documents)
+	return
+}
+
 // FindByObjectBucketName finds document by objectName and bucketName
 func (repo PostgresRepository) FindByObjectBucketName(objectName, bucketName string) (document entity.Document, err error) {
 	_, err = repo.db.SQL("SELECT * FROM documents WHERE object_name = ? AND bucket_name = ?", objectName, bucketName).Get(&document)
