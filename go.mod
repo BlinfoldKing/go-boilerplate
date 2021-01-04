@@ -17,7 +17,7 @@ require (
 	github.com/golang/mock v1.4.4
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/golangci/golangci-lint v1.33.0
-	github.com/google/go-cmp v0.5.3 // indirect
+	github.com/google/go-cmp v0.5.3
 	github.com/gosimple/slug v1.9.0
 	github.com/iris-contrib/middleware/cors v0.0.0-20201115103636-07e8bced147f
 	github.com/iris-contrib/middleware/jwt v0.0.0-20201115103636-07e8bced147f

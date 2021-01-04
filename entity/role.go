@@ -3,6 +3,7 @@ package entity
 import (
 	s "github.com/gosimple/slug"
 	"github.com/satori/uuid"
+	"time"
 )
 
 const (
@@ -14,9 +15,12 @@ const (
 
 // Role user entity
 type Role struct {
-	ID          string  `xorm:"id" json:"id"`
-	Slug        string  `xorm:"slug" json:"slug"`
-	Description *string `xorm:"description" json:"description"`
+	ID          string     `xorm:"id" json:"id"`
+	Slug        string     `xorm:"slug" json:"slug"`
+	Description *string    `xorm:"description" json:"description"`
+	CreatedAt   time.Time  `json:"created_at" xorm:"created"`
+	UpdatedAt   time.Time  `json:"updated_at" xorm:"updated"`
+	DeletedAt   *time.Time `json:"deleted_at" xorm:"deleted"`
 }
 
 // RoleChangeSet changeset for role
@@ -28,8 +32,8 @@ type RoleChangeSet struct {
 // NewRole create new role
 func NewRole(slug string, description *string) (Role, error) {
 	return Role{
-		uuid.NewV4().String(),
-		s.Make(slug),
-		description,
+		ID:          uuid.NewV4().String(),
+		Slug:        s.Make(slug),
+		Description: description,
 	}, nil
 }

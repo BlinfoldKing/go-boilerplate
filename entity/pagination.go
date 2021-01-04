@@ -1,18 +1,27 @@
 package entity
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/google/go-cmp/cmp/internal/value"
+)
 
 // Pagination pagination interace
 type Pagination interface {
 	GetSQL(tableName string) (sql string, args []interface{}, err error)
 }
 
+// Query shared pagination fields
+type Query struct {
+	Limit *int                    `json:"limit"`
+	Sort  *map[string]string      `json:"sort"`
+	Where *map[string]interface{} `json:"where"`
+}
+
 // OffsetPagination pagination parameters
 type OffsetPagination struct {
-	Offset *int                    `json:"offset"`
-	Limit  *int                    `json:"limit"`
-	Sort   *map[string]string      `json:"sort"`
-	Where  *map[string]interface{} `json:"where"`
+	Query
+	Offset *int `json:"offset"`
 }
 
 // GetSQL generate sql
@@ -131,7 +140,7 @@ func parseLimit(limit *int, offset *int) (query string, val []interface{}) {
 	return "LIMIT ? OFFSET ?", []interface{}{l, o}
 }
 
-func getOperation(key string, op string) (res string, err error) {
+func getOperation(key string, op string, value interface{}) (res string, err error) {
 	switch op {
 	case "lte":
 		res = fmt.Sprintf("%s <= ?", key)
@@ -142,13 +151,27 @@ func getOperation(key string, op string) (res string, err error) {
 	case "gt":
 		res = fmt.Sprintf("%s > ?", key)
 	case "eq":
-		res = fmt.Sprintf("%s = ?", key)
+		if value == nil {
+			res = fmt.Sprintf("%s IS NULL", key)
+		} else {
+			res = fmt.Sprintf("%s = ?", key)
+		}
 	case "neq":
-		res = fmt.Sprintf("%s != ?", key)
+		if value == nil {
+			res = fmt.Sprintf("%s IS NOT NULL", key)
+		} else {
+			res = fmt.Sprintf("%s != ?", key)
+		}
 	case "in":
 		res = fmt.Sprintf("%s IN ?", key)
 	case "nin":
 		res = fmt.Sprintf("%s NOT IN ?", key)
+	case "startWith":
+		res = key + " LIKE ?%"
+	case "endWith":
+		res = key + " LIKE %?"
+	case "contains":
+		res = key + " LIKE %?%"
 	default:
 		err = fmt.Errorf("%s = ?", key)
 	}
@@ -169,7 +192,7 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 					case map[string]interface{}:
 						for field, v1 := range v.(map[string]interface{}) {
 							var where string
-							where, err = getOperation(field, k)
+							where, err = getOperation(field, k, v1)
 							if err != nil {
 								return
 							}
@@ -207,7 +230,7 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 			default:
 				for field, v := range val.(map[string]interface{}) {
 					var where string
-					where, err = getOperation(field, key)
+					where, err = getOperation(field, key, v)
 
 					fmt.Println("error here", key, field)
 					if err != nil {
