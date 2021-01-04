@@ -7,7 +7,7 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-const name = "/product_category"
+const name = "/product:category"
 
 // Routes init productCategory
 func Routes(prefix iris.Party, adapters adapters.Adapters) {

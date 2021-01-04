@@ -10,7 +10,7 @@ type PostgresRepository struct {
 	db *postgres.Postgres
 }
 
-// CreatePosgresRepository init PostgresRepository
+// CreatePostgresRepository init PostgresRepository
 func CreatePostgresRepository(db *postgres.Postgres) Repository {
 	return PostgresRepository{db}
 }
@@ -36,13 +36,13 @@ func (repo PostgresRepository) Update(id string, changeset entity.ProductSpecifi
 
 // FindByID find productSpecification by id
 func (repo PostgresRepository) FindByID(id string) (productSpecification entity.ProductSpecification, err error) {
-	_, err = repo.db.SQL("SELECT * FROM product_specifications WHERE id = ? AND deleted_at = null", id).Get(&productSpecification)
+	_, err = repo.db.SQL("SELECT * FROM product_specifications WHERE id = ? AND deleted_at IS null", id).Get(&productSpecification)
 	return
 }
 
 // FindByProductID find productSpecification by product_id
 func (repo PostgresRepository) FindByProductID(productID string) (productSpecifications []entity.ProductSpecification, err error) {
-	err = repo.db.SQL("SELECT * FROM product_specifications WHERE product_id = ? AND deleted_at = null", productID).Find(&productSpecifications)
+	err = repo.db.SQL("SELECT * FROM product_specifications WHERE product_id = ? AND deleted_at IS null", productID).Find(&productSpecifications)
 	return
 }
 

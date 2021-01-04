@@ -25,8 +25,12 @@ type ProductCategoryChangeSet struct {
 
 // NewProductCategory create newproduct_category
 func NewProductCategory(parentID, code, name string) (productCategory ProductCategory, err error) {
+	id := uuid.NewV4().String()
+	if parentID == " " {
+		parentID = id
+	}
 	productCategory = ProductCategory{
-		ID:       uuid.NewV4().String(),
+		ID:       id,
 		ParentID: parentID,
 		Code:     code,
 		Name:     name,
