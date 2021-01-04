@@ -1,6 +1,7 @@
 package documents
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 	"time"
 
@@ -11,6 +12,12 @@ import (
 type Service struct {
 	storageRepository StorageRepository
 	fileRepository    FileRepository
+}
+
+func InitDocumentsService(adapters adapters.Adapters) Service {
+	storageRepository := CreatePostgresRepository(adapters.Postgres)
+	fileRepository := CreateMinioRepository(adapters.Minio)
+	return CreateService(storageRepository, fileRepository)
 }
 
 // CreateService init service
@@ -29,6 +36,11 @@ func (service Service) CreateDocument(document entity.Document) (entity.Document
 // GetByID find document by id
 func (service Service) GetByID(id string) (document entity.Document, err error) {
 	return service.storageRepository.FindByID(id)
+}
+
+// GetByProductID finds
+func (service Service) GetByProductID(productID string) (documents []entity.Document, err error) {
+	return service.storageRepository.FindByProductID(productID)
 }
 
 // GetByObjectBucketName find document by objectName and bucketName

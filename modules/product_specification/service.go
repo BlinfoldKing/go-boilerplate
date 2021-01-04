@@ -1,12 +1,18 @@
 package productspecification
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 )
 
 // Service contains business logic
 type Service struct {
 	repository Repository
+}
+
+func InitProductSpecificationService(adapters adapters.Adapters) Service {
+	repository := CreatePostgresRepository(adapters.Postgres)
+	return CreateService(repository)
 }
 
 // CreateService init service
@@ -44,7 +50,16 @@ func (service Service) GetByID(id string) (productSpecification entity.ProductSp
 	return service.repository.FindByID(id)
 }
 
+func (service Service) GetByProductID(productID string) (productSpecifications []entity.ProductSpecification, err error) {
+	return service.repository.FindByProductID(productID)
+}
+
 // DeleteByID delete productSpecificationby id
 func (service Service) DeleteByID(id string) (err error) {
 	return service.repository.DeleteByID(id)
+}
+
+// DeleteByProductID delete product_specification by product id
+func (service Service) DeleteByProductID(productID string) (err error) {
+	return service.repository.DeleteByProductID(productID)
 }
