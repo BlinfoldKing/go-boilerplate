@@ -3,14 +3,17 @@ package adapters
 import (
 	"go-boilerplate/adapters/enforcer"
 	fb "go-boilerplate/adapters/firebase"
+	mailer "go-boilerplate/adapters/gomail"
 	mg "go-boilerplate/adapters/mailgun"
 	"go-boilerplate/adapters/minio"
 	"go-boilerplate/adapters/nats"
 	"go-boilerplate/adapters/postgres"
 	rd "go-boilerplate/adapters/redis"
 	validation "go-boilerplate/adapters/validator"
+	"go-boilerplate/helper"
 
 	firebase "firebase.google.com/go"
+	"gopkg.in/gomail.v2"
 
 	neo "go-boilerplate/adapters/neo4j"
 
@@ -38,43 +41,65 @@ type Adapters struct {
 	Nats      *nats.Nats
 	Mailgun   *mailgun.MailgunImpl
 	Neo4j     *Neo4jAdapters
+	Gomail    *gomail.Dialer
 }
 
 // Init create new Adapters
 func Init() (Adapters, error) {
 	postgres, err := postgres.Init()
 	if err != nil {
-		return Adapters{}, err
+		helper.
+			Logger.
+			WithField("error", err).
+			Warn("failed to connect to postgres")
 	}
 
 	validator, err := validation.Init()
 	if err != nil {
-		return Adapters{}, err
+		helper.
+			Logger.
+			WithField("error", err).
+			Warn("failed to connect to postgres")
 	}
 
 	redis, err := rd.Init()
 	if err != nil {
-		return Adapters{}, err
+		helper.
+			Logger.
+			WithField("error", err).
+			Warn("failed to connect to redis")
 	}
 
 	enforcer, err := enforcer.Init()
 	if err != nil {
-		return Adapters{}, err
+		helper.
+			Logger.
+			WithField("error", err).
+			Warn("failed to connect to enforcer")
 	}
 
 	minio, err := minio.Init()
 	if err != nil {
-		return Adapters{}, err
+		helper.
+			Logger.
+			WithField("error", err).
+			Warn("failed to connect to minio")
 	}
 
 	firebase, err := fb.Init()
 	if err != nil {
-		return Adapters{}, err
+		helper.
+			Logger.
+			WithField("error", err).
+			Warn("failed to connect to firebase")
 	}
 
 	nats, err := nats.Init()
 	if err != nil {
-		return Adapters{}, err
+		helper.
+			Logger.
+			WithField("error", err).
+			Warn("failed to connect to nats")
 	}
 
 	mailgun := mg.Init()
@@ -83,6 +108,8 @@ func Init() (Adapters, error) {
 	if err != nil {
 		return Adapters{}, err
 	}
+
+	gomail := mailer.Init()
 
 	return Adapters{
 		postgres,
@@ -94,5 +121,6 @@ func Init() (Adapters, error) {
 		nats,
 		mailgun,
 		&Neo4jAdapters{neo4j.Session, neo4j.Driver},
+		gomail,
 	}, err
 }

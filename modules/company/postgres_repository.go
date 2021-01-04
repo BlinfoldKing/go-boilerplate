@@ -10,8 +10,8 @@ type PostgresRepository struct {
 	db *postgres.Postgres
 }
 
-// CreatePosgresRepository init PostgresRepository
-func CreatePosgresRepository(db *postgres.Postgres) Repository {
+// CreatePostgresRepository init PostgresRepository
+func CreatePostgresRepository(db *postgres.Postgres) Repository {
 	return PostgresRepository{db}
 }
 
@@ -22,9 +22,23 @@ func (repo PostgresRepository) Save(company entity.Company) error {
 }
 
 // GetList get list of company
-func (repo PostgresRepository) GetList(pagination entity.Pagination) (companys []entity.Company, count int, err error) {
+func (repo PostgresRepository) GetList(pagination entity.Pagination) (companies []entity.Company, count int, err error) {
 	count, err = repo.db.
-		Paginate("companies", &companys, pagination)
+		Paginate("companies", &companies, pagination)
+	return
+}
+
+// FindByBrandID gets list of company that associated with specified brand
+func (repo PostgresRepository) FindByBrandID(brandID string) (companies []entity.Company, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				c.*
+			FROM 
+				brand_companies bc
+			INNER JOIN companies c
+				ON bc.brand_id = ?
+				AND bc.company_id = c.id`,
+			brandID).Find(&companies)
 	return
 }
 

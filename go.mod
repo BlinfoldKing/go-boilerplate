@@ -16,6 +16,7 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/mock v1.4.4
 	github.com/golang/snappy v0.0.2 // indirect
+	github.com/golangci/golangci-lint v1.33.0
 	github.com/google/go-cmp v0.5.3 // indirect
 	github.com/gosimple/slug v1.9.0
 	github.com/iris-contrib/middleware/cors v0.0.0-20201115103636-07e8bced147f
@@ -27,7 +28,6 @@ require (
 	github.com/klauspost/compress v1.11.3 // indirect
 	github.com/lib/pq v1.9.0
 	github.com/mailgun/mailgun-go v2.0.0+incompatible
-	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/minio/minio-go/v7 v7.0.6
 	github.com/nats-io/nats.go v1.9.2
 	github.com/neo4j/neo4j-go-driver v1.8.3
@@ -43,6 +43,8 @@ require (
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
 	golang.org/x/net v0.0.0-20201209123823-ac852fbbde11 // indirect
 	golang.org/x/sys v0.0.0-20201207223542-d4d67f95c62d // indirect
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 	xorm.io/xorm v1.0.5

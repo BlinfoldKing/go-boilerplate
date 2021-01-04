@@ -207,3 +207,36 @@ func NEO4JENDPOINT() string {
 	return helper.
 		GetEnv("NEO4J_ENDPOINT", "neo4j://localhost:7687")
 }
+
+// MAILER get mailer
+func MAILER() string {
+	return helper.GetEnv("MAILER", "gomail")
+}
+
+// GOMAILSMTPHOST get gomail host
+func GOMAILSMTPHOST() string {
+	return helper.GetEnv("GOMAIL_SMTP_HOST", "smtp.gmail.com")
+}
+
+// GOMAILSMTPPORT get gomail port
+func GOMAILSMTPPORT() int {
+	res := helper.
+		GetEnv("GOMAIL_SMTP_PORT", "587")
+
+	dur, err := strconv.Atoi(res)
+	if err != nil {
+		return 587
+	}
+
+	return dur
+}
+
+// GOMAILAUTHEMAIL get gomail email
+func GOMAILAUTHEMAIL() string {
+	return helper.GetEnv("GOMAIL_AUTH_EMAIL", "admin@admin.com")
+}
+
+// GOMAILAUTHPASSWORD get gomail host
+func GOMAILAUTHPASSWORD() string {
+	return helper.GetEnv("GOMAIL_AUTH_PASSWORD", "secret123")
+}
