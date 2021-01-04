@@ -2,7 +2,6 @@ package users
 
 import (
 	"go-boilerplate/adapters/postgres"
-	"go-boilerplate/config"
 	"go-boilerplate/entity"
 )
 
@@ -18,9 +17,6 @@ func CreatePosgresRepository(db *postgres.Postgres) Repository {
 
 // Save save user to db
 func (repo PostgresRepository) Save(user entity.User) error {
-	if !config.EMAILACTIVATION() {
-		user.ActiveStatus = entity.Active
-	}
 	_, err := repo.db.Table("users").Insert(&user)
 	return err
 }

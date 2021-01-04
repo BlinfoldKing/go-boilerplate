@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	companys Service
-	adapters adapters.Adapters
+	companies Service
+	adapters  adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	companys, count, err := h.companys.GetList(request)
+	companies, count, err := h.companies.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,12 +24,12 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, companys, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, companies, count).JSON()
 	ctx.Next()
 }
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	company, err := h.companys.GetByID(id)
+	company, err := h.companies.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -42,7 +42,7 @@ func (h handler) GetByID(ctx iris.Context) {
 }
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.companys.DeleteByID(id)
+	err := h.companies.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -56,7 +56,7 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	company, err := h.companys.Update(id, entity.CompanyChangeSet{
+	company, err := h.companies.Update(id, entity.CompanyChangeSet{
 		Name:        request.Name,
 		Type:        request.Type,
 		Address:     request.Address,
@@ -74,7 +74,7 @@ func (h handler) Update(ctx iris.Context) {
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	company, err := h.companys.CreateCompany(
+	company, err := h.companies.CreateCompany(
 		request.Name,
 		request.Type,
 		request.Address,
