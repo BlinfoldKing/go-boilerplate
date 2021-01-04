@@ -11,7 +11,7 @@ type PostgresRepository struct {
 }
 
 // CreatePosgresRepository init PostgresRepository
-func CreatePosgresRepository(db *postgres.Postgres) Repository {
+func CreatePostgresRepository(db *postgres.Postgres) Repository {
 	return PostgresRepository{db}
 }
 

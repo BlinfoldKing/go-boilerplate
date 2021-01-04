@@ -11,7 +11,7 @@ type PostgresRepository struct {
 }
 
 // CreatePosgresRepository init PostgresRepository
-func CreatePosgresRepository(db *postgres.Postgres) Repository {
+func CreatePostgresRepository(db *postgres.Postgres) Repository {
 	return PostgresRepository{db}
 }
 
@@ -40,8 +40,20 @@ func (repo PostgresRepository) FindByID(id string) (productSpecification entity.
 	return
 }
 
+// FindByProductID find productSpecification by product_id
+func (repo PostgresRepository) FindByProductID(productID string) (productSpecifications []entity.ProductSpecification, err error) {
+	err = repo.db.SQL("SELECT * FROM product_specifications WHERE product_id = ? AND deleted_at = null", productID).Find(&productSpecifications)
+	return
+}
+
 // DeleteByID delete productSpecification by id
 func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Table("product_specifications").Where("id = ?", id).Delete(&entity.ProductSpecification{})
+	return err
+}
+
+// DeleteByProductID delete product_specification by product_id
+func (repo PostgresRepository) DeleteByProductID(productID string) error {
+	_, err := repo.db.Table("product_specifications").Where("product_id = ?", productID).Delete(&entity.Product{})
 	return err
 }

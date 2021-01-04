@@ -11,8 +11,7 @@ const name = "/product_category"
 
 // Routes init productCategory
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	repository := CreatePosgresRepository(adapters.Postgres)
-	service := CreateService(repository)
+	service := InitProductCategoryService(adapters)
 	handler := handler{service, adapters}
 	productCategory := prefix.Party(name)
 	productCategory.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)

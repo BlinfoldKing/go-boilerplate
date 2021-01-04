@@ -81,8 +81,10 @@ func (h handler) Create(ctx iris.Context) {
 		request.BrandID,
 		request.ProductCategoryID,
 		request.Type,
+		request.Tags,
 		request.Lifetime,
 		request.MaintenanceInterval,
+		request.DocumentIDs,
 	)
 	if err != nil {
 		helper.
