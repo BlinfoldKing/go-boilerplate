@@ -12,8 +12,8 @@ type handler struct {
 	adapters adapters.Adapters
 }
 
-func (h handler) Create(ctx iris.Context) {
-	request := ctx.Values().Get("body").(*CreateRequest)
+func (h handler) CreateNodes(ctx iris.Context) {
+	request := ctx.Values().Get("body").(*CreateRequestNodes)
 
 	// Create Bulk Node
 	if len(request.Nodes) > 0 {
@@ -28,6 +28,13 @@ func (h handler) Create(ctx iris.Context) {
 			}
 		}
 	}
+
+	helper.CreateResponse(ctx).Ok().JSON()
+	ctx.Next()
+}
+
+func (h handler) CreateEdges(ctx iris.Context) {
+	request := ctx.Values().Get("body").(*CreateRequestEdges)
 
 	// Create Bulk Relation
 	if len(request.Edges) > 0 {
