@@ -15,11 +15,20 @@ import (
 	firebase "firebase.google.com/go"
 	"gopkg.in/gomail.v2"
 
+	neo "go-boilerplate/adapters/neo4j"
+
 	"github.com/casbin/casbin/v2"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-redis/redis"
 	"github.com/mailgun/mailgun-go"
+	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
+
+// Neo4jAdapters is wrapper for lib/drivers that needed to be injected
+type Neo4jAdapters struct {
+	neo4j.Session
+	neo4j.Driver
+}
 
 // Adapters is wrapper for lib/drivers that needed to be injected
 type Adapters struct {
@@ -31,6 +40,7 @@ type Adapters struct {
 	Firebase  *firebase.App
 	Nats      *nats.Nats
 	Mailgun   *mailgun.MailgunImpl
+	Neo4j     *Neo4jAdapters
 	Gomail    *gomail.Dialer
 }
 
@@ -94,6 +104,11 @@ func Init() (Adapters, error) {
 
 	mailgun := mg.Init()
 
+	neo4j, err := neo.Init()
+	if err != nil {
+		return Adapters{}, err
+	}
+
 	gomail := mailer.Init()
 
 	return Adapters{
@@ -105,6 +120,7 @@ func Init() (Adapters, error) {
 		firebase,
 		nats,
 		mailgun,
+		&Neo4jAdapters{neo4j.Session, neo4j.Driver},
 		gomail,
 	}, err
 }

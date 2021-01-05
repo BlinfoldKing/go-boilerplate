@@ -190,6 +190,24 @@ func OTPDURATION() time.Duration {
 	return dur
 }
 
+// NEO4JUSER gets neo4j user
+func NEO4JUSER() string {
+	return helper.
+		GetEnv("NEO4J_USER", "neo4j")
+}
+
+// NEO4JPASSWORD gets neo4j password
+func NEO4JPASSWORD() string {
+	return helper.
+		GetEnv("NEO4J_PASSWORD", " ")
+}
+
+// NEO4JENDPOINT gets neo4j endpoint
+func NEO4JENDPOINT() string {
+	return helper.
+		GetEnv("NEO4J_ENDPOINT", "neo4j://localhost:7687")
+}
+
 // MAILER get mailer
 func MAILER() string {
 	return helper.GetEnv("MAILER", "gomail")
