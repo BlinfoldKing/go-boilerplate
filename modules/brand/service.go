@@ -1,6 +1,7 @@
 package brand
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 	brandcompany "go-boilerplate/modules/brand_company"
 	"go-boilerplate/modules/company"
@@ -11,6 +12,18 @@ type Service struct {
 	repository     Repository
 	brandCompanies brandcompany.Service
 	companies      company.Service
+}
+
+func InitBrandService(adapters adapters.Adapters) Service {
+	repository := CreatePostgresRepository(adapters.Postgres)
+
+	brandCompanyRepository := brandcompany.CreatePostgresRepository(adapters.Postgres)
+	brandCompanyService := brandcompany.CreateService(brandCompanyRepository)
+
+	companyRepository := company.CreatePostgresRepository(adapters.Postgres)
+	companyService := company.CreateService(companyRepository)
+
+	return CreateService(repository, brandCompanyService, companyService)
 }
 
 // CreateService init service
