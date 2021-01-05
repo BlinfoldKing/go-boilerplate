@@ -7,7 +7,7 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-const name = "/neo4j"
+const name = "/topology"
 
 // Routes init neo4j
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
@@ -15,5 +15,6 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	service := CreateService(repository)
 	handler := handler{service, adapters}
 	neo4j := prefix.Party(name)
-	neo4j.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)
+	neo4j.Post("/nodes", middlewares.ValidateBody(&CreateRequestNodes{}), handler.CreateNodes)
+	neo4j.Post("/edges", middlewares.ValidateBody(&CreateRequestEdges{}), handler.CreateEdges)
 }
