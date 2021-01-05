@@ -10,9 +10,7 @@ const name = "/documents"
 
 // Routes init documents
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	storageRepository := CreatePostgresRepository(adapters.Postgres)
-	fileRepository := CreateMinioRepository(adapters.Minio)
-	service := CreateService(storageRepository, fileRepository)
+	service := InitDocumentsService(adapters)
 	handler := handler{service, adapters}
 
 	documents := prefix.Party(name)
