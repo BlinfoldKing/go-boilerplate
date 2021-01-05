@@ -2,8 +2,6 @@ package entity
 
 import (
 	"fmt"
-
-	"github.com/google/go-cmp/cmp/internal/value"
 )
 
 // Pagination pagination interace
@@ -63,11 +61,9 @@ func (opt OffsetPagination) GetSQL(tableName string) (sql string, args []interfa
 
 // CursorPagination pagination parameters
 type CursorPagination struct {
-	ID    string                  `json:"id"`
-	Limit *int                    `json:"limit"`
-	Seek  *string                 `json:"seek"`
-	Sort  *map[string]string      `json:"sort"`
-	Where *map[string]interface{} `json:"where"`
+	Query
+	ID   string  `json:"id"`
+	Seek *string `json:"seek"`
 }
 
 // GetSQL generate sql
