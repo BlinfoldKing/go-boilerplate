@@ -11,8 +11,7 @@ const name = "/asset"
 
 // Routes init asset
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	repository := CreatePosgresRepository(adapters.Postgres)
-	service := CreateService(repository)
+	service := InitAssetService(adapters)
 	handler := handler{service, adapters}
 	asset := prefix.Party(name)
 	asset.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)

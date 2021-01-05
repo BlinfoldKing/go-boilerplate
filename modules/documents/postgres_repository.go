@@ -27,7 +27,7 @@ func (repo PostgresRepository) FindByID(id string) (document entity.Document, er
 	return
 }
 
-// FindByProdcutID find documents by product id
+// FindByProductID find documents by product id
 func (repo PostgresRepository) FindByProductID(productID string) (documents []entity.Document, err error) {
 	err = repo.db.
 		SQL(`SELECT 
@@ -38,6 +38,20 @@ func (repo PostgresRepository) FindByProductID(productID string) (documents []en
 				ON pd.product_id = ?
 				AND pd.document_id = d.id`,
 			productID).Find(&documents)
+	return
+}
+
+// FindByHistoryID find documents by product id
+func (repo PostgresRepository) FindByHistoryID(historyID string) (documents []entity.Document, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				d.*
+			FROM 
+				history_documents hd
+			INNER JOIN documents d
+				ON hd.history_id = ?
+				AND hd.document_id = d.id`,
+			historyID).Find(&documents)
 	return
 }
 

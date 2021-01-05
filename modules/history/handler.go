@@ -27,6 +27,7 @@ func (h handler) GetList(ctx iris.Context) {
 	helper.CreatePaginationResponse(ctx, request, histories, count).JSON()
 	ctx.Next()
 }
+
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 	history, err := h.histories.GetByID(id)
@@ -40,6 +41,7 @@ func (h handler) GetByID(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithData(history).JSON()
 	ctx.Next()
 }
+
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 	err := h.histories.DeleteByID(id)
@@ -53,6 +55,7 @@ func (h handler) DeleteByID(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithMessage(fmt.Sprintf("%s deleted", id)).JSON()
 	ctx.Next()
 }
+
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
@@ -73,6 +76,7 @@ func (h handler) Update(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithData(history).JSON()
 	ctx.Next()
 }
+
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
 	history, err := h.histories.CreateHistory(
@@ -81,6 +85,7 @@ func (h handler) Create(ctx iris.Context) {
 		request.Action,
 		request.Description,
 		request.Cost,
+		request.DocumentIDs,
 	)
 	if err != nil {
 		helper.

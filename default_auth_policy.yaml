@@ -33,3 +33,5 @@ policy:
           route: /user_roles*
         - method: (POST) || (PUT) || (GET) || (DELETE)
           route: /policy*
+        - method: (POST) || (PUT) || (GET) || (DELETE)
+          route: /history*

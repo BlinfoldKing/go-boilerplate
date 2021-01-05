@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"go-boilerplate/adapters"
 	"go-boilerplate/config"
 	"go-boilerplate/entity"
 	"go-boilerplate/modules/roles"
@@ -13,6 +14,17 @@ type Service struct {
 	repository Repository
 	roles      roles.Service
 	userRoles  userroles.Service
+}
+
+func InitUserService(adapters adapters.Adapters) Service {
+	roleRepository := roles.CreatePosgresRepository(adapters.Postgres)
+	roleService := roles.CreateService(roleRepository)
+
+	userRoleRepository := userroles.CreatePosgresRepository(adapters.Postgres)
+	userRoleService := userroles.CreateService(userRoleRepository)
+	repository := CreatePosgresRepository(adapters.Postgres)
+
+	return CreateService(repository, roleService, userRoleService)
 }
 
 // CreateService init service

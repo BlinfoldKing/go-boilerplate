@@ -1,6 +1,7 @@
 package asset
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 	"time"
 )
@@ -8,6 +9,11 @@ import (
 // Service contains business logic
 type Service struct {
 	repository Repository
+}
+
+func InitAssetService(adapters adapters.Adapters) Service {
+	repository := CreatePosgresRepository(adapters.Postgres)
+	return CreateService(repository)
 }
 
 // CreateService init service

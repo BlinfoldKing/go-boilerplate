@@ -19,6 +19,14 @@ type History struct {
 	DeletedAt   *time.Time `json:"deleted_at" xorm:"deleted"`
 }
 
+// HistoryGroup history data with mapped tables
+type HistoryGroup struct {
+	History
+	User      User       `json:"user"`
+	Asset     Asset      `json:"asset"`
+	Documents []Document `json:"documents"`
+}
+
 // HistoryChangeSet change set forhistory
 type HistoryChangeSet struct {
 	UserID      string  `json:"user_id" xorm:"user_id"`

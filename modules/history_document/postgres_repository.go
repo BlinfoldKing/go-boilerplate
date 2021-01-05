@@ -21,6 +21,12 @@ func (repo PostgresRepository) Save(historyDocument entity.HistoryDocument) erro
 	return err
 }
 
+// SaveBatch inserts a batch of historyDocuments
+func (repo PostgresRepository) SaveBatch(historyDocuments []entity.HistoryDocument) error {
+	_, err := repo.db.Table("history_documents").Insert(&historyDocuments)
+	return err
+}
+
 // GetList get list of history_document
 func (repo PostgresRepository) GetList(pagination entity.Pagination) (historyDocuments []entity.HistoryDocument, count int, err error) {
 	count, err = repo.db.
@@ -43,5 +49,11 @@ func (repo PostgresRepository) FindByID(id string) (historyDocument entity.Histo
 // DeleteByID delete history_document by id
 func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Exec("DELETE FROM history_documents WHERE id = ?", id)
+	return err
+}
+
+// DeleteByHistoryID delete history_document by history_id
+func (repo PostgresRepository) DeleteByHistoryID(historyID string) error {
+	_, err := repo.db.Table("history_documents").Where("history_id = ?", historyID).Delete(&entity.History{})
 	return err
 }

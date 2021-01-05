@@ -30,6 +30,19 @@ func (service Service) CreateHistoryDocument(historyID, documentID string) (hist
 	return
 }
 
+// CreateBatchHistoryDocuments creates a batch of new historyDocuments
+func (service Service) CreateBatchHistoryDocuments(historyID string, documentIDs []string) (historyDocuments []entity.HistoryDocument, err error) {
+	for _, documentID := range documentIDs {
+		historyDocument, err := entity.NewHistoryDocument(historyID, documentID)
+		if err != nil {
+			return []entity.HistoryDocument{}, err
+		}
+		historyDocuments = append(historyDocuments, historyDocument)
+	}
+	err = service.repository.SaveBatch(historyDocuments)
+	return
+}
+
 // GetList get list of history_document
 func (service Service) GetList(pagination entity.Pagination) (historyDocument []entity.HistoryDocument, count int, err error) {
 	historyDocument, count, err = service.repository.GetList(pagination)
@@ -53,4 +66,9 @@ func (service Service) GetByID(id string) (historyDocument entity.HistoryDocumen
 // DeleteByID delete history_documentby id
 func (service Service) DeleteByID(id string) (err error) {
 	return service.repository.DeleteByID(id)
+}
+
+// DeleteByHistoryID delete history_document by history id
+func (service Service) DeleteByHistoryID(historyID string) (err error) {
+	return service.repository.DeleteByHistoryID(historyID)
 }
