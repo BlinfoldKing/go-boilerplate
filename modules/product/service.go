@@ -77,6 +77,9 @@ func (service Service) mapProductsToProductGroups(products []entity.Product) (pr
 		}
 
 		specifications, err := service.productSpecifications.GetByProductID(product.ID)
+		if err != nil {
+			return []entity.ProductGroup{}, err
+		}
 		productGroup := entity.ProductGroup{
 			Product:        product,
 			Brand:          brand.Brand,
@@ -167,7 +170,7 @@ func (service Service) GetByID(id string) (productGroup entity.ProductGroup, err
 		Category:       category,
 		Documents:      documents,
 		Specifications: specifications,
-	}, nil
+	}, err
 }
 
 // DeleteByID delete productby id
