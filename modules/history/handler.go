@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	historys Service
-	adapters adapters.Adapters
+	histories Service
+	adapters  adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	historys, count, err := h.historys.GetList(request)
+	histories, count, err := h.histories.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,12 +24,12 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, historys, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, histories, count).JSON()
 	ctx.Next()
 }
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	history, err := h.historys.GetByID(id)
+	history, err := h.histories.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -42,7 +42,7 @@ func (h handler) GetByID(ctx iris.Context) {
 }
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.historys.DeleteByID(id)
+	err := h.histories.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -56,7 +56,7 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	history, err := h.historys.Update(id, entity.HistoryChangeSet{
+	history, err := h.histories.Update(id, entity.HistoryChangeSet{
 		UserID:      request.UserID,
 		AssetID:     request.AssetID,
 		Action:      request.Action,
@@ -75,7 +75,7 @@ func (h handler) Update(ctx iris.Context) {
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	history, err := h.historys.CreateHistory(
+	history, err := h.histories.CreateHistory(
 		request.UserID,
 		request.AssetID,
 		request.Action,

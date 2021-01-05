@@ -10,5 +10,5 @@ type Repository interface {
 	DeleteByID(id string) error
 	FindByID(id string) (entity.History, error)
 	Update(id string, changeset entity.HistoryChangeSet) error
-	GetList(pagination entity.Pagination) (Historys []entity.History, count int, err error)
+	GetList(pagination entity.Pagination) (Histories []entity.History, count int, err error)
 }

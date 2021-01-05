@@ -11,8 +11,7 @@ const name = "/history"
 
 // Routes init history
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	repository := CreatePostgresRepository(adapters.Postgres)
-	service := CreateService(repository)
+	service := InitHistoryService(adapters)
 	handler := handler{service, adapters}
 	history := prefix.Party(name)
 	history.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)

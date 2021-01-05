@@ -1,17 +1,41 @@
 package history
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
+	"go-boilerplate/modules/documents"
+	historydocument "go-boilerplate/modules/history_document"
 )
 
 // Service contains business logic
 type Service struct {
-	repository Repository
+	repository       Repository
+	documents        documents.Service
+	historyDocuments historydocument.Service
+}
+
+func InitHistoryService(adapters adapters.Adapters) Service {
+	repository := CreatePostgresRepository(adapters.Postgres)
+
+	documentService := documents.InitDocumentsService(adapters)
+	historyDocumentService := historydocument.InitHistoryDocumentService(adapters)
+	return CreateService{
+		repository,
+		documentService,
+		historyDocumentService,
+	}
 }
 
 // CreateService init service
-func CreateService(repo Repository) Service {
-	return Service{repo}
+func CreateService(repo Repository,
+	documents documents.Service,
+	historyDocuments historydocument.service,
+) Service {
+	return Service{
+		repo,
+		documents,
+		historyDocuments,
+	}
 }
 
 // CreateHistory create new history
