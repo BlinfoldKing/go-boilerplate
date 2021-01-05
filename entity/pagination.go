@@ -169,7 +169,11 @@ func getOperation(key string, op string, value interface{}) (res string, err err
 	case "contains":
 		res = key + " LIKE %?%"
 	default:
-		err = fmt.Errorf("%s = ?", key)
+		if value == nil {
+			res = fmt.Sprintf("%s IS NULL", key)
+		} else {
+			res = fmt.Sprintf("%s = ?", key)
+		}
 	}
 
 	return
@@ -195,10 +199,14 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 
 							if q != "" {
 								q = fmt.Sprintf("%s OR %s", q, where)
-								vs = append(vs, v1)
+								if v1 != nil {
+									values = append(values, v1)
+								}
 							} else {
 								q = fmt.Sprintf("%s", where)
-								vs = append(vs, v1)
+								if v1 != nil {
+									values = append(values, v1)
+								}
 							}
 
 						}
@@ -206,10 +214,14 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 					default:
 						if q != "" {
 							q = fmt.Sprintf("%s OR %s = ?", q, k)
-							vs = append(vs, v)
+							if v != nil {
+								values = append(values, v)
+							}
 						} else {
 							q = fmt.Sprintf("%s = ?", q)
-							vs = append(vs, v)
+							if v != nil {
+								values = append(values, v)
+							}
 						}
 					}
 
@@ -218,38 +230,56 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 
 				if query != "" {
 					query = fmt.Sprintf("%s AND %s", query, q)
-					values = append(values, vs...)
+					if vs != nil {
+						values = append(values, vs)
+					}
 				} else {
 					query = fmt.Sprintf("%s", q)
-					values = append(values, vs...)
+					if vs != nil {
+						values = append(values, vs)
+					}
 				}
 			default:
 				for field, v := range val.(map[string]interface{}) {
 					var where string
 					where, err = getOperation(field, key, v)
 
-					fmt.Println("error here", key, field)
 					if err != nil {
 						return
 					}
 
 					if query != "" {
 						query = fmt.Sprintf("%s AND %s", query, where)
-						values = append(values, v)
+						if v != nil {
+							values = append(values, v)
+						}
+
 					} else {
 						query = fmt.Sprintf("%s", where)
-						values = append(values, v)
+						if v != nil {
+							values = append(values, v)
+						}
 					}
 
 				}
 			}
 		default:
+			var where string
+			where, err = getOperation(key, "eq", val)
+
+			if err != nil {
+				return
+			}
 			if query != "" {
-				query = fmt.Sprintf("%s AND %s = ?", query, key)
-				values = append(values, val)
+				query = fmt.Sprintf("%s AND %s", query, where)
+				if val != nil {
+					values = append(values, val)
+				}
 			} else {
-				query = fmt.Sprintf("%s = ?", key)
-				values = append(values, val)
+				query = fmt.Sprintf("%s", where)
+				if val != nil {
+					values = append(values, val)
+				}
 			}
 		}
 	}

@@ -58,7 +58,6 @@ func ValidatePaginationQuery(ctx iris.Context) {
 		}
 
 		opts.Where = &where
-		helper.Logger.Info(*opts.Where)
 
 		if err != nil {
 			helper.CreateErrorResponse(ctx, err).
