@@ -42,13 +42,13 @@ func (repo PostgresRepository) Update(id string, changeset entity.HistoryDocumen
 
 // FindByID find history_document by id
 func (repo PostgresRepository) FindByID(id string) (historyDocument entity.HistoryDocument, err error) {
-	_, err = repo.db.SQL("SELECT * FROM history_documents WHERE id = ?", id).Get(&historyDocument)
+	_, err = repo.db.SQL("SELECT * FROM history_documents WHERE id = ? AND deleted_at IS NULL", id).Get(&historyDocument)
 	return
 }
 
 // DeleteByID delete history_document by id
 func (repo PostgresRepository) DeleteByID(id string) error {
-	_, err := repo.db.Exec("DELETE FROM history_documents WHERE id = ?", id)
+	_, err := repo.db.Table("history_documents").Where("id = ?", id).Delete(&entity.History{})
 	return err
 }
 
