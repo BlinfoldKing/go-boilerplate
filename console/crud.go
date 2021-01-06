@@ -327,7 +327,7 @@ func generatePostgresRepository(pkg, dest string) error {
 
 	file.Comment("DeleteByID delete " + pkg + " by id")
 	file.Func().Params(jen.Id("repo").Id("PostgresRepository")).Id("DeleteByID").Params(jen.Id("id").Id("string")).Params(jen.Id("error")).Block(
-		jen.List(jen.Id("_"), jen.Id("err")).Op(":=").Id(`repo.db.Table("`+pkgWithS+`").Where("id" = ?, id).Delete(&entity.`+upperPkg+`{})`),
+		jen.List(jen.Id("_"), jen.Id("err")).Op(":=").Id(`repo.db.Table("`+pkgWithS+`").Where("id = ?", id).Delete(&entity.`+upperPkg+`{})`),
 		jen.Return().Id("err"),
 	)
 
