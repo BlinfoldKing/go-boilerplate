@@ -54,6 +54,6 @@ func (repo PostgresRepository) DeleteByID(id string) error {
 
 // DeleteByWorkOrderID delete work_order_id by work_order_id
 func (repo PostgresRepository) DeleteByWorkOrderID(workOrderID string) error {
-	_, err := repo.db.Table("work_order_assets").Where("work_order_id = ?", workOrderID).Delete(&entity.WorkOrder{})
+	_, err := repo.db.Table("work_order_assets").Where("work_order_id = ?", workOrderID).Delete(&entity.WorkOrderAsset{})
 	return err
 }
