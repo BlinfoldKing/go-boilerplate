@@ -37,7 +37,8 @@ func (repo PostgresRepository) FindByBrandID(brandID string) (companies []entity
 				brand_companies bc
 			INNER JOIN companies c
 				ON bc.brand_id = ?
-				AND bc.company_id = c.id`,
+				AND bc.company_id = c.id
+				AND deleted_at IS NULL`,
 			brandID).Find(&companies)
 	return
 }
@@ -50,12 +51,12 @@ func (repo PostgresRepository) Update(id string, changeset entity.CompanyChangeS
 
 // FindByID find company by id
 func (repo PostgresRepository) FindByID(id string) (company entity.Company, err error) {
-	_, err = repo.db.SQL("SELECT * FROM companies WHERE id = ?", id).Get(&company)
+	_, err = repo.db.SQL("SELECT * FROM companies WHERE id = ? AND deleted_at IS NULL", id).Get(&company)
 	return
 }
 
 // DeleteByID delete company by id
 func (repo PostgresRepository) DeleteByID(id string) error {
-	_, err := repo.db.Exec("DELETE FROM companies WHERE id = ?", id)
+	_, err := repo.db.Table("companies").Where("id = ?", id).Delete(&entity.Company{})
 	return err
 }

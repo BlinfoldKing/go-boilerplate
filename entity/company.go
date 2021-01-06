@@ -1,8 +1,9 @@
 package entity
 
 import (
-	"github.com/satori/uuid"
 	"time"
+
+	"github.com/satori/uuid"
 )
 
 // CompanyType company type
@@ -26,9 +27,15 @@ type Company struct {
 	Type        CompanyType `json:"type" xorm:"type"`
 	Address     string      `json:"address" xorm:"address"`
 	PhoneNumber string      `json:"phone_number" xorm:"phone_number"`
-	CreatedAt   time.Time   `json:"created_at"`
-	UpdatedAt   time.Time   `json:"updated_at"`
-	DeletedAt   *time.Time  `json:"deleted_at"`
+	CreatedAt   time.Time   `json:"created_at" xorm:"created"`
+	UpdatedAt   time.Time   `json:"updated_at" xorm:"updated"`
+	DeletedAt   *time.Time  `json:"deleted_at" xorm:"deleted"`
+}
+
+// CompanyGroup company data with mapped tables
+type CompanyGroup struct {
+	Company
+	Documents []Document `json:"documents"`
 }
 
 // CompanyChangeSet change set forcompany

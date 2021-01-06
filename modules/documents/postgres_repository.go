@@ -23,7 +23,7 @@ func (repo PostgresRepository) Save(document entity.Document) error {
 
 // FindByID find document by id
 func (repo PostgresRepository) FindByID(id string) (document entity.Document, err error) {
-	_, err = repo.db.SQL("SELECT * FROM documents WHERE id = ?", id).Get(&document)
+	_, err = repo.db.SQL("SELECT * FROM documents WHERE id = ? AND deleted_at IS NULL", id).Get(&document)
 	return
 }
 
@@ -41,7 +41,7 @@ func (repo PostgresRepository) FindByProductID(productID string) (documents []en
 	return
 }
 
-// FindByHistoryID find documents by product id
+// FindByHistoryID find documents by history id
 func (repo PostgresRepository) FindByHistoryID(historyID string) (documents []entity.Document, err error) {
 	err = repo.db.
 		SQL(`SELECT 
@@ -52,6 +52,20 @@ func (repo PostgresRepository) FindByHistoryID(historyID string) (documents []en
 				ON hd.history_id = ?
 				AND hd.document_id = d.id`,
 			historyID).Find(&documents)
+	return
+}
+
+// FindByCompanyID find documents by company id
+func (repo PostgresRepository) FindByCompanyID(companyID string) (documents []entity.Document, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				d.*
+			FROM 
+				company_documents cd
+			INNER JOIN documents d
+				ON cd.company_id = ?
+				AND cd.document_id = d.id`,
+			companyID).Find(&documents)
 	return
 }
 

@@ -79,6 +79,7 @@ func (h handler) Create(ctx iris.Context) {
 		request.Type,
 		request.Address,
 		request.PhoneNumber,
+		request.DocumentIDs,
 	)
 	if err != nil {
 		helper.

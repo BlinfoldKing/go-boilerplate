@@ -15,9 +15,9 @@ type Document struct {
 	ObjectName string     `xorm:"object_name" json:"object_name"`
 	BucketName string     `xorm:"bucket_name" json:"bucket_name"`
 	URLLink    string     `xorm:"url_link" json:"url_link"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	DeletedAt  *time.Time `json:"deleted_at"`
+	CreatedAt  time.Time  `json:"created_at" xorm:"created"`
+	UpdatedAt  time.Time  `json:"updated_at" xorm:"updated"`
+	DeletedAt  *time.Time `json:"deleted_at" xorm:"deleted"`
 }
 
 // NewDocument used to create a new document
