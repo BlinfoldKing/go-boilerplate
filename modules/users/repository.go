@@ -12,5 +12,6 @@ type Repository interface {
 	Update(id string, changeset entity.UserChangeSet) error
 	GetList(entity.Pagination) (users []entity.User, count int, err error)
 	FindByID(id string) (entity.User, error)
+	FindByWorkOrderID(workOrderID string) (users []entity.User, err error)
 	DeleteByID(id string) error
 }

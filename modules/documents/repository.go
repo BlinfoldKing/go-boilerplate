@@ -9,6 +9,7 @@ type StorageRepository interface {
 	FindByProductID(productID string) ([]entity.Document, error)
 	FindByHistoryID(historyID string) ([]entity.Document, error)
 	FindByCompanyID(companyID string) ([]entity.Document, error)
+	FindByWorkOrderID(workOrderID string) (documents []entity.Document, err error)
 	FindByObjectBucketName(objectName string, bucketName string) (entity.Document, error)
 }
 
