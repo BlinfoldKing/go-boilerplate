@@ -12,6 +12,8 @@ policy:
           route: /auth/password:*
         - method: GET
           route: /ping*
+        - method: (POST)
+          route: /neo4j*
     member:
         - method: (GET) || (POST)
           route: /documents*
@@ -31,5 +33,5 @@ policy:
           route: /brand*
         - method: POST
           route: /user_roles*
-        - method: POST
+        - method: (POST) || (PUT) || (GET) || (DELETE)
           route: /policy*

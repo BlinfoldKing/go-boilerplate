@@ -9,6 +9,6 @@ type CreateRequest struct {
 
 // UpdateRequest request for update productSpecification
 type UpdateRequest struct {
-	Parameter string `json:"parameter" validate:"required"`
-	Value     string `json:"value" validate:"required"`
+	Parameter string `json:"parameter"`
+	Value     string `json:"value"`
 }

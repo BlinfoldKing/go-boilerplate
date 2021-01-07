@@ -9,6 +9,6 @@ type CreateRequest struct {
 
 // UpdateRequest request for update productCategory
 type UpdateRequest struct {
-	Code string `json:"code" validate:"required"`
-	Name string `json:"name" validate:"required"`
+	Code string `json:"code"`
+	Name string `json:"name"`
 }
