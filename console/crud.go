@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"os"
 
+	"go-boilerplate/helper"
+
 	"github.com/dave/jennifer/jen"
 	"github.com/spf13/cobra"
 	"github.com/stoewer/go-strcase"
-	"go-boilerplate/helper"
 )
 
 var crudCmd = &cobra.Command{
@@ -321,7 +322,7 @@ func generatePostgresRepository(pkg, dest string) error {
 
 	file.Comment("FindByID find " + pkg + " by id")
 	file.Func().Params(jen.Id("repo").Id("PostgresRepository")).Id("FindByID").Params(jen.Id("id").Id("string")).Params(jen.Id(pkg).Id("entity."+upperPkg), jen.Id("err").Id("error")).Block(
-		jen.List(jen.Id("_"), jen.Id("err")).Op("=").Id(`repo.db.SQL("SELECT * FROM `+pkgWithS+` WHERE id = ? AND deleted_at = null", id).Get(&`+pkg+`)`),
+		jen.List(jen.Id("_"), jen.Id("err")).Op("=").Id(`repo.db.SQL("SELECT * FROM `+pkgWithS+` WHERE id = ? AND deleted_at IS null", id).Get(&`+pkg+`)`),
 		jen.Return(),
 	)
 
