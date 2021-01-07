@@ -48,12 +48,12 @@ func (repo PostgresRepository) FindByID(id string) (historyDocument entity.Histo
 
 // DeleteByID delete history_document by id
 func (repo PostgresRepository) DeleteByID(id string) error {
-	_, err := repo.db.Table("history_documents").Where("id = ?", id).Delete(&entity.History{})
+	_, err := repo.db.Table("history_documents").Where("id = ?", id).Delete(&entity.HistoryDocument{})
 	return err
 }
 
 // DeleteByHistoryID delete history_document by history_id
 func (repo PostgresRepository) DeleteByHistoryID(historyID string) error {
-	_, err := repo.db.Table("history_documents").Where("history_id = ?", historyID).Delete(&entity.History{})
+	_, err := repo.db.Table("history_documents").Where("history_id = ?", historyID).Delete(&entity.HistoryDocument{})
 	return err
 }
