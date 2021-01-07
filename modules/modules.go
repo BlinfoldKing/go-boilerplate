@@ -7,6 +7,7 @@ import (
 	"go-boilerplate/modules/auth"
 	"go-boilerplate/modules/brand"
 	"go-boilerplate/modules/company"
+	"go-boilerplate/modules/contact"
 	"go-boilerplate/modules/documents"
 	"go-boilerplate/modules/history"
 	involveduser "go-boilerplate/modules/involved_user"
@@ -47,6 +48,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	productcategory.Routes(prefix, adapters)
 	productspecification.Routes(prefix, adapters)
 	history.Routes(prefix, adapters)
+	contact.Routes(prefix, adapters)
 	workorder.Routes(prefix, adapters)
 	involveduser.Routes(prefix, adapters)
 
