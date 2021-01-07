@@ -100,6 +100,9 @@ func generateEntity(pkg, dest string) error {
 	file.Type().Id(upperPkg).Struct(
 		jen.Id("ID").Id("string").Tag(map[string]string{"json": "id", "xorm": "id"}),
 		jen.Id("Name").Id("string").Tag(map[string]string{"json": "name", "xorm": "name"}),
+		jen.Id("CreatedAt").Id("time.Time").Tag(map[string]string{"json": "created_at", "xorm": "created"}),
+		jen.Id("UpdatedAt").Id("time.Time").Tag(map[string]string{"json": "updated_at", "xorm": "updated"}),
+		jen.Id("DeletedAt").Id("*time.Time").Tag(map[string]string{"json": "deleted_at", "xorm": "deleted"}),
 	)
 
 	file.Comment(upperPkg + "ChangeSet change set for" + pkg)
@@ -318,13 +321,13 @@ func generatePostgresRepository(pkg, dest string) error {
 
 	file.Comment("FindByID find " + pkg + " by id")
 	file.Func().Params(jen.Id("repo").Id("PostgresRepository")).Id("FindByID").Params(jen.Id("id").Id("string")).Params(jen.Id(pkg).Id("entity."+upperPkg), jen.Id("err").Id("error")).Block(
-		jen.List(jen.Id("_"), jen.Id("err")).Op("=").Id(`repo.db.SQL("SELECT * FROM `+pkgWithS+` WHERE id = ?", id).Get(&`+pkg+`)`),
+		jen.List(jen.Id("_"), jen.Id("err")).Op("=").Id(`repo.db.SQL("SELECT * FROM `+pkgWithS+` WHERE id = ? AND deleted_at = null", id).Get(&`+pkg+`)`),
 		jen.Return(),
 	)
 
 	file.Comment("DeleteByID delete " + pkg + " by id")
 	file.Func().Params(jen.Id("repo").Id("PostgresRepository")).Id("DeleteByID").Params(jen.Id("id").Id("string")).Params(jen.Id("error")).Block(
-		jen.List(jen.Id("_"), jen.Id("err")).Op(":=").Id(`repo.db.Exec("DELETE FROM `+pkgWithS+` WHERE id = ?", id)`),
+		jen.List(jen.Id("_"), jen.Id("err")).Op(":=").Id(`repo.db.Table("`+pkgWithS+`").Where("id = ?", id).Delete(&entity.`+upperPkg+`{})`),
 		jen.Return().Id("err"),
 	)
 

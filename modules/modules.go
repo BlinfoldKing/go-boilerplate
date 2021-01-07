@@ -8,6 +8,7 @@ import (
 	"go-boilerplate/modules/brand"
 	"go-boilerplate/modules/company"
 	"go-boilerplate/modules/documents"
+	"go-boilerplate/modules/history"
 	"go-boilerplate/modules/mail"
 	"go-boilerplate/modules/notifications"
 	"go-boilerplate/modules/ping"
@@ -43,6 +44,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	brand.Routes(prefix, adapters)
 	productcategory.Routes(prefix, adapters)
 	productspecification.Routes(prefix, adapters)
+	history.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)

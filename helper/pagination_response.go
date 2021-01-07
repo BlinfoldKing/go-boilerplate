@@ -98,5 +98,9 @@ func CreatePaginationResponse(ctx iris.Context, request entity.Pagination, list 
 		// nextPag.ID = &data[0]["id"]
 	}
 
-	return response.Ok().WithData(data)
+	for k := range data {
+		response = response.WithField(k, data[k])
+	}
+
+	return response.Ok()
 }

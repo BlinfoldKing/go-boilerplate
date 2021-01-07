@@ -2,10 +2,11 @@ package company
 
 // CreateRequest request for create new company
 type CreateRequest struct {
-	Name        string `json:"name" validate:"required"`
-	Type        int    `json:"type" validate:"required"`
-	Address     string `json:"address" validate:"required"`
-	PhoneNumber string `json:"phone_number" validate:"required"`
+	Name        string   `json:"name" validate:"required"`
+	Type        int      `json:"type" validate:"required"`
+	Address     string   `json:"address" validate:"required"`
+	PhoneNumber string   `json:"phone_number" validate:"required"`
+	DocumentIDs []string `json:"document_ids" validate:"required"`
 }
 
 // UpdateRequest request for update company

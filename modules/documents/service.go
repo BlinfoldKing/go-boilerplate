@@ -43,6 +43,16 @@ func (service Service) GetByProductID(productID string) (documents []entity.Docu
 	return service.storageRepository.FindByProductID(productID)
 }
 
+// GetByHistoryID finds document by history ID
+func (service Service) GetByHistoryID(historyID string) (documents []entity.Document, err error) {
+	return service.storageRepository.FindByHistoryID(historyID)
+}
+
+// GetByCompanyID finds document by company ID
+func (service Service) GetByCompanyID(companyID string) (documents []entity.Document, err error) {
+	return service.storageRepository.FindByCompanyID(companyID)
+}
+
 // GetByObjectBucketName find document by objectName and bucketName
 func (service Service) GetByObjectBucketName(objectName, bucketName string) (document entity.Document, err error) {
 	return service.storageRepository.FindByObjectBucketName(objectName, bucketName)

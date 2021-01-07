@@ -18,6 +18,21 @@ func ValidatePaginationQuery(ctx iris.Context) {
 		bquery := []byte(query)
 		var opts entity.CursorPagination
 		err := json.Unmarshal(bquery, &opts)
+
+		if opts.Where == nil {
+			where := make(map[string]interface{})
+			where["deleted_at"] = nil
+
+			opts.Where = &where
+		}
+
+		where := *opts.Where
+		if _, ok := where["deleted_at"]; !ok {
+			where["deleted_at"] = nil
+		}
+
+		opts.Where = &where
+
 		if err != nil {
 			helper.CreateErrorResponse(ctx, err).
 				BadRequest().
@@ -29,6 +44,21 @@ func ValidatePaginationQuery(ctx iris.Context) {
 		bquery := []byte(query)
 		var opts entity.OffsetPagination
 		err := json.Unmarshal(bquery, &opts)
+
+		if opts.Where == nil {
+			where := make(map[string]interface{})
+			where["deleted_at"] = nil
+
+			opts.Where = &where
+		}
+
+		where := *opts.Where
+		if _, ok := where["deleted_at"]; !ok {
+			where["deleted_at"] = nil
+		}
+
+		opts.Where = &where
+
 		if err != nil {
 			helper.CreateErrorResponse(ctx, err).
 				BadRequest().

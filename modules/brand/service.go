@@ -20,8 +20,7 @@ func InitBrandService(adapters adapters.Adapters) Service {
 	brandCompanyRepository := brandcompany.CreatePostgresRepository(adapters.Postgres)
 	brandCompanyService := brandcompany.CreateService(brandCompanyRepository)
 
-	companyRepository := company.CreatePostgresRepository(adapters.Postgres)
-	companyService := company.CreateService(companyRepository)
+	companyService := company.InitCompanyService(adapters)
 
 	return CreateService(repository, brandCompanyService, companyService)
 }

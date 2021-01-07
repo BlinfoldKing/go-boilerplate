@@ -42,12 +42,12 @@ func (repo PostgresRepository) Update(id string, changeset entity.RoleChangeSet)
 
 // FindByID find user by id
 func (repo PostgresRepository) FindByID(id string) (role entity.Role, err error) {
-	_, err = repo.db.SQL("SELECT * FROM roles WHERE id = ?", id).Get(&role)
+	_, err = repo.db.SQL("SELECT * FROM roles WHERE id = ? AND deleted_at is null", id).Get(&role)
 	return
 }
 
 // DeleteByID delete user by id
 func (repo PostgresRepository) DeleteByID(id string) error {
-	_, err := repo.db.Exec("DELETE FROM roles WHERE id = ?", id)
+	_, err := repo.db.Table("roles").Where("id = ?", id).Delete(&entity.Role{})
 	return err
 }

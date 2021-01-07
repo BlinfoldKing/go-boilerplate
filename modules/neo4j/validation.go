@@ -18,8 +18,12 @@ type EdgesVal struct {
 	Destination	[]PropertiesVal			`json:"destination" validate:"required"`
 }
 
-// CreateRequest request for create new node
-type CreateRequest struct {
+// CreateRequestNodes request for create new node
+type CreateRequestNodes struct {
 	Nodes		[]NodesVal				`json:"nodes" validate:"required"`
+}
+
+// CreateRequestEdges request for create new node
+type CreateRequestEdges struct {
 	Edges		[]EdgesVal				`json:"edges" validate:"required"`
 }

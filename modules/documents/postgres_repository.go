@@ -23,11 +23,11 @@ func (repo PostgresRepository) Save(document entity.Document) error {
 
 // FindByID find document by id
 func (repo PostgresRepository) FindByID(id string) (document entity.Document, err error) {
-	_, err = repo.db.SQL("SELECT * FROM documents WHERE id = ?", id).Get(&document)
+	_, err = repo.db.SQL("SELECT * FROM documents WHERE id = ? AND deleted_at IS NULL", id).Get(&document)
 	return
 }
 
-// FindByProdcutID find documents by product id
+// FindByProductID find documents by product id
 func (repo PostgresRepository) FindByProductID(productID string) (documents []entity.Document, err error) {
 	err = repo.db.
 		SQL(`SELECT 
@@ -38,6 +38,34 @@ func (repo PostgresRepository) FindByProductID(productID string) (documents []en
 				ON pd.product_id = ?
 				AND pd.document_id = d.id`,
 			productID).Find(&documents)
+	return
+}
+
+// FindByHistoryID find documents by history id
+func (repo PostgresRepository) FindByHistoryID(historyID string) (documents []entity.Document, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				d.*
+			FROM 
+				history_documents hd
+			INNER JOIN documents d
+				ON hd.history_id = ?
+				AND hd.document_id = d.id`,
+			historyID).Find(&documents)
+	return
+}
+
+// FindByCompanyID find documents by company id
+func (repo PostgresRepository) FindByCompanyID(companyID string) (documents []entity.Document, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				d.*
+			FROM 
+				company_documents cd
+			INNER JOIN documents d
+				ON cd.company_id = ?
+				AND cd.document_id = d.id`,
+			companyID).Find(&documents)
 	return
 }
 

@@ -1,4 +1,4 @@
-package company
+package history
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	companies Service
+	histories Service
 	adapters  adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	companies, count, err := h.companies.GetList(request)
+	histories, count, err := h.histories.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,12 +24,13 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, companies, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, histories, count).JSON()
 	ctx.Next()
 }
+
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	company, err := h.companies.GetByID(id)
+	history, err := h.histories.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -37,12 +38,13 @@ func (h handler) GetByID(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(company).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(history).JSON()
 	ctx.Next()
 }
+
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.companies.DeleteByID(id)
+	err := h.histories.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -53,14 +55,16 @@ func (h handler) DeleteByID(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithMessage(fmt.Sprintf("%s deleted", id)).JSON()
 	ctx.Next()
 }
+
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	company, err := h.companies.Update(id, entity.CompanyChangeSet{
-		Name:        request.Name,
-		Type:        request.Type,
-		Address:     request.Address,
-		PhoneNumber: request.PhoneNumber,
+	history, err := h.histories.Update(id, entity.HistoryChangeSet{
+		UserID:      request.UserID,
+		AssetID:     request.AssetID,
+		Action:      request.Action,
+		Description: request.Description,
+		Cost:        request.Cost,
 	})
 	if err != nil {
 		helper.
@@ -69,16 +73,18 @@ func (h handler) Update(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(company).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(history).JSON()
 	ctx.Next()
 }
+
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	company, err := h.companies.CreateCompany(
-		request.Name,
-		request.Type,
-		request.Address,
-		request.PhoneNumber,
+	history, err := h.histories.CreateHistory(
+		request.UserID,
+		request.AssetID,
+		request.Action,
+		request.Description,
+		request.Cost,
 		request.DocumentIDs,
 	)
 	if err != nil {
@@ -88,6 +94,6 @@ func (h handler) Create(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(company).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(history).JSON()
 	ctx.Next()
 }
