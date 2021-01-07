@@ -1,11 +1,11 @@
 package involveduser
 
 import (
-	"errors"
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 )
 
-func InitInvolvedUserAssetService(adapters adapters.Adapters) Service {
+func InitInvolvedUserService(adapters adapters.Adapters) Service {
 	repository := CreatePostgresRepository(adapters.Postgres)
 	return CreateService(repository)
 }
@@ -22,7 +22,7 @@ func CreateService(repo Repository) Service {
 
 // CreateInvolvedUser create new involved_user
 func (service Service) CreateInvolvedUser(userID, workOrderID string) (involvedUser entity.InvolvedUser, err error) {
-	involvedUser, err := entity.NewInvolvedUser(userID, workOrderID)
+	involvedUser, err = entity.NewInvolvedUser(userID, workOrderID)
 	if err != nil {
 		return
 	}
@@ -33,7 +33,7 @@ func (service Service) CreateInvolvedUser(userID, workOrderID string) (involvedU
 // CreateBatchInvolvedUsers creates a batch of new InvolvedUsers
 func (service Service) CreateBatchInvolvedUsers(workOrderID string, userIDs []string) (involvedUsers []entity.InvolvedUser, err error) {
 	for _, userID := range userIDs {
-		involvedUser, err := entity.NewInvolvedUser(workOrderID, userID)
+		involvedUser, err := entity.NewInvolvedUser(userID, workOrderID)
 		if err != nil {
 			return []entity.InvolvedUser{}, err
 		}

@@ -1,4 +1,4 @@
-package involved_user
+package involveduser
 
 // CreateRequest request for create new involved_user
 type CreateRequest struct {

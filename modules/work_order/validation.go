@@ -1,4 +1,4 @@
-package work_order
+package workorder
 
 // CreateRequest request for create new work_order
 type CreateRequest struct {

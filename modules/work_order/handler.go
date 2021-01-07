@@ -1,4 +1,4 @@
-package work_order
+package workorder
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	work_orders Service
-	adapters    adapters.Adapters
+	workorders Service
+	adapters   adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	work_orders, count, err := h.work_orders.GetList(request)
+	workOrders, count, err := h.workorders.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,13 +24,13 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, work_orders, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, workOrders, count).JSON()
 	ctx.Next()
 }
 
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	work_order, err := h.work_orders.GetByID(id)
+	workOrder, err := h.workorders.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -38,13 +38,13 @@ func (h handler) GetByID(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(work_order).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
 	ctx.Next()
 }
 
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.work_orders.DeleteByID(id)
+	err := h.workorders.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -59,8 +59,11 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	work_order, err := h.work_orders.Update(id, entity.WorkOrderChangeSet{
-		Name: request.Name,
+	workOrder, err := h.workorders.Update(id, entity.WorkOrderChangeSet{
+		PICID:       request.PICID,
+		Name:        request.Name,
+		Description: request.Description,
+		Type:        request.Type,
 	})
 	if err != nil {
 		helper.
@@ -69,13 +72,21 @@ func (h handler) Update(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(work_order).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
 	ctx.Next()
 }
 
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	work_order, err := h.work_orders.CreateWorkOrder(request.Name)
+	workOrder, err := h.workorders.CreateWorkOrder(
+		request.PICID,
+		request.Name,
+		request.Description,
+		request.Type,
+		request.InvolvedIDs,
+		request.AssetIDs,
+		request.DocumentIDs,
+	)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -83,6 +94,6 @@ func (h handler) Create(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(work_order).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
 	ctx.Next()
 }

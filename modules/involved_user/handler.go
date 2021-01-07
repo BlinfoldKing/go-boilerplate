@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	involved_users Service
-	adapters       adapters.Adapters
+	involvedUsers Service
+	adapters      adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	involved_users, count, err := h.involved_users.GetList(request)
+	involvedUsers, count, err := h.involvedUsers.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,7 +24,7 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, involved_users, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, involvedUsers, count).JSON()
 	ctx.Next()
 }
 func (h handler) GetByID(ctx iris.Context) {
@@ -57,7 +57,8 @@ func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
 	involvedUser, err := h.involvedUsers.Update(id, entity.InvolvedUserChangeSet{
-		Name: request.Name,
+		WorkOrderID: request.WorkOrderID,
+		UserID:      request.UserID,
 	})
 	if err != nil {
 		helper.
@@ -71,7 +72,7 @@ func (h handler) Update(ctx iris.Context) {
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	involvedUser, err := h.involvedUsers.CreateInvolvedUser(request.Name)
+	involvedUser, err := h.involvedUsers.CreateInvolvedUser(request.UserID, request.WorkOrderID)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

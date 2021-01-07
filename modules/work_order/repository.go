@@ -1,4 +1,4 @@
-package work_order
+package workorder
 
 import (
 	"go-boilerplate/entity"

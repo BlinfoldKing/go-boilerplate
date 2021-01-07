@@ -38,6 +38,14 @@ type WorkOrder struct {
 	DeletedAt   *time.Time    `json:"deleted_at" xorm:"deleted"`
 }
 
+// WorkOrderGroup stores work order group with mapped tables
+type WorkOrderGroup struct {
+	WorkOrder
+	User     []User     `json:"user"`
+	Asset    []Asset    `json:"asset"`
+	Document []Document `json:"document"`
+}
+
 // WorkOrderChangeSet change set forwork_order
 type WorkOrderChangeSet struct {
 	PICID       string        `json:"pic_id" xorm:"pic_id"`

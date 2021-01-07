@@ -42,7 +42,7 @@ func (repo PostgresRepository) Update(id string, changeset entity.WorkOrderAsset
 
 // FindByID find work_order_asset by id
 func (repo PostgresRepository) FindByID(id string) (workOrderAsset entity.WorkOrderAsset, err error) {
-	_, err = repo.db.SQL("SELECT * FROM work_order_assets WHERE id = ? AND deleted_at = null", id).Get(&workOrderAsset)
+	_, err = repo.db.SQL("SELECT * FROM work_order_assets WHERE id = ? AND deleted_at IS null", id).Get(&workOrderAsset)
 	return
 }
 

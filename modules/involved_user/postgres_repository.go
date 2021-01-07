@@ -10,8 +10,8 @@ type PostgresRepository struct {
 	db *postgres.Postgres
 }
 
-// CreatePosgresRepository init PostgresRepository
-func CreatePosgresRepository(db *postgres.Postgres) Repository {
+// CreatePostgresRepository init PostgresRepository
+func CreatePostgresRepository(db *postgres.Postgres) Repository {
 	return PostgresRepository{db}
 }
 
@@ -42,7 +42,7 @@ func (repo PostgresRepository) Update(id string, changeset entity.InvolvedUserCh
 
 // FindByID find involved_user by id
 func (repo PostgresRepository) FindByID(id string) (involvedUser entity.InvolvedUser, err error) {
-	_, err = repo.db.SQL("SELECT * FROM involved_users WHERE id = ? AND deleted_at = null", id).Get(&involvedUser)
+	_, err = repo.db.SQL("SELECT * FROM involved_users WHERE id = ? AND deleted_at IS null", id).Get(&involvedUser)
 	return
 }
 

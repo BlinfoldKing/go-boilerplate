@@ -1,6 +1,7 @@
 package workorderasset
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 )
 

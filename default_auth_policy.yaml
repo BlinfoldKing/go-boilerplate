@@ -37,3 +37,7 @@ policy:
           route: /policy*
         - method: (POST) || (PUT) || (GET) || (DELETE)
           route: /history*
+        - method: (POST) || (PUT) || (GET) || (DELETE)
+          route: /work-order*
+        - method: (POST) || (PUT) || (GET) || (DELETE)
+          route: /involved-user*

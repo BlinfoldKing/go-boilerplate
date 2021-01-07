@@ -46,6 +46,20 @@ func (repo PostgresRepository) FindByID(id string) (user entity.User, err error)
 	return
 }
 
+// FindByWorkOrderID find users by work order id
+func (repo PostgresRepository) FindByWorkOrderID(workOrderID string) (users []entity.User, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				u.*
+			FROM 
+				involved_users iu
+			INNER JOIN users u
+				ON iu.work_order_id = ?
+				AND iu.user_id = u.id`,
+			workOrderID).Find(&users)
+	return
+}
+
 // DeleteByID delete user by id
 func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Exec("DELETE FROM users WHERE id = ?", id)

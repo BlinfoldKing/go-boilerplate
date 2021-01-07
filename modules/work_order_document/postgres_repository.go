@@ -10,8 +10,8 @@ type PostgresRepository struct {
 	db *postgres.Postgres
 }
 
-// CreatePosgresRepository init PostgresRepository
-func CreatePosgresRepository(db *postgres.Postgres) Repository {
+// CreatePostgresRepository init PostgresRepository
+func CreatePostgresRepository(db *postgres.Postgres) Repository {
 	return PostgresRepository{db}
 }
 
@@ -42,7 +42,7 @@ func (repo PostgresRepository) Update(id string, changeset entity.WorkOrderDocum
 
 // FindByID find work_order_document by id
 func (repo PostgresRepository) FindByID(id string) (workOrderDocument entity.WorkOrderDocument, err error) {
-	_, err = repo.db.SQL("SELECT * FROM work_order_documents WHERE id = ? AND deleted_at = null", id).Get(&workOrderDocument)
+	_, err = repo.db.SQL("SELECT * FROM work_order_documents WHERE id = ? AND deleted_at IS null", id).Get(&workOrderDocument)
 	return
 }
 

@@ -1,6 +1,7 @@
 package workorderdocument
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 )
 
