@@ -1,4 +1,4 @@
-package involved_user
+package involveduser
 
 import (
 	"fmt"
@@ -29,7 +29,7 @@ func (h handler) GetList(ctx iris.Context) {
 }
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	involved_user, err := h.involved_users.GetByID(id)
+	involvedUser, err := h.involvedUsers.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -37,12 +37,12 @@ func (h handler) GetByID(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(involved_user).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(involvedUser).JSON()
 	ctx.Next()
 }
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.involved_users.DeleteByID(id)
+	err := h.involvedUsers.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -56,7 +56,7 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	involved_user, err := h.involved_users.Update(id, entity.InvolvedUserChangeSet{
+	involvedUser, err := h.involvedUsers.Update(id, entity.InvolvedUserChangeSet{
 		Name: request.Name,
 	})
 	if err != nil {
@@ -66,12 +66,12 @@ func (h handler) Update(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(involved_user).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(involvedUser).JSON()
 	ctx.Next()
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	involved_user, err := h.involved_users.CreateInvolvedUser(request.Name)
+	involvedUser, err := h.involvedUsers.CreateInvolvedUser(request.Name)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -79,6 +79,6 @@ func (h handler) Create(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(involved_user).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(involvedUser).JSON()
 	ctx.Next()
 }

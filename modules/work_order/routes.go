@@ -11,8 +11,7 @@ const name = "/work_order"
 
 // Routes init work_order
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	repository := CreatePosgresRepository(adapters.Postgres)
-	service := CreateService(repository)
+	service := InitWorkOrderService(adapters)
 	handler := handler{service, adapters}
 	work_order := prefix.Party(name)
 	work_order.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)

@@ -1,4 +1,4 @@
-package involved_user
+package involveduser
 
 import (
 	"go-boilerplate/adapters"
@@ -7,17 +7,16 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-const name = "/involved_user"
+const name = "/involved-user"
 
 // Routes init involved_user
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	repository := CreatePosgresRepository(adapters.Postgres)
-	service := CreateService(repository)
+	service := InitInvolvedUserService(adapters)
 	handler := handler{service, adapters}
-	involved_user := prefix.Party(name)
-	involved_user.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)
-	involved_user.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)
-	involved_user.Get("/{id:string}", handler.GetByID)
-	involved_user.Delete("/{id:string}", handler.DeleteByID)
-	involved_user.Put("/{id:string}", middlewares.ValidateBody(&UpdateRequest{}), handler.Update)
+	involvedUser := prefix.Party(name)
+	involvedUser.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)
+	involvedUser.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)
+	involvedUser.Get("/{id:string}", handler.GetByID)
+	involvedUser.Delete("/{id:string}", handler.DeleteByID)
+	involvedUser.Put("/{id:string}", middlewares.ValidateBody(&UpdateRequest{}), handler.Update)
 }

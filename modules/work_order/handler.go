@@ -27,6 +27,7 @@ func (h handler) GetList(ctx iris.Context) {
 	helper.CreatePaginationResponse(ctx, request, work_orders, count).JSON()
 	ctx.Next()
 }
+
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 	work_order, err := h.work_orders.GetByID(id)
@@ -40,6 +41,7 @@ func (h handler) GetByID(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithData(work_order).JSON()
 	ctx.Next()
 }
+
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 	err := h.work_orders.DeleteByID(id)
@@ -53,6 +55,7 @@ func (h handler) DeleteByID(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithMessage(fmt.Sprintf("%s deleted", id)).JSON()
 	ctx.Next()
 }
+
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
@@ -69,6 +72,7 @@ func (h handler) Update(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithData(work_order).JSON()
 	ctx.Next()
 }
+
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
 	work_order, err := h.work_orders.CreateWorkOrder(request.Name)

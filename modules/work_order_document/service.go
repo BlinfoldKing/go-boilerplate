@@ -9,6 +9,11 @@ type Service struct {
 	repository Repository
 }
 
+func InitWorkOrderDocumentService(adapters adapters.Adapters) Service {
+	repository := CreatePostgresRepository(adapters.Postgres)
+	return CreateService(repository)
+}
+
 // CreateService init service
 func CreateService(repo Repository) Service {
 	return Service{repo}
