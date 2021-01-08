@@ -4,7 +4,7 @@ package brand
 type CreateRequest struct {
 	Name          string   `json:"name" validate:"required"`
 	OriginCountry string   `json:"origin_country" validate:"required"`
-	CompanyIDs    []string `json:"company_ids" validate:"required"`
+	CompanyIDs    []string `json:"company_ids"`
 }
 
 // UpdateRequest request for update brand

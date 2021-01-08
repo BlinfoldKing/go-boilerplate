@@ -7,7 +7,7 @@ type CreateRequest struct {
 	Address     string   `json:"address" validate:"required"`
 	Latitude    float64  `json:"latitude" validate:"required"`
 	Longitude   float64  `json:"longitude" validate:"required"`
-	ContactIDs  []string `json:"contact_ids" validate:"required"`
+	ContactIDs  []string `json:"contact_ids"`
 }
 
 // UpdateRequest request for update warehouse
