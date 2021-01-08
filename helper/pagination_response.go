@@ -18,7 +18,7 @@ func CreatePaginationResponse(ctx iris.Context, request entity.Pagination, list 
 
 	data := make(map[string]interface{})
 	data["count"] = count
-	data["list"] = list
+	data["data"] = list
 
 	switch request.(type) {
 	case entity.OffsetPagination:
