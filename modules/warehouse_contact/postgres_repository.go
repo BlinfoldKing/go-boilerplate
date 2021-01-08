@@ -10,14 +10,20 @@ type PostgresRepository struct {
 	db *postgres.Postgres
 }
 
-// CreatePosgresRepository init PostgresRepository
-func CreatePosgresRepository(db *postgres.Postgres) Repository {
+// CreatePostgresRepository init PostgresRepository
+func CreatePostgresRepository(db *postgres.Postgres) Repository {
 	return PostgresRepository{db}
 }
 
 // Save save warehouse_contact to db
 func (repo PostgresRepository) Save(warehouseContact entity.WarehouseContact) error {
 	_, err := repo.db.Table("warehouse_contacts").Insert(&warehouseContact)
+	return err
+}
+
+// SaveBatch inserts a batch of warehouseContacts
+func (repo PostgresRepository) SaveBatch(warehouseContacts []entity.WarehouseContact) error {
+	_, err := repo.db.Table("warehouse_contacts").Insert(&warehouseContacts)
 	return err
 }
 
@@ -43,5 +49,11 @@ func (repo PostgresRepository) FindByID(id string) (warehouseContact entity.Ware
 // DeleteByID delete warehouse_contact by id
 func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Table("warehouse_contacts").Where("id = ?", id).Delete(&entity.WarehouseContact{})
+	return err
+}
+
+// DeleteByWarehouseID delete warehouse contact by warehouse id
+func (repo PostgresRepository) DeleteByWarehouseID(warehouseID string) error {
+	_, err := repo.db.Table("warehouse_contacts").Where("warehouse_id = ?", warehouseID).Delete(&entity.WarehouseContact{})
 	return err
 }
