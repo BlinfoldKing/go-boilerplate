@@ -3,38 +3,50 @@ package company
 import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
+	companycontact "go-boilerplate/modules/company_contact"
 	companydocument "go-boilerplate/modules/company_document"
+	"go-boilerplate/modules/contact"
 	"go-boilerplate/modules/documents"
 )
 
 // Service contains business logic
 type Service struct {
 	repository       Repository
+	companyContacts  companycontact.Service
 	companyDocuments companydocument.Service
+	contacts         contact.Service
 	documents        documents.Service
 }
 
 func InitCompanyService(adapters adapters.Adapters) Service {
 	repository := CreatePostgresRepository(adapters.Postgres)
 
+	companyContacts := companycontact.InitCompanyContactService(adapters)
 	companyDocuments := companydocument.InitCompanyDocumentService(adapters)
+	contacts := contact.InitContactService(adapters)
 	documents := documents.InitDocumentsService(adapters)
-	return CreateService(repository, companyDocuments, documents)
+	return CreateService(repository, companyContacts, companyDocuments, contacts, documents)
 }
 
 // CreateService init service
-func CreateService(repo Repository, companyDocuments companydocument.Service, documents documents.Service) Service {
-	return Service{repo, companyDocuments, documents}
+func CreateService(repo Repository, companyContacts companycontact.Service, companyDocuments companydocument.Service, contacts contact.Service, documents documents.Service) Service {
+	return Service{repo, companyContacts, companyDocuments, contacts, documents}
 }
 
 func (service Service) mapCompaniesToCompanyGroups(companies []entity.Company) (companyGroups []entity.CompanyGroup, err error) {
 	for _, company := range companies {
+		contacts, err := service.contacts.GetByCompanyID(company.ID)
+		if err != nil {
+			return []entity.CompanyGroup{}, err
+		}
+
 		documents, err := service.documents.GetByCompanyID(company.ID)
 		if err != nil {
 			return []entity.CompanyGroup{}, err
 		}
 		companyGroup := entity.CompanyGroup{
 			Company:   company,
+			Contacts:  contacts,
 			Documents: documents,
 		}
 
@@ -49,6 +61,7 @@ func (service Service) CreateCompany(
 	companyType entity.CompanyType,
 	address string,
 	phoneNumber string,
+	contactIDs []string,
 	documentIDs []string,
 ) (company entity.Company, err error) {
 	company, err = entity.NewCompany(
@@ -61,6 +74,11 @@ func (service Service) CreateCompany(
 		return
 	}
 	err = service.repository.Save(company)
+	if err != nil {
+		return
+	}
+
+	_, err = service.companyContacts.CreateBatchCompanyContacts(company.ID, contactIDs)
 	if err != nil {
 		return
 	}
@@ -96,9 +114,15 @@ func (service Service) GetByID(id string) (companyGroup entity.CompanyGroup, err
 		return
 	}
 
+	contacts, err := service.contacts.GetByCompanyID(company.ID)
+	if err != nil {
+		return
+	}
+
 	documents, err := service.documents.GetByCompanyID(id)
 	return entity.CompanyGroup{
 		Company:   company,
+		Contacts:  contacts,
 		Documents: documents,
 	}, err
 }
@@ -114,6 +138,12 @@ func (service Service) DeleteByID(id string) (err error) {
 	if err != nil {
 		return
 	}
+
+	err = service.companyContacts.DeleteByCompanyID(id)
+	if err != nil {
+		return
+	}
+
 	err = service.companyDocuments.DeleteByCompanyID(id)
 	return
 }
