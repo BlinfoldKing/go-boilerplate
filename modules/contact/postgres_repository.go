@@ -28,6 +28,21 @@ func (repo PostgresRepository) GetList(pagination entity.Pagination) (contacts [
 	return
 }
 
+// FindByWarehouseID gets list of contact that associated with specified brand
+func (repo PostgresRepository) FindByWarehouseID(warehouseID string) (contacts []entity.Contact, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				c.*
+			FROM 
+				warehouse_contacts wc
+			INNER JOIN contacts c
+				ON wc.warehouse_id = ?
+				AND wc.contact_id = c.id
+				AND wc.deleted_at IS NULL`,
+			warehouseID).Find(&contacts)
+	return
+}
+
 // Update update contact
 func (repo PostgresRepository) Update(id string, changeset entity.ContactChangeSet) error {
 	_, err := repo.db.Table("contacts").Where("id = ?", id).Update(&changeset)

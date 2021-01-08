@@ -177,5 +177,21 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 
 // DeleteByID delete work_orderby id
 func (service Service) DeleteByID(id string) (err error) {
-	return service.repository.DeleteByID(id)
+	err = service.repository.DeleteByID(id)
+	if err != nil {
+		return
+	}
+
+	err = service.workOrderAssets.DeleteByWorkOrderID(id)
+	if err != nil {
+		return
+	}
+
+	err = service.workOrderDocuments.DeleteByWorkOrderID(id)
+	if err != nil {
+		return
+	}
+
+	err = service.involvedUsers.DeleteByWorkOrderID(id)
+	return
 }
