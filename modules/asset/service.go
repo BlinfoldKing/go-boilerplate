@@ -65,6 +65,11 @@ func (service Service) GetByID(id string) (asset entity.Asset, err error) {
 	return service.repository.FindByID(id)
 }
 
+// GetByWorkOrderID finds asset by work order ID
+func (service Service) GetByWorkOrderID(workOrderID string) (assets []entity.Asset, err error) {
+	return service.repository.FindByWorkOrderID(workOrderID)
+}
+
 // DeleteByID delete assetby id
 func (service Service) DeleteByID(id string) (err error) {
 	return service.repository.DeleteByID(id)

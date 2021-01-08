@@ -48,12 +48,12 @@ func (repo PostgresRepository) FindByID(id string) (companyDocument entity.Compa
 
 // DeleteByID delete company_document by id
 func (repo PostgresRepository) DeleteByID(id string) error {
-	_, err := repo.db.Table("company_documents").Where("id = ?", id).Delete(&entity.Company{})
+	_, err := repo.db.Table("company_documents").Where("id = ?", id).Delete(&entity.CompanyDocument{})
 	return err
 }
 
 // DeleteByCompanyID delete company_document by company_id
 func (repo PostgresRepository) DeleteByCompanyID(companyID string) error {
-	_, err := repo.db.Table("company_documents").Where("company_id = ?", companyID).Delete(&entity.Company{})
+	_, err := repo.db.Table("company_documents").Where("company_id = ?", companyID).Delete(&entity.CompanyDocument{})
 	return err
 }

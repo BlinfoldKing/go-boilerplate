@@ -40,6 +40,20 @@ func (repo PostgresRepository) FindByID(id string) (asset entity.Asset, err erro
 	return
 }
 
+// FindByWorkOrderID find assets by work order id
+func (repo PostgresRepository) FindByWorkOrderID(workOrderID string) (assets []entity.Asset, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				a.*
+			FROM 
+				work_order_assets wa
+			INNER JOIN assets a
+				ON wa.work_order_id = ?
+				AND wa.asset_id = a.id`,
+			workOrderID).Find(&assets)
+	return
+}
+
 // DeleteByID delete asset by id
 func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Exec("DELETE FROM assets WHERE id = ?", id)

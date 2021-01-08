@@ -35,6 +35,7 @@ type Company struct {
 // CompanyGroup company data with mapped tables
 type CompanyGroup struct {
 	Company
+	Contacts  []Contact  `json:"contacts"`
 	Documents []Document `json:"documents"`
 }
 

@@ -7,7 +7,7 @@ type CreateRequest struct {
 	Action      string   `json:"action" validate:"required"`
 	Description string   `json:"description" validate:"required"`
 	Cost        float64  `json:"cost" validate:"required"`
-	DocumentIDs []string `json:"document_ids" validate:"required"`
+	DocumentIDs []string `json:"document_ids"`
 }
 
 // UpdateRequest request for update history

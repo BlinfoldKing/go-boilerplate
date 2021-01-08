@@ -7,9 +7,12 @@ import (
 	"go-boilerplate/modules/auth"
 	"go-boilerplate/modules/brand"
 	"go-boilerplate/modules/company"
+	"go-boilerplate/modules/contact"
 	"go-boilerplate/modules/documents"
 	"go-boilerplate/modules/history"
+	involveduser "go-boilerplate/modules/involved_user"
 	"go-boilerplate/modules/mail"
+	"go-boilerplate/modules/neo4j"
 	"go-boilerplate/modules/notifications"
 	"go-boilerplate/modules/ping"
 	"go-boilerplate/modules/policy"
@@ -19,7 +22,8 @@ import (
 	"go-boilerplate/modules/roles"
 	userroles "go-boilerplate/modules/user_roles"
 	"go-boilerplate/modules/users"
-	"go-boilerplate/modules/neo4j"
+	"go-boilerplate/modules/warehouse"
+	workorder "go-boilerplate/modules/work_order"
 
 	"github.com/kataras/iris/v12"
 )
@@ -45,6 +49,10 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	productcategory.Routes(prefix, adapters)
 	productspecification.Routes(prefix, adapters)
 	history.Routes(prefix, adapters)
+	contact.Routes(prefix, adapters)
+	workorder.Routes(prefix, adapters)
+	involveduser.Routes(prefix, adapters)
+	warehouse.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)

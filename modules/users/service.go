@@ -153,6 +153,11 @@ func (service Service) GetList(pagination entity.Pagination) (ug []entity.UserGr
 	return
 }
 
+// GetByWorkOrderID finds user by work order ID
+func (service Service) GetByWorkOrderID(workOrderID string) (users []entity.User, err error) {
+	return service.repository.FindByWorkOrderID(workOrderID)
+}
+
 // Update update user
 func (service Service) Update(id string, changeset entity.UserChangeSet) (entity.UserGroup, error) {
 	err := service.repository.Update(id, changeset)
