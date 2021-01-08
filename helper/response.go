@@ -26,9 +26,11 @@ func (ms contentMap) Len() int      { return len(ms) }
 func (ms contentMap) Swap(i, j int) { ms[i], ms[j] = ms[j], ms[i] }
 func (ms contentMap) Less(i, j int) bool {
 	priority := map[string]int{
-		"status":  0,
-		"message": 1,
-		"data":    2,
+		"status":   0,
+		"message":  1,
+		"prev_url": 2,
+		"next_url": 3,
+		"data":     4,
 	}
 
 	var p1, p2 = 999, 999
