@@ -75,7 +75,14 @@ func (h handler) Update(ctx iris.Context) {
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	warehouse, err := h.warehouses.CreateWarehouse(request.Name, request.Description, request.Address, request.Latitude, request.Longitude)
+	warehouse, err := h.warehouses.CreateWarehouse(
+		request.Name,
+		request.Description,
+		request.Address,
+		request.Latitude,
+		request.Longitude,
+		request.ContactIDs,
+	)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

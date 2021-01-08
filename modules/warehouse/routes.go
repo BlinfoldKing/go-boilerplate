@@ -11,8 +11,7 @@ const name = "/warehouse"
 
 // Routes init warehouse
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	repository := CreatePosgresRepository(adapters.Postgres)
-	service := CreateService(repository)
+	service := InitWarehouseService(adapters)
 	handler := handler{service, adapters}
 	warehouse := prefix.Party(name)
 	warehouse.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)

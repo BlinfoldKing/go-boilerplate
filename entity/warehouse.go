@@ -19,6 +19,12 @@ type Warehouse struct {
 	DeletedAt   *time.Time `json:"deleted_at" xorm:"deleted"`
 }
 
+// WarehouseGroup warehouse data with mapped tables
+type WarehouseGroup struct {
+	Warehouse
+	Contacts []Contact `json:"contacts"`
+}
+
 // WarehouseChangeSet change set forwarehouse
 type WarehouseChangeSet struct {
 	Name        string  `json:"name" xorm:"name"`
