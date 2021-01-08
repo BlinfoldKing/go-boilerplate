@@ -51,6 +51,11 @@ func (service Service) GetByID(id string) (contact entity.Contact, err error) {
 	return service.repository.FindByID(id)
 }
 
+// GetByWarehouseID finds contacts by warehouseID
+func (service Service) GetByWarehouseID(warehouseID string) (contacts []entity.Contact, err error) {
+	return service.repository.FindByWarehouseID(warehouseID)
+}
+
 // DeleteByID delete contactby id
 func (service Service) DeleteByID(id string) (err error) {
 	return service.repository.DeleteByID(id)

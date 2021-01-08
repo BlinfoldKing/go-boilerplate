@@ -22,6 +22,7 @@ import (
 	"go-boilerplate/modules/roles"
 	userroles "go-boilerplate/modules/user_roles"
 	"go-boilerplate/modules/users"
+	"go-boilerplate/modules/warehouse"
 	workorder "go-boilerplate/modules/work_order"
 
 	"github.com/kataras/iris/v12"
@@ -51,6 +52,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	contact.Routes(prefix, adapters)
 	workorder.Routes(prefix, adapters)
 	involveduser.Routes(prefix, adapters)
+	warehouse.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)
