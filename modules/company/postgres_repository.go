@@ -38,7 +38,7 @@ func (repo PostgresRepository) FindByBrandID(brandID string) (companies []entity
 			INNER JOIN companies c
 				ON bc.brand_id = ?
 				AND bc.company_id = c.id
-				AND deleted_at IS NULL`,
+				AND bc.deleted_at IS NULL`,
 			brandID).Find(&companies)
 	return
 }

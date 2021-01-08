@@ -10,7 +10,7 @@ import (
 type Warehouse struct {
 	ID          string     `json:"id" xorm:"id"`
 	Name        string     `json:"name" xorm:"name"`
-	Description string     `json:"description" xorm:"phone_number"`
+	Description string     `json:"description" xorm:"description"`
 	Address     string     `json:"address" xorm:"address"`
 	Latitude    float64    `json:"latitude" xorm:"latitude"`
 	Longitude   float64    `json:"longitude" xorm:"longitude"`
@@ -28,7 +28,7 @@ type WarehouseGroup struct {
 // WarehouseChangeSet change set forwarehouse
 type WarehouseChangeSet struct {
 	Name        string  `json:"name" xorm:"name"`
-	Description string  `json:"description" xorm:"phone_number"`
+	Description string  `json:"description" xorm:"description"`
 	Address     string  `json:"address" xorm:"address"`
 	Latitude    float64 `json:"latitude" xorm:"latitude"`
 	Longitude   float64 `json:"longitude" xorm:"longitude"`

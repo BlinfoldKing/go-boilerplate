@@ -38,7 +38,7 @@ func (repo PostgresRepository) FindByWarehouseID(warehouseID string) (contacts [
 			INNER JOIN contacts c
 				ON wc.warehouse_id = ?
 				AND wc.contact_id = c.id
-				AND deleted_at IS NULL`,
+				AND wc.deleted_at IS NULL`,
 			warehouseID).Find(&contacts)
 	return
 }
