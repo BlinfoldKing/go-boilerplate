@@ -6,6 +6,7 @@ type CreateRequest struct {
 	Type        int      `json:"type" validate:"required"`
 	Address     string   `json:"address" validate:"required"`
 	PhoneNumber string   `json:"phone_number" validate:"required"`
+	ContactIDs  []string `json:"contact_ids" validate:"required"`
 	DocumentIDs []string `json:"document_ids" validate:"required"`
 }
 
