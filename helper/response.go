@@ -16,21 +16,48 @@ type Content struct {
 }
 
 // ContentMap Reponse content implemented using map slice
-type contentMap []Content
+type ContentMap []Content
 
-func (ms contentMap) Add(content Content) contentMap {
+// CreateContentMap create new content map
+func CreateContentMap(m map[string]interface{}, selections ...string) (newMap ContentMap) {
+	if len(selections) > 0 {
+		for _, s := range selections {
+			newMap = newMap.Add(Content{s, m[s]})
+		}
+	} else {
+		for key, val := range m {
+			newMap = newMap.Add(Content{key, val})
+		}
+	}
+
+	return
+}
+
+// Add new entry
+func (ms ContentMap) Add(content Content) ContentMap {
 	newMap := append(ms, content)
 	return newMap
 }
-func (ms contentMap) Len() int      { return len(ms) }
-func (ms contentMap) Swap(i, j int) { ms[i], ms[j] = ms[j], ms[i] }
-func (ms contentMap) Less(i, j int) bool {
+
+// Len get len
+func (ms ContentMap) Len() int { return len(ms) }
+
+// Swap swap content
+func (ms ContentMap) Swap(i, j int) { ms[i], ms[j] = ms[j], ms[i] }
+
+// Less custom comparator
+func (ms ContentMap) Less(i, j int) bool {
 	priority := map[string]int{
-		"status":   0,
-		"message":  1,
-		"prev_url": 2,
-		"next_url": 3,
-		"data":     4,
+		"status":     0,
+		"id":         0,
+		"key":        0,
+		"message":    1,
+		"prev_url":   2,
+		"next_url":   3,
+		"data":       4,
+		"created_at": 1000,
+		"updated_at": 1001,
+		"deleted_at": 1002,
 	}
 
 	var p1, p2 = 999, 999
@@ -45,8 +72,8 @@ func (ms contentMap) Less(i, j int) bool {
 	return p1 < p2
 }
 
-func (ms contentMap) MarshalJSON() ([]byte, error) {
-	Logger.Info(ms)
+// MarshalJSON toJSON
+func (ms ContentMap) MarshalJSON() ([]byte, error) {
 	sort.Sort(ms)
 
 	buf := &bytes.Buffer{}
@@ -71,7 +98,7 @@ func (ms contentMap) MarshalJSON() ([]byte, error) {
 // Response represent http reponse
 type Response struct {
 	ok      bool
-	content contentMap
+	content ContentMap
 	context iris.Context
 }
 
@@ -80,7 +107,7 @@ func CreateResponse(ctx iris.Context) Response {
 	response := Response{}
 
 	response.context = ctx
-	response.content = contentMap{}
+	response.content = ContentMap{}
 
 	return response
 }
