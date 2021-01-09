@@ -9,11 +9,19 @@ type Pagination interface {
 	GetSQL(tableName string) (sql string, args []interface{}, err error)
 }
 
+// PaginationGroup group pagination
+type PaginationGroup struct {
+	Selector   string `json:"selector"`
+	Desc       *bool  `json:"desc"`
+	IsExpanded *bool  `json:"isExpanded"`
+}
+
 // Query shared pagination fields
 type Query struct {
-	Limit *int                    `json:"limit"`
-	Sort  *map[string]string      `json:"sort"`
-	Where *map[string]interface{} `json:"where"`
+	Limit   *int                    `json:"limit"`
+	Sort    *map[string]string      `json:"sort"`
+	Where   *map[string]interface{} `json:"where"`
+	GroupBy *[]PaginationGroup
 }
 
 // OffsetPagination pagination parameters
@@ -40,7 +48,15 @@ func (opt OffsetPagination) GetSQL(tableName string) (sql string, args []interfa
 		where = fmt.Sprintf("WHERE %s", where)
 	}
 
-	if opt.Sort != nil {
+	var group string
+	if opt.GroupBy != nil {
+		group, err = parseGroupBy(*opt.GroupBy)
+		if err != nil {
+			return
+		}
+	}
+
+	if opt.Sort != nil && len(*opt.Sort) > 0 {
 		sort, err = parseSort(*opt.Sort)
 		if err != nil {
 			return
@@ -53,7 +69,7 @@ func (opt OffsetPagination) GetSQL(tableName string) (sql string, args []interfa
 	limit, v = parseLimit(opt.Limit, opt.Offset)
 	values = append(values, v...)
 
-	sql = fmt.Sprintf("%s %s %s %s", query, where, sort, limit)
+	sql = fmt.Sprintf("%s %s %s %s %s", query, where, group, sort, limit)
 	args = values
 
 	return
@@ -93,7 +109,15 @@ func (opt CursorPagination) GetSQL(tableName string) (sql string, args []interfa
 		where = fmt.Sprintf("WHERE %s", where)
 	}
 
-	if opt.Sort != nil {
+	var group string
+	if opt.GroupBy != nil {
+		group, err = parseGroupBy(*opt.GroupBy)
+		if err != nil {
+			return
+		}
+	}
+
+	if opt.Sort != nil && len(*opt.Sort) > 0 {
 		sort, err = parseSort(*opt.Sort)
 		if err != nil {
 			return
@@ -115,7 +139,7 @@ func (opt CursorPagination) GetSQL(tableName string) (sql string, args []interfa
 	limit, v = parseLimit(opt.Limit, nil)
 	values = append(values, v...)
 
-	sql = fmt.Sprintf("%s %s %s %s", query, where, sort, limit)
+	sql = fmt.Sprintf("%s %s %s %s %s", query, where, group, sort, limit)
 	args = values
 
 	return
@@ -293,6 +317,27 @@ func parseSort(sorts map[string]string) (query string, err error) {
 			query = fmt.Sprintf("%s, %s %s", query, key, val)
 		} else {
 			query = fmt.Sprintf("%s %s", key, val)
+		}
+	}
+	return
+}
+
+func parseGroupBy(groups []PaginationGroup) (query string, err error) {
+	idFound := false
+	for _, group := range groups {
+		idFound = idFound || group.Selector == "id"
+		if query == "" {
+			query = fmt.Sprintf("GROUP BY %s", group.Selector)
+		} else {
+			query = fmt.Sprintf("%s, %s", query, group.Selector)
+		}
+	}
+
+	if !idFound {
+		if query == "" {
+			query = fmt.Sprintf("GROUP BY %s", "id")
+		} else {
+			query = fmt.Sprintf("%s, %s", query, "id")
 		}
 	}
 	return
