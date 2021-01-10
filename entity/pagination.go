@@ -9,11 +9,21 @@ type Pagination interface {
 	GetSQL(tableName string) (sql string, args []interface{}, err error)
 }
 
+// PaginationGroup group pagination
+type PaginationGroup struct {
+	Selector   string `json:"selector"`
+	Desc       *bool  `json:"desc"`
+	IsExpanded *bool  `json:"isExpanded"`
+}
+
 // Query shared pagination fields
 type Query struct {
-	Limit *int                    `json:"limit"`
-	Sort  *map[string]string      `json:"sort"`
-	Where *map[string]interface{} `json:"where"`
+	Limit      *int                    `json:"limit"`
+	Sort       *map[string]string      `json:"sort"`
+	Where      *map[string]interface{} `json:"where"`
+	DistinctOn *[]string
+	GroupBy    *[]PaginationGroup
+	Selection  *[]string `json:"selection"`
 }
 
 // OffsetPagination pagination parameters
@@ -24,8 +34,8 @@ type OffsetPagination struct {
 
 // GetSQL generate sql
 func (opt OffsetPagination) GetSQL(tableName string) (sql string, args []interface{}, err error) {
-	query := "SELECT * FROM %s"
-	query = fmt.Sprintf(query, tableName)
+	query := "SELECT %s * FROM %s"
+	query = fmt.Sprintf(query, parseDistinct(opt.DistinctOn), tableName)
 
 	values := make([]interface{}, 0)
 	var where, sort, limit string = "", "", ""
@@ -40,7 +50,15 @@ func (opt OffsetPagination) GetSQL(tableName string) (sql string, args []interfa
 		where = fmt.Sprintf("WHERE %s", where)
 	}
 
-	if opt.Sort != nil {
+	var group string
+	if opt.GroupBy != nil {
+		group, err = parseGroupBy(*opt.GroupBy)
+		if err != nil {
+			return
+		}
+	}
+
+	if opt.Sort != nil && len(*opt.Sort) > 0 {
 		sort, err = parseSort(*opt.Sort)
 		if err != nil {
 			return
@@ -53,7 +71,7 @@ func (opt OffsetPagination) GetSQL(tableName string) (sql string, args []interfa
 	limit, v = parseLimit(opt.Limit, opt.Offset)
 	values = append(values, v...)
 
-	sql = fmt.Sprintf("%s %s %s %s", query, where, sort, limit)
+	sql = fmt.Sprintf("%s %s %s %s %s", query, where, group, sort, limit)
 	args = values
 
 	return
@@ -70,11 +88,11 @@ type CursorPagination struct {
 func (opt CursorPagination) GetSQL(tableName string) (sql string, args []interface{}, err error) {
 	query := ""
 	if opt.Seek != nil && *opt.Seek == "prev" {
-		query = `SELECT * FROM %s WHERE "order" <= (SELECT "order" FROM %s WHERE id = ?)`
+		query = `SELECT %s * FROM %s WHERE "order" <= (SELECT "order" FROM %s WHERE id = ?)`
 	} else {
-		query = `SELECT * FROM %s WHERE "order" >= (SELECT "order" FROM %s WHERE id = ?)`
+		query = `SELECT %s * FROM %s WHERE "order" >= (SELECT "order" FROM %s WHERE id = ?)`
 	}
-	query = fmt.Sprintf(query, tableName, tableName)
+	query = fmt.Sprintf(query, parseDistinct(opt.DistinctOn), tableName, tableName)
 	query = fmt.Sprintf("SELECT * FROM (%s)", query)
 
 	values := []interface{}{
@@ -93,7 +111,15 @@ func (opt CursorPagination) GetSQL(tableName string) (sql string, args []interfa
 		where = fmt.Sprintf("WHERE %s", where)
 	}
 
-	if opt.Sort != nil {
+	var group string
+	if opt.GroupBy != nil {
+		group, err = parseGroupBy(*opt.GroupBy)
+		if err != nil {
+			return
+		}
+	}
+
+	if opt.Sort != nil && len(*opt.Sort) > 0 {
 		sort, err = parseSort(*opt.Sort)
 		if err != nil {
 			return
@@ -115,7 +141,7 @@ func (opt CursorPagination) GetSQL(tableName string) (sql string, args []interfa
 	limit, v = parseLimit(opt.Limit, nil)
 	values = append(values, v...)
 
-	sql = fmt.Sprintf("%s %s %s %s", query, where, sort, limit)
+	sql = fmt.Sprintf("%s %s %s %s %s", query, where, group, sort, limit)
 	args = values
 
 	return
@@ -138,21 +164,21 @@ func parseLimit(limit *int, offset *int) (query string, val []interface{}) {
 
 func getOperation(key string, op string, value interface{}) (res string, err error) {
 	switch op {
-	case "lte":
+	case "lte", "<=":
 		res = fmt.Sprintf("%s <= ?", key)
-	case "lt":
+	case "lt", "<":
 		res = fmt.Sprintf("%s < ?", key)
-	case "gte":
+	case "gte", ">=":
 		res = fmt.Sprintf("%s >= ?", key)
-	case "gt":
+	case "gt", ">":
 		res = fmt.Sprintf("%s > ?", key)
-	case "eq":
+	case "eq", "=", "is":
 		if value == nil {
 			res = fmt.Sprintf("%s IS NULL", key)
 		} else {
 			res = fmt.Sprintf("%s = ?", key)
 		}
-	case "neq":
+	case "neq", "!=", "is not":
 		if value == nil {
 			res = fmt.Sprintf("%s IS NOT NULL", key)
 		} else {
@@ -184,6 +210,61 @@ func parseWhere(where map[string]interface{}) (query string, values []interface{
 		switch val.(type) {
 		case map[string]interface{}:
 			switch key {
+			case "and":
+				q := ""
+				vs := make([]interface{}, 0)
+				for k, v := range val.(map[string]interface{}) {
+					switch v.(type) {
+					case map[string]interface{}:
+						for field, v1 := range v.(map[string]interface{}) {
+							var where string
+							where, err = getOperation(field, k, v1)
+							if err != nil {
+								return
+							}
+
+							if q != "" {
+								q = fmt.Sprintf("%s OR %s", q, where)
+								if v1 != nil {
+									values = append(values, v1)
+								}
+							} else {
+								q = fmt.Sprintf("%s", where)
+								if v1 != nil {
+									values = append(values, v1)
+								}
+							}
+
+						}
+
+					default:
+						if q != "" {
+							q = fmt.Sprintf("%s AND %s = ?", q, k)
+							if v != nil {
+								values = append(values, v)
+							}
+						} else {
+							q = fmt.Sprintf("%s = ?", q)
+							if v != nil {
+								values = append(values, v)
+							}
+						}
+					}
+
+				}
+				q = fmt.Sprintf("(%s)", q)
+
+				if query != "" {
+					query = fmt.Sprintf("%s AND %s", query, q)
+					if vs != nil {
+						values = append(values, vs)
+					}
+				} else {
+					query = fmt.Sprintf("%s", q)
+					if vs != nil {
+						values = append(values, vs)
+					}
+				}
 			case "or":
 				q := ""
 				vs := make([]interface{}, 0)
@@ -296,4 +377,41 @@ func parseSort(sorts map[string]string) (query string, err error) {
 		}
 	}
 	return
+}
+
+func parseGroupBy(groups []PaginationGroup) (query string, err error) {
+	idFound := false
+	for _, group := range groups {
+		idFound = idFound || group.Selector == "id"
+		if query == "" {
+			query = fmt.Sprintf("GROUP BY %s", group.Selector)
+		} else {
+			query = fmt.Sprintf("%s, %s", query, group.Selector)
+		}
+	}
+
+	if !idFound {
+		if query == "" {
+			query = fmt.Sprintf("GROUP BY %s", "id")
+		} else {
+			query = fmt.Sprintf("%s, %s", query, "id")
+		}
+	}
+	return
+}
+
+func parseDistinct(distincs *[]string) string {
+	if distincs == nil || len(*distincs) < 1 {
+		return ""
+	}
+	res := ""
+	for _, item := range *distincs {
+		if res == "" {
+			res = item
+		} else {
+			res = fmt.Sprintf("%s, %s", res, item)
+		}
+	}
+
+	return fmt.Sprintf("DISTINCT ON (%s)", res)
 }

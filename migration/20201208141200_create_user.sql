@@ -5,5 +5,6 @@ CREATE TABLE IF NOT EXISTS "users" (
     "password_hash" TEXT NOT NULL
 );
 
+
 -- +migrate Down
-DROP TABLE IF EXISTS "users";
+DROP TABLE IF EXISTS "users"
