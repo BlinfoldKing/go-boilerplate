@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS "users" (
 
 
 -- +migrate Down
-DROP TABLE IF EXISTS "users"
+DROP TABLE IF EXISTS "users";
