@@ -212,7 +212,7 @@ func formatGroup(req entity.Query, groups []entity.PaginationGroup, data []map[s
 		result := make([]map[string]interface{}, 0)
 		for _, items := range groupItems {
 			group := make(map[string]interface{})
-			group["key"] = selector
+			group["key"] = items[0][selector]
 			group["count"] = len(items)
 			group["summary"] = []interface{}{len(items)}
 			if head.IsExpanded != nil && *head.IsExpanded {
