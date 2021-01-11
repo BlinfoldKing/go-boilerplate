@@ -15,6 +15,7 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	service := CreateService(repository)
 	handler := handler{service, adapters}
 	site := prefix.Party(name)
+	
 	site.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)
 	site.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)
 	site.Get("/{id:string}", handler.GetByID)
