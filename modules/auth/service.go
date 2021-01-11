@@ -163,6 +163,12 @@ func (service Service) RequestResetPassword(email string) error {
 		"token": token.Token,
 	}
 
+	if config.OTPMETHOD() == "UUID" {
+		data["tokenType"] = "token"
+	} else {
+		data["tokenType"] = "6-digit code"
+	}
+
 	template, err := helper.GenerateHTMLTemplate("reset_password", data)
 	if err != nil {
 		return err

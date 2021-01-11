@@ -184,6 +184,12 @@ func EMAILACTIVATION() bool {
 	return activation
 }
 
+// OTPMETHOD gets otp method of uuid or code
+func OTPMETHOD() string {
+	return helper.
+		GetEnv("OTP_METHOD", "UUID")
+}
+
 // OTPDURATION gets otp expire duration
 func OTPDURATION() time.Duration {
 	dur, _ := time.ParseDuration(helper.GetEnv("OTP_DURATION", "3600s"))
