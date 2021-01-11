@@ -192,7 +192,7 @@ func OTPMETHOD() string {
 
 // OTPDURATION gets otp expire duration
 func OTPDURATION() time.Duration {
-	dur, _ := time.ParseDuration(helper.GetEnv("OTP_DURATION", "3600s"))
+	dur, _ := time.ParseDuration(helper.GetEnv("OTP_DURATION", "3600"))
 	return dur
 }
 
