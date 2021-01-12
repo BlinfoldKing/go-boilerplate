@@ -116,6 +116,8 @@ func CreatePaginationResponse(ctx iris.Context, request entity.Pagination, list 
 					result = append(result, CreateContentMap(item))
 				}
 			}
+
+			data["data"] = result
 		}
 	case entity.CursorPagination:
 		nextPag := request.(entity.CursorPagination)
@@ -174,6 +176,8 @@ func CreatePaginationResponse(ctx iris.Context, request entity.Pagination, list 
 					result = append(result, CreateContentMap(item))
 				}
 			}
+
+			data["data"] = result
 		}
 	}
 
