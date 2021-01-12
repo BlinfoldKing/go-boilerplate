@@ -1,12 +1,22 @@
 package sitecontact
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 )
 
 // Service contains business logic
 type Service struct {
 	repository Repository
+}
+
+// InitSiteContactService contains business logic
+func InitSiteContactService(adapters adapters.Adapters) Service {
+	repository := CreatePosgresRepository(adapters.Postgres)
+
+	return CreateService(
+		repository,
+	)
 }
 
 // CreateService init service
@@ -21,6 +31,19 @@ func (service Service) CreateSiteContact(siteID string, contactID string, positi
 		return
 	}
 	err = service.repository.Save(siteContact)
+	return
+}
+
+// CreateBatchSiteContact creates a batch of new siteContacts
+func (service Service) CreateBatchSiteContact(siteID string, contactIDs []entity.SiteContactIDS) (siteContacts []entity.SiteContact, err error) {
+	for _, contactID := range contactIDs {
+		siteContact, err := entity.NewSiteContact(siteID, contactID.ID, contactID.Position)
+		if err != nil {
+			return []entity.SiteContact{}, err
+		}
+		siteContacts = append(siteContacts, siteContact)
+	}
+	err = service.repository.SaveBatch(siteContacts)
 	return
 }
 

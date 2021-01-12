@@ -79,7 +79,16 @@ func (h handler) Update(ctx iris.Context) {
 
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	site, err := h.sites.CreateSite(request.Name, request.Latitude, request.Longitude, request.Description, request.Address)
+	site, err := h.sites.CreateSite(
+		request.Name,
+		request.Latitude,
+		request.Longitude,
+		request.Description,
+		request.Address,
+		request.DocumentIDs,
+		request.ContactIDs,
+		request.AssetIDs,
+	)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

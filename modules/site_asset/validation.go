@@ -1,4 +1,4 @@
-package assetsite
+package siteasset
 
 // CreateRequest request for create new asset_site
 type CreateRequest struct {

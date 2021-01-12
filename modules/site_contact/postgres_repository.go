@@ -21,6 +21,12 @@ func (repo PostgresRepository) Save(siteContact entity.SiteContact) error {
 	return err
 }
 
+// SaveBatch inserts a batch of siteContact
+func (repo PostgresRepository) SaveBatch(siteContacts []entity.SiteContact) error {
+	_, err := repo.db.Table("site_contacts").Insert(&siteContacts)
+	return err
+}
+
 // GetList get list of siteContact
 func (repo PostgresRepository) GetList(pagination entity.Pagination) (siteContacts []entity.SiteContact, count int, err error) {
 	count, err = repo.db.

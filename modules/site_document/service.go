@@ -1,12 +1,22 @@
 package sitedocument
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 )
 
 // Service contains business logic
 type Service struct {
 	repository Repository
+}
+
+// InitSiteDocumentService contains business logic
+func InitSiteDocumentService(adapters adapters.Adapters) Service {
+	repository := CreatePosgresRepository(adapters.Postgres)
+
+	return CreateService(
+		repository,
+	)
 }
 
 // CreateService init service
@@ -21,6 +31,19 @@ func (service Service) CreateSiteDocument(documentID string, siteID string) (sit
 		return
 	}
 	err = service.repository.Save(siteDocument)
+	return
+}
+
+// CreateBatchSiteDocument creates a batch of new siteDocuments
+func (service Service) CreateBatchSiteDocument(siteID string, documentIDs []string) (siteDocuments []entity.SiteDocument, err error) {
+	for _, documentID := range documentIDs {
+		siteDocument, err := entity.NewSiteDocument(documentID, siteID)
+		if err != nil {
+			return []entity.SiteDocument{}, err
+		}
+		siteDocuments = append(siteDocuments, siteDocument)
+	}
+	err = service.repository.SaveBatch(siteDocuments)
 	return
 }
 

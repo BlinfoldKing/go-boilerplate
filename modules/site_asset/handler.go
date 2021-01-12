@@ -1,4 +1,4 @@
-package assetsite
+package siteasset
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	assetSites Service
+	siteAssets Service
 	adapters   adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	assetSites, count, err := h.assetSites.GetList(request)
+	siteAssets, count, err := h.siteAssets.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,13 +24,13 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, assetSites, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, siteAssets, count).JSON()
 	ctx.Next()
 }
 
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	assetSite, err := h.assetSites.GetByID(id)
+	siteAsset, err := h.siteAssets.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -38,13 +38,13 @@ func (h handler) GetByID(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(assetSite).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(siteAsset).JSON()
 	ctx.Next()
 }
 
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.assetSites.DeleteByID(id)
+	err := h.siteAssets.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -59,7 +59,7 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	assetSite, err := h.assetSites.Update(id, entity.AssetSiteChangeSet{
+	siteAsset, err := h.siteAssets.Update(id, entity.SiteAssetChangeSet{
 		SiteID:  request.SiteID,
 		AssetID: request.AssetID,
 	})
@@ -70,13 +70,13 @@ func (h handler) Update(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(assetSite).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(siteAsset).JSON()
 	ctx.Next()
 }
 
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	assetSite, err := h.assetSites.CreateAssetSite(request.AssetID, request.SiteID)
+	siteAsset, err := h.siteAssets.CreateAssetSite(request.AssetID, request.SiteID)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -84,6 +84,6 @@ func (h handler) Create(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(assetSite).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(siteAsset).JSON()
 	ctx.Next()
 }
