@@ -189,11 +189,11 @@ func getOperation(key string, op string, value interface{}) (res string, err err
 	case "nin":
 		res = fmt.Sprintf("%s NOT IN ?", key)
 	case "startWith":
-		res = key + " LIKE ?%"
+		res = key + " LIKE ? || '%'"
 	case "endWith":
-		res = key + " LIKE %?"
+		res = key + " LIKE % || ?"
 	case "contains":
-		res = key + " LIKE %?%"
+		res = key + " LIKE '%' || ? || '%'"
 	default:
 		if value == nil {
 			res = fmt.Sprintf("%s IS NULL", key)
