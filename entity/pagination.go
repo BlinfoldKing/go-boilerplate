@@ -7,6 +7,7 @@ import (
 // Pagination pagination interace
 type Pagination interface {
 	GetSQL(tableName string) (sql string, args []interface{}, err error)
+	GetWhere() (query string, args []interface{})
 }
 
 // PaginationGroup group pagination
@@ -30,6 +31,14 @@ type Query struct {
 type OffsetPagination struct {
 	Query
 	Offset *int `json:"offset"`
+}
+
+// GetWhere get where
+func (opt OffsetPagination) GetWhere() (query string, args []interface{}) {
+	if opt.Where != nil {
+		query, args, _ = parseWhere(*opt.Where)
+	}
+	return
 }
 
 // GetSQL generate sql
@@ -82,6 +91,14 @@ type CursorPagination struct {
 	Query
 	ID   string  `json:"id"`
 	Seek *string `json:"seek"`
+}
+
+// GetWhere get where
+func (opt CursorPagination) GetWhere() (query string, args []interface{}) {
+	if opt.Where != nil {
+		query, args, _ = parseWhere(*opt.Where)
+	}
+	return
 }
 
 // GetSQL generate sql
@@ -189,11 +206,11 @@ func getOperation(key string, op string, value interface{}) (res string, err err
 	case "nin":
 		res = fmt.Sprintf("%s NOT IN ?", key)
 	case "startWith":
-		res = key + " LIKE ?%"
+		res = key + " LIKE ? || '%'"
 	case "endWith":
-		res = key + " LIKE %?"
+		res = key + " LIKE '%' || ?"
 	case "contains":
-		res = key + " LIKE %?%"
+		res = key + " LIKE '%' || ? || '%'"
 	default:
 		if value == nil {
 			res = fmt.Sprintf("%s IS NULL", key)
