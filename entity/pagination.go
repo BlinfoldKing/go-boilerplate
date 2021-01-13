@@ -7,6 +7,7 @@ import (
 // Pagination pagination interace
 type Pagination interface {
 	GetSQL(tableName string) (sql string, args []interface{}, err error)
+	GetWhere() (query string, args []interface{})
 }
 
 // PaginationGroup group pagination
@@ -30,6 +31,14 @@ type Query struct {
 type OffsetPagination struct {
 	Query
 	Offset *int `json:"offset"`
+}
+
+// GetWhere get where
+func (opt OffsetPagination) GetWhere() (query string, args []interface{}) {
+	if opt.Where != nil {
+		query, args, _ = parseWhere(*opt.Where)
+	}
+	return
 }
 
 // GetSQL generate sql
@@ -82,6 +91,14 @@ type CursorPagination struct {
 	Query
 	ID   string  `json:"id"`
 	Seek *string `json:"seek"`
+}
+
+// GetWhere get where
+func (opt CursorPagination) GetWhere() (query string, args []interface{}) {
+	if opt.Where != nil {
+		query, args, _ = parseWhere(*opt.Where)
+	}
+	return
 }
 
 // GetSQL generate sql
