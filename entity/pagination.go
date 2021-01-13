@@ -208,7 +208,7 @@ func getOperation(key string, op string, value interface{}) (res string, err err
 	case "startWith":
 		res = key + " LIKE ? || '%'"
 	case "endWith":
-		res = key + " LIKE % || ?"
+		res = key + " LIKE '%' || ?"
 	case "contains":
 		res = key + " LIKE '%' || ? || '%'"
 	default:
