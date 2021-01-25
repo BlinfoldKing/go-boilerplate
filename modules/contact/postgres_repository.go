@@ -58,6 +58,21 @@ func (repo PostgresRepository) FindByWarehouseID(warehouseID string) (contacts [
 	return
 }
 
+// FindBySiteID gets list of contact
+func (repo PostgresRepository) FindBySiteID(siteID string) (contacts []entity.Contact, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				c.*
+			FROM 
+				site_contacts cc
+			INNER JOIN contacts c
+				ON cc.site_id = ?
+				AND cc.contact_id = c.id
+				AND cc.deleted_at IS NULL`,
+			siteID).Find(&contacts)
+	return
+}
+
 // Update update contact
 func (repo PostgresRepository) Update(id string, changeset entity.ContactChangeSet) error {
 	_, err := repo.db.Table("contacts").Where("id = ?", id).Update(&changeset)
