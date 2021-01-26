@@ -179,6 +179,64 @@ func parseLimit(limit *int, offset *int) (query string, val []interface{}) {
 	return "LIMIT ? OFFSET ?", []interface{}{l, o}
 }
 
+func parseBoolOperator(operator string, items []map[string]interface{}) (query string, values []interface{}, err error) {
+	switch operator {
+	case "not":
+		for _, item := range items {
+			var q string
+			var v []interface{}
+			q, v, err = parseWhere(item)
+			if err != nil {
+				return
+			}
+
+			if query == "" {
+				query = q
+			} else {
+				query = fmt.Sprintf("%s OR %s", query, q)
+			}
+
+			values = append(values, v...)
+		}
+		query = fmt.Sprintf("NOT (%s)", query)
+	case "and":
+		for _, item := range items {
+			var q string
+			var v []interface{}
+			q, v, err = parseWhere(item)
+			if err != nil {
+				return
+			}
+
+			if query == "" {
+				query = q
+			} else {
+				query = fmt.Sprintf("%s AND %s", query, q)
+			}
+
+			values = append(values, v...)
+		}
+	case "or":
+		for _, item := range items {
+			var q string
+			var v []interface{}
+			q, v, err = parseWhere(item)
+			if err != nil {
+				return
+			}
+
+			if query == "" {
+				query = q
+			} else {
+				query = fmt.Sprintf("%s OR %s", query, q)
+			}
+
+			values = append(values, v...)
+		}
+	}
+	return
+}
+
 func getOperation(key string, op string, value interface{}) (res string, err error) {
 	switch op {
 	case "lte", "<=":
@@ -222,163 +280,81 @@ func getOperation(key string, op string, value interface{}) (res string, err err
 	return
 }
 
-func parseWhere(where map[string]interface{}) (query string, values []interface{}, err error) {
-	for key, val := range where {
-		switch val.(type) {
-		case map[string]interface{}:
-			switch key {
-			case "and":
-				q := ""
-				vs := make([]interface{}, 0)
-				for k, v := range val.(map[string]interface{}) {
-					switch v.(type) {
-					case map[string]interface{}:
-						for field, v1 := range v.(map[string]interface{}) {
-							var where string
-							where, err = getOperation(field, k, v1)
-							if err != nil {
-								return
-							}
-
-							if q != "" {
-								q = fmt.Sprintf("%s OR %s", q, where)
-								if v1 != nil {
-									values = append(values, v1)
-								}
-							} else {
-								q = fmt.Sprintf("%s", where)
-								if v1 != nil {
-									values = append(values, v1)
-								}
-							}
-
-						}
-
-					default:
-						if q != "" {
-							q = fmt.Sprintf("%s AND %s = ?", q, k)
-							if v != nil {
-								values = append(values, v)
-							}
-						} else {
-							q = fmt.Sprintf("%s = ?", q)
-							if v != nil {
-								values = append(values, v)
-							}
-						}
-					}
-
-				}
-				q = fmt.Sprintf("(%s)", q)
-
-				if query != "" {
-					query = fmt.Sprintf("%s AND %s", query, q)
-					if vs != nil {
-						values = append(values, vs)
-					}
-				} else {
-					query = fmt.Sprintf("%s", q)
-					if vs != nil {
-						values = append(values, vs)
-					}
-				}
-			case "or":
-				q := ""
-				vs := make([]interface{}, 0)
-				for k, v := range val.(map[string]interface{}) {
-					switch v.(type) {
-					case map[string]interface{}:
-						for field, v1 := range v.(map[string]interface{}) {
-							var where string
-							where, err = getOperation(field, k, v1)
-							if err != nil {
-								return
-							}
-
-							if q != "" {
-								q = fmt.Sprintf("%s OR %s", q, where)
-								if v1 != nil {
-									values = append(values, v1)
-								}
-							} else {
-								q = fmt.Sprintf("%s", where)
-								if v1 != nil {
-									values = append(values, v1)
-								}
-							}
-
-						}
-
-					default:
-						if q != "" {
-							q = fmt.Sprintf("%s OR %s = ?", q, k)
-							if v != nil {
-								values = append(values, v)
-							}
-						} else {
-							q = fmt.Sprintf("%s = ?", q)
-							if v != nil {
-								values = append(values, v)
-							}
-						}
-					}
-
-				}
-				q = fmt.Sprintf("(%s)", q)
-
-				if query != "" {
-					query = fmt.Sprintf("%s AND %s", query, q)
-					if vs != nil {
-						values = append(values, vs)
-					}
-				} else {
-					query = fmt.Sprintf("%s", q)
-					if vs != nil {
-						values = append(values, vs)
-					}
-				}
-			default:
-				for field, v := range val.(map[string]interface{}) {
-					var where string
-					where, err = getOperation(field, key, v)
-
-					if err != nil {
-						return
-					}
-
-					if query != "" {
-						query = fmt.Sprintf("%s AND %s", query, where)
-						if v != nil {
-							values = append(values, v)
-						}
-
-					} else {
-						query = fmt.Sprintf("%s", where)
-						if v != nil {
-							values = append(values, v)
-						}
-					}
-
-				}
-			}
-		default:
-			var where string
-			where, err = getOperation(key, "eq", val)
-
+func parseValueOperator(attribute string, val interface{}) (query string, values []interface{}, err error) {
+	switch val.(type) {
+	case map[string]interface{}:
+		for op, v := range val.(map[string]interface{}) {
+			q, err := getOperation(attribute, op, v)
 			if err != nil {
+				return query, values, err
+			}
+
+			if query == "" {
+				query = q
+			} else {
+				query = fmt.Sprintf("%s AND %s", query, q)
+			}
+
+			if v != nil {
+				values = append(values, v)
+			}
+		}
+	default:
+		q, err := getOperation(attribute, "=", val)
+		if err != nil {
+			return query, values, err
+		}
+		if query == "" {
+			query = q
+		} else {
+			query = fmt.Sprintf("%s AND %s", query, q)
+		}
+
+		if val != nil {
+			values = append(values, val)
+		}
+	}
+
+	return
+}
+
+func parseWhere(where map[string]interface{}) (query string, values []interface{}, err error) {
+	query = ""
+	for key, val := range where {
+		switch key {
+		case "and", "or", "not":
+			switch val.(type) {
+			case []map[string]interface{}:
+				q, value, err := parseBoolOperator(key, val.([]map[string]interface{}))
+				if err != nil {
+					return query, values, err
+				}
+
+				if query == "" {
+					query = q
+				} else {
+					query = fmt.Sprintf("%s AND %s", query, q)
+				}
+
+				values = append(values, value...)
+			default:
+				err = fmt.Errorf("invalid value for %s", key)
 				return
 			}
-			if query != "" {
-				query = fmt.Sprintf("%s AND %s", query, where)
-				if val != nil {
-					values = append(values, val)
-				}
-			} else {
-				query = fmt.Sprintf("%s", where)
-				if val != nil {
-					values = append(values, val)
-				}
+		default:
+			q, value, err := parseValueOperator(key, val)
+			if err != nil {
+				return query, values, err
 			}
+
+			if query == "" {
+				query = q
+			} else {
+				query = fmt.Sprintf("%s AND %s", query, q)
+			}
+
+			values = append(values, value...)
+
 		}
 	}
 
