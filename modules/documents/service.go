@@ -58,6 +58,11 @@ func (service Service) GetByWorkOrderID(workOrderID string) (documents []entity.
 	return service.storageRepository.FindByWorkOrderID(workOrderID)
 }
 
+// GetBySiteID finds document by site ID
+func (service Service) GetBySiteID(siteID string) (documents []entity.Document, err error) {
+	return service.storageRepository.FindBySiteID(siteID)
+}
+
 // GetByObjectBucketName find document by objectName and bucketName
 func (service Service) GetByObjectBucketName(objectName, bucketName string) (document entity.Document, err error) {
 	return service.storageRepository.FindByObjectBucketName(objectName, bucketName)

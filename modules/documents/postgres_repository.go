@@ -83,6 +83,20 @@ func (repo PostgresRepository) FindByWorkOrderID(workOrderID string) (documents 
 	return
 }
 
+// FindBySiteID find documents by site id
+func (repo PostgresRepository) FindBySiteID(siteID string) (documents []entity.Document, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				d.*
+			FROM 
+				site_documents pd
+			INNER JOIN documents d
+				ON pd.site_id = ?
+				AND pd.document_id = d.id`,
+			siteID).Find(&documents)
+	return
+}
+
 // FindByObjectBucketName finds document by objectName and bucketName
 func (repo PostgresRepository) FindByObjectBucketName(objectName, bucketName string) (document entity.Document, err error) {
 	_, err = repo.db.SQL("SELECT * FROM documents WHERE object_name = ? AND bucket_name = ?", objectName, bucketName).Get(&document)
