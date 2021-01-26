@@ -21,6 +21,7 @@ type Service struct {
 	productSpecifications productspecification.Service
 }
 
+// InitProductService create new product
 func InitProductService(adapters adapters.Adapters) Service {
 	repository := CreatePosgresRepository(adapters.Postgres)
 
@@ -99,7 +100,7 @@ func (service Service) CreateProduct(
 	brandID string,
 	productCategoryID string,
 	productType string,
-	productTags string,
+	productTags []string,
 	lifetime time.Time,
 	maintenanceInterval int,
 	documentIDs []string,
