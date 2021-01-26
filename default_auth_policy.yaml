@@ -5,6 +5,8 @@ policy:
         - method: POST
           route: /auth/login
         - method: POST
+          route: /auth/refresh
+        - method: POST
           route: /auth/logout
         - method: POST
           route: /auth/activation*
