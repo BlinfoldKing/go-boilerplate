@@ -61,6 +61,7 @@ func (h handler) Update(ctx iris.Context) {
 		BrandID:             request.BrandID,
 		ProductCategoryID:   request.ProductCategoryID,
 		Type:                request.Type,
+		Tags:                request.Tags,
 		Lifetime:            request.Lifetime,
 		MaintenanceInterval: request.MaintenanceInterval,
 	})

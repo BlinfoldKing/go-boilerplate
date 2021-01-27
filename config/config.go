@@ -115,6 +115,18 @@ func TOKENDURATION() int {
 	return dur
 }
 
+// REFRESHTOKENDURATION get redis password
+func REFRESHTOKENDURATION() int {
+	res := helper.
+		GetEnv("REFRESH_TOKEN_DURATION", "315360000")
+
+	dur, err := strconv.Atoi(res)
+	if err != nil {
+		return 315360000
+	}
+	return dur
+}
+
 // MINIOENDPOINT gets minio endpoint
 func MINIOENDPOINT() string {
 	return helper.

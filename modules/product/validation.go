@@ -8,7 +8,7 @@ type CreateRequest struct {
 	BrandID             string    `json:"brand_id" validate:"required"`
 	ProductCategoryID   string    `json:"product_category_id" validate:"required"`
 	Type                string    `json:"type" validate:"required"`
-	Tags                string    `json:"tags" validate:"required"`
+	Tags                []string  `json:"tags" validate:"required"`
 	Lifetime            time.Time `json:"lifetime" validate:"required"`
 	MaintenanceInterval int       `json:"maintenance_interval" validate:"required"`
 	DocumentIDs         []string  `json:"document_ids"`
@@ -20,7 +20,7 @@ type UpdateRequest struct {
 	BrandID             string    `json:"brand_id"`
 	ProductCategoryID   string    `json:"product_category_id"`
 	Type                string    `json:"type"`
-	Tags                string    `json:"tags"`
+	Tags                []string  `json:"tags"`
 	Lifetime            time.Time `json:"lifetime"`
 	MaintenanceInterval int       `json:"maintenance_interval"`
 }

@@ -51,4 +51,5 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	auth.Post("/activation:request", middlewares.ValidateBody(&ActivateAccountRequest{}),
 		handler.ActivateAccountRequest)
 	auth.Post("/activation:verify", handler.VerifyActivationRequest)
+	auth.Post("/refresh", middlewares.RefreshToken)
 }

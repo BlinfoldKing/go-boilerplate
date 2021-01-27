@@ -24,6 +24,9 @@ var AuthenticateToken func(iris.Context)
 // InvalidateToken invalidate token
 var InvalidateToken func(iris.Context)
 
+// RefreshToken refresh token
+var RefreshToken func(iris.Context)
+
 // InitJWT init JWT struct
 func InitJWT(adapters adapters.Adapters) error {
 	key, err := ioutil.ReadFile(".keys/public.pem")
@@ -39,6 +42,15 @@ func InitJWT(adapters adapters.Adapters) error {
 		SigningMethod: jwt.SigningMethodHS256,
 	})
 
+	refrshJ := jwt.New(jwt.Config{
+		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+			return []byte(key), nil
+		},
+		Extractor:     jwt.FromParameter("refresh_token"),
+		Expiration:    true,
+		SigningMethod: jwt.SigningMethodHS256,
+	})
+
 	verifyToken := func(ctx iris.Context) (user entity.UserGroup, err error) {
 
 		if err = j.CheckJWT(ctx); err != nil {
@@ -48,20 +60,54 @@ func InitJWT(adapters adapters.Adapters) error {
 		token := ctx.Values().Get("jwt").(*jwt.Token)
 		claim := token.Claims.(jwt.MapClaims)
 		userid := claim["user_id"].(string)
+		purpose := claim["purpose"].(string)
 
-		data, err := adapters.Redis.Get(fmt.Sprintf("logged:user:%s", userid)).Result()
-		if err != nil {
+		if purpose == "auth" {
+			var data string
+			data, err = adapters.Redis.Get(fmt.Sprintf("logged:user:%s", userid)).Result()
+			if err != nil {
+				return
+			}
+
+			json.Unmarshal([]byte(data), &user)
 			return
 		}
 
-		json.Unmarshal([]byte(data), &user)
+		return user, fmt.Errorf("invalid token purpose")
 
 		return
 	}
 
+	verifyRefreshToken := func(ctx iris.Context) (user entity.UserGroup, err error) {
+		if err = refrshJ.CheckJWT(ctx); err != nil {
+			return
+		}
+
+		token := ctx.Values().Get("jwt").(*jwt.Token)
+		claim := token.Claims.(jwt.MapClaims)
+		userid := claim["user_id"].(string)
+		purpose := claim["purpose"].(string)
+
+		if purpose == "refresh" {
+			var data string
+			data, err = adapters.Redis.Get(fmt.Sprintf("refresh:user:%s", userid)).Result()
+			if err != nil {
+				return
+			}
+
+			json.Unmarshal([]byte(data), &user)
+			return
+		}
+
+		return user, fmt.Errorf("invalid token purpose")
+	}
+
 	GenerateToken = func(ctx iris.Context) {
 		now := time.Now()
-		duration := time.Duration(config.TOKENDURATION()) * time.Second
+		var (
+			duration        = time.Duration(config.TOKENDURATION()) * time.Second
+			refreshDuration = time.Duration(config.REFRESHTOKENDURATION()) * time.Second
+		)
 
 		u := ctx.Values().Get("user")
 		user := u.(entity.UserGroup)
@@ -70,9 +116,18 @@ func InitJWT(adapters adapters.Adapters) error {
 			"user_id": user.ID,
 			"iat":     now.Unix(),
 			"exp":     now.Add(duration).Unix(),
+			"purpose": "auth",
+		})
+
+		refreshToken := jwt.NewTokenWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"user_id": user.ID,
+			"iat":     now.Unix(),
+			"exp":     now.Add(refreshDuration).Unix(),
+			"purpose": "refresh",
 		})
 
 		tokenString, _ := token.SignedString(key)
+		refreshTokenString, _ := refreshToken.SignedString(key)
 
 		data, err := json.Marshal(user)
 		if err != nil {
@@ -83,7 +138,16 @@ func InitJWT(adapters adapters.Adapters) error {
 			return
 		}
 
-		err = adapters.Redis.SetNX(fmt.Sprintf("logged:user:%s", user.ID), data, 0).Err()
+		err = adapters.Redis.SetNX(fmt.Sprintf("logged:user:%s", user.ID), data, duration).Err()
+		if err != nil {
+			helper.
+				CreateErrorResponse(ctx, err).
+				InternalServer().
+				JSON()
+			return
+		}
+
+		err = adapters.Redis.SetNX(fmt.Sprintf("refresh:user:%s", user.ID), data, refreshDuration).Err()
 		if err != nil {
 			helper.
 				CreateErrorResponse(ctx, err).
@@ -95,12 +159,24 @@ func InitJWT(adapters adapters.Adapters) error {
 		helper.CreateResponse(ctx).
 			Ok().
 			WithData(iris.Map{
-				"token": tokenString,
-				"user":  user,
+				"token":         tokenString,
+				"refresh_token": refreshTokenString,
+				"user":          user,
 			}).
 			JSON()
 
 		ctx.Next()
+	}
+
+	RefreshToken = func(ctx iris.Context) {
+		user, err := verifyRefreshToken(ctx)
+		if err != nil {
+			helper.CreateErrorResponse(ctx, err)
+			return
+		}
+
+		ctx.Values().Set("user", user)
+		GenerateToken(ctx)
 	}
 
 	AuthenticateToken = func(ctx iris.Context) {

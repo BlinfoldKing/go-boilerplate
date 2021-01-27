@@ -185,6 +185,16 @@ func processFilter(f interface{}) interface{} {
 			return nil
 		case 1:
 			return processFilter(filter[0])
+		case 2:
+			if filter[0] == "!" || filter[0] == "not" {
+				op1 := processFilter(filter[1]).(map[string]interface{})
+
+				return map[string]interface{}{
+					"not": []interface{}{
+						op1,
+					},
+				}
+			}
 		case 3:
 			switch filter[1].(type) {
 			case string:
@@ -192,24 +202,23 @@ func processFilter(f interface{}) interface{} {
 					op1 := processFilter(filter[0]).(map[string]interface{})
 					op2 := processFilter(filter[2]).(map[string]interface{})
 
-					for key, val := range op1 {
-						result[key] = val
+					res := map[string]interface{}{
+						"and": []map[string]interface{}{
+							op1,
+							op2,
+						},
 					}
 
-					for key, val := range op2 {
-						result[key] = val
-					}
-
-					return map[string]interface{}{
-						"and": result,
-					}
+					return res
 
 				}
-				return map[string]interface{}{
-					filter[1].(string): map[string]interface{}{
-						filter[0].(string): processFilter(filter[2]),
+				res := map[string]interface{}{
+					filter[0].(string): map[string]interface{}{
+						filter[1].(string): processFilter(filter[2]),
 					},
 				}
+
+				return res
 			}
 		}
 		return result
