@@ -1,6 +1,6 @@
 -- +migrate Up
 CREATE TABLE IF NOT EXISTS "otps" (
-    "token" UUID NOT NULL PRIMARY KEY,
+    "token" VARCHAR NOT NULL PRIMARY KEY,
     "email" TEXT NOT NULL,
     "purpose" INT NOT NULL,
     "expired_at" TIMESTAMP WITH TIME ZONE,
