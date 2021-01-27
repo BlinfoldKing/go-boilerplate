@@ -188,6 +188,20 @@ func NATSURI() string {
 
 }
 
+// NATSCLUSTERID gets nats uri
+func NATSCLUSTERID() string {
+	return helper.
+		GetEnv("NATS_CLUSTER_ID", "nats_streaming")
+
+}
+
+// NATSCLIENTID gets nats uri
+func NATSCLIENTID() string {
+	return helper.
+		GetEnv("NATS_CLIENT_ID", "nats_streaming")
+
+}
+
 // EMAILACTIVATION gets whether or not email activation is needed
 func EMAILACTIVATION() bool {
 	activation, _ := strconv.ParseBool(

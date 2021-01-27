@@ -5,17 +5,22 @@ import (
 	"go-boilerplate/config"
 	"go-boilerplate/helper"
 
-	"github.com/nats-io/nats.go"
+	"github.com/nats-io/stan.go"
 )
 
 // Nats nats client
 type Nats struct {
-	*nats.Conn
+	stan.Conn
 }
 
 // Init create new nats instance
 func Init() (*Nats, error) {
-	nc, err := nats.Connect(config.NATSURI())
+	nc, err := stan.Connect(
+		config.NATSCLUSTERID(),
+		config.NATSCLIENTID(),
+		stan.NatsURL(config.NATSURI()),
+	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +36,7 @@ type Worker = func(T interface{})
 
 // NewQueue create new queue return publisher
 func (queue *Nats) NewQueue(topic string, worker Worker, messageType interface{}) Push {
-	queue.Conn.Subscribe(topic, func(m *nats.Msg) {
+	queue.Conn.Subscribe(topic, func(m *stan.Msg) {
 		err := json.Unmarshal(m.Data, &messageType)
 		if err != nil {
 			helper.Logger.Error(err)

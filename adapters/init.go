@@ -106,7 +106,10 @@ func Init() (Adapters, error) {
 
 	neo4j, err := neo.Init()
 	if err != nil {
-		return Adapters{}, err
+		helper.
+			Logger.
+			WithField("error", err).
+			Warn("failed to connect to neo4j")
 	}
 
 	gomail := mailer.Init()
