@@ -104,6 +104,10 @@ func (service Service) CreateProduct(
 	lifetime time.Time,
 	maintenanceInterval int,
 	documentIDs []string,
+	productSpecifications []struct {
+		Parameter string `json:"parameter" validate:"required"`
+		Value     string `json:"value" validate:"required"`
+	},
 ) (product entity.Product, err error) {
 	product, err = entity.NewProduct(
 		name,
@@ -118,8 +122,23 @@ func (service Service) CreateProduct(
 		return
 	}
 	err = service.repository.Save(product)
+	if err != nil {
+		return
+	}
 
 	_, err = service.productDocuments.CreateBatchProductDocument(product.ID, documentIDs)
+	if err != nil {
+		return
+	}
+
+	for _, spec := range productSpecifications {
+		_, err = service.productSpecifications.CreateProductSpecification(product.ID, spec.Parameter, spec.Value)
+
+		if err != nil {
+			return
+		}
+	}
+
 	return
 }
 

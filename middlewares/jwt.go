@@ -74,8 +74,6 @@ func InitJWT(adapters adapters.Adapters) error {
 		}
 
 		return user, fmt.Errorf("invalid token purpose")
-
-		return
 	}
 
 	verifyRefreshToken := func(ctx iris.Context) (user entity.UserGroup, err error) {

@@ -12,6 +12,10 @@ type CreateRequest struct {
 	Lifetime            time.Time `json:"lifetime" validate:"required"`
 	MaintenanceInterval int       `json:"maintenance_interval" validate:"required"`
 	DocumentIDs         []string  `json:"document_ids"`
+	Specifications      []struct {
+		Parameter string `json:"parameter" validate:"required"`
+		Value     string `json:"value" validate:"required"`
+	} `json:"specifications" validate:"required"`
 }
 
 // UpdateRequest request for update product
