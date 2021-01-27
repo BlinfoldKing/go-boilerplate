@@ -10,6 +10,7 @@ type Service struct {
 	repository Repository
 }
 
+// InitProductSpecificationService create product specification servie
 func InitProductSpecificationService(adapters adapters.Adapters) Service {
 	repository := CreatePostgresRepository(adapters.Postgres)
 	return CreateService(repository)
@@ -50,6 +51,7 @@ func (service Service) GetByID(id string) (productSpecification entity.ProductSp
 	return service.repository.FindByID(id)
 }
 
+// GetByProductID get productSpecification by id
 func (service Service) GetByProductID(productID string) (productSpecifications []entity.ProductSpecification, err error) {
 	return service.repository.FindByProductID(productID)
 }
