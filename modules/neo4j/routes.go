@@ -17,4 +17,6 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	neo4j := prefix.Party(name)
 	neo4j.Post("/nodes", middlewares.ValidateBody(&CreateRequestNodes{}), handler.CreateNodes)
 	neo4j.Post("/edges", middlewares.ValidateBody(&CreateRequestEdges{}), handler.CreateEdges)
+	neo4j.Delete("/nodes", middlewares.ValidateBody(&CreateRequestNodes{}), handler.DeleteNodes)
+	neo4j.Delete("/edges", middlewares.ValidateBody(&CreateRequestNodes{}), handler.DeleteRelation)
 }

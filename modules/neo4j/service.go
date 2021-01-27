@@ -21,3 +21,15 @@ func (service Service) CreateRelation(sourceProps PropertiesVal, destProp Proper
 	err = service.repository.CreateRelation(sourceProps, destProp)
 	return
 }
+
+// DeleteNode create new node
+func (service Service) DeleteNode(label string, data map[string]interface{}) (err error)  {
+	err = service.repository.DeleteNode(label, data)
+	return
+}
+
+// DeleteRelation create new relation
+func (service Service) DeleteRelation(label string, data map[string]interface{}) (err error)  {
+	err = service.repository.DeleteRelation(label, data)
+	return
+}
