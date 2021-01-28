@@ -61,6 +61,7 @@ func (h handler) Update(ctx iris.Context) {
 		BrandID:             request.BrandID,
 		ProductCategoryID:   request.ProductCategoryID,
 		Type:                request.Type,
+		Tags:                request.Tags,
 		Lifetime:            request.Lifetime,
 		MaintenanceInterval: request.MaintenanceInterval,
 	})
@@ -74,6 +75,7 @@ func (h handler) Update(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithData(product).JSON()
 	ctx.Next()
 }
+
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
 	product, err := h.products.CreateProduct(
@@ -85,6 +87,7 @@ func (h handler) Create(ctx iris.Context) {
 		request.Lifetime,
 		request.MaintenanceInterval,
 		request.DocumentIDs,
+		request.Specifications,
 	)
 	if err != nil {
 		helper.
