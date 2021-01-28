@@ -98,8 +98,11 @@ func (service Service) CreateWorkOrder(
 	name,
 	description string,
 	workOrderType entity.WorkOrderType,
-	involvedIDs,
-	assetIDs,
+	involvedIDs []string,
+	assets []struct {
+		ID  string `json:"id" validate:"required"`
+		Qty int    `json:"qty" validate:"required"`
+	},
 	documentIDs []string,
 ) (workOrder entity.WorkOrder, err error) {
 	workOrder, err = entity.NewWorkOrder(
@@ -116,7 +119,7 @@ func (service Service) CreateWorkOrder(
 		return
 	}
 
-	_, err = service.workOrderAssets.CreateBatchWorkOrderAssets(workOrder.ID, assetIDs)
+	_, err = service.workOrderAssets.CreateBatchWorkOrderAssets(workOrder.ID, assets)
 	if err != nil {
 		return
 	}
