@@ -203,7 +203,7 @@ func processFilter(f interface{}) interface{} {
 					op2 := processFilter(filter[2]).(map[string]interface{})
 
 					res := map[string]interface{}{
-						"and": []map[string]interface{}{
+						filter[1].(string): []map[string]interface{}{
 							op1,
 							op2,
 						},
@@ -217,6 +217,8 @@ func processFilter(f interface{}) interface{} {
 						filter[1].(string): processFilter(filter[2]),
 					},
 				}
+
+				fmt.Println(res)
 
 				return res
 			}
