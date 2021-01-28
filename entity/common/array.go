@@ -16,6 +16,7 @@ func (arr *StrArr) FromDB(bts []byte) error {
 	}
 
 	str := string(bts)
+	str = strings.ReplaceAll(str, `"`, "")
 	if strings.HasPrefix(str, "{") {
 		str = str[1:]
 	}
