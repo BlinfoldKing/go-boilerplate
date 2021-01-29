@@ -15,7 +15,7 @@ type Product struct {
 	ProductCategoryID   string        `json:"product_category_id" xorm:"product_category_id"`
 	Type                string        `json:"type" xorm:"type"`
 	Tags                common.StrArr `json:"tags" xorm:"tags"`
-	Lifetime            time.Time     `json:"lifetime" xorm:"lifetime"`
+	Lifetime            int           `json:"lifetime" xorm:"lifetime"`
 	MaintenanceInterval int           `json:"maintenance_interval" xorm:"maintenance_interval"`
 	CreatedAt           time.Time     `json:"created_at" xorm:"created"`
 	UpdatedAt           time.Time     `json:"updated_at" xorm:"updated"`
@@ -38,7 +38,7 @@ type ProductChangeSet struct {
 	ProductCategoryID   string        `json:"product_category_id" xorm:"product_category_id"`
 	Type                string        `json:"type" xorm:"type"`
 	Tags                common.StrArr `json:"tags" xorm:"tags"`
-	Lifetime            time.Time     `json:"lifetime" xorm:"lifetime"`
+	Lifetime            int           `json:"lifetime" xorm:"lifetime"`
 	MaintenanceInterval int           `json:"maintenance_interval" xorm:"maintenance_interval"`
 }
 
@@ -49,7 +49,7 @@ func NewProduct(
 	productCategoryID string,
 	productType string,
 	productTags []string,
-	lifetime time.Time,
+	lifetime int,
 	maintenanceInterval int,
 
 ) (product Product, err error) {
