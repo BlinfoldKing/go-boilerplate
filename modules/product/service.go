@@ -8,7 +8,6 @@ import (
 	productcategory "go-boilerplate/modules/product_category"
 	productdocument "go-boilerplate/modules/product_document"
 	productspecification "go-boilerplate/modules/product_specification"
-	"time"
 )
 
 // Service contains business logic
@@ -101,7 +100,7 @@ func (service Service) CreateProduct(
 	productCategoryID string,
 	productType string,
 	productTags []string,
-	lifetime time.Time,
+	lifetime int,
 	maintenanceInterval int,
 	documentIDs []string,
 	productSpecifications []struct {
