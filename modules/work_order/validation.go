@@ -7,7 +7,10 @@ type CreateRequest struct {
 	Type        int      `json:"type" validate:"required"`
 	Description string   `json:"description" validate:"required"`
 	InvolvedIDs []string `json:"involved_ids"`
-	AssetIDs    []string `json:"asset_ids"`
+	Assets      []struct {
+		ID  string `json:"id" validate:"required"`
+		Qty int    `json:"qty" validate:"required"`
+	} `json:"assets"`
 	DocumentIDs []string `json:"document_ids"`
 }
 

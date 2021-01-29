@@ -10,6 +10,7 @@ type Service struct {
 	repository Repository
 }
 
+// InitWorkOrderAssetService create new workorderasset
 func InitWorkOrderAssetService(adapters adapters.Adapters) Service {
 	repository := CreatePostgresRepository(adapters.Postgres)
 	return CreateService(repository)
@@ -21,8 +22,8 @@ func CreateService(repo Repository) Service {
 }
 
 // CreateWorkOrderAsset create new work_order_asset
-func (service Service) CreateWorkOrderAsset(workOrderID, assetID string) (workOrderAsset entity.WorkOrderAsset, err error) {
-	workOrderAsset, err = entity.NewWorkOrderAsset(workOrderID, assetID)
+func (service Service) CreateWorkOrderAsset(workOrderID, assetID string, qty int) (workOrderAsset entity.WorkOrderAsset, err error) {
+	workOrderAsset, err = entity.NewWorkOrderAsset(workOrderID, assetID, qty)
 	if err != nil {
 		return
 	}
@@ -31,9 +32,12 @@ func (service Service) CreateWorkOrderAsset(workOrderID, assetID string) (workOr
 }
 
 // CreateBatchWorkOrderAssets creates a batch of new workorderAssets
-func (service Service) CreateBatchWorkOrderAssets(workorderID string, assetIDs []string) (workorderAssets []entity.WorkOrderAsset, err error) {
-	for _, assetID := range assetIDs {
-		workorderAsset, err := entity.NewWorkOrderAsset(workorderID, assetID)
+func (service Service) CreateBatchWorkOrderAssets(workorderID string, assets []struct {
+	ID  string `json:"id" validate:"required"`
+	Qty int    `json:"qty" validate:"required"`
+}) (workorderAssets []entity.WorkOrderAsset, err error) {
+	for _, asset := range assets {
+		workorderAsset, err := entity.NewWorkOrderAsset(workorderID, asset.ID, asset.Qty)
 		if err != nil {
 			return []entity.WorkOrderAsset{}, err
 		}
