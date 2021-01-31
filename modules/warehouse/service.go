@@ -14,6 +14,7 @@ type Service struct {
 	warehouseContacts warehousecontact.Service
 }
 
+// InitWarehouseService warehouse
 func InitWarehouseService(adapters adapters.Adapters) Service {
 	repository := CreatePosgresRepository(adapters.Postgres)
 	contactService := contact.InitContactService(adapters)
@@ -88,6 +89,11 @@ func (service Service) GetByID(id string) (warehouseGroup entity.WarehouseGroup,
 		Warehouse: warehouse,
 		Contacts:  contacts,
 	}, err
+}
+
+// GetAllByAssetID get all workhouse by work order id
+func (service Service) GetAllByAssetID(assetID string) (assets []entity.Warehouse, err error) {
+	return service.repository.GetAllWarehousebyAssetID(assetID)
 }
 
 // DeleteByID delete warehouseby id

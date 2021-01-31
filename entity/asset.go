@@ -19,6 +19,14 @@ type Asset struct {
 	DeletedAt         *time.Time `json:"deleted_at"`
 }
 
+// AssetGroup asset with mapped data
+type AssetGroup struct {
+	Asset
+	Product   ProductGroup
+	Warehouse []Warehouse
+	Company   CompanyGroup
+}
+
 // AssetChangeSet change set forasset
 type AssetChangeSet struct {
 	ProductID         string    `json:"-" xorm:"product_id"`
