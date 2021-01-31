@@ -99,6 +99,7 @@ func (service Service) CreateWorkOrder(
 	description string,
 	workOrderType entity.WorkOrderType,
 	involvedIDs []string,
+	status int,
 	assets []struct {
 		ID  string `json:"id" validate:"required"`
 		Qty int    `json:"qty" validate:"required"`
@@ -110,6 +111,7 @@ func (service Service) CreateWorkOrder(
 		name,
 		description,
 		workOrderType,
+		status,
 	)
 	if err != nil {
 		return

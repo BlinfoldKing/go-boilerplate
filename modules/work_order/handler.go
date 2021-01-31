@@ -84,6 +84,7 @@ func (h handler) Create(ctx iris.Context) {
 		request.Description,
 		request.Type,
 		request.InvolvedIDs,
+		request.Status,
 		request.Assets,
 		request.DocumentIDs,
 	)

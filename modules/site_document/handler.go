@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	siteDocument Service
-	adapters     adapters.Adapters
+	siteDocuments Service
+	adapters      adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	siteDocument, count, err := h.siteDocument.GetList(request)
+	siteDocuments, count, err := h.siteDocuments.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,13 +24,12 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, siteDocument, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, siteDocuments, count).JSON()
 	ctx.Next()
 }
-
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	siteDocument, err := h.siteDocument.GetByID(id)
+	siteDocument, err := h.siteDocuments.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -41,10 +40,9 @@ func (h handler) GetByID(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithData(siteDocument).JSON()
 	ctx.Next()
 }
-
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.siteDocument.DeleteByID(id)
+	err := h.siteDocuments.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -55,13 +53,14 @@ func (h handler) DeleteByID(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithMessage(fmt.Sprintf("%s deleted", id)).JSON()
 	ctx.Next()
 }
-
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	siteDocument, err := h.siteDocument.Update(id, entity.SiteDocumentChangeSet{
-		DocumentID: request.DocumentID,
-		SiteID:     request.SiteID,
+	siteDocument, err := h.siteDocuments.Update(id, entity.SiteDocumentChangeSet{
+		DocumentID:    request.DocumentID,
+		SiteID:        request.SiteID,
+		ApproveStatus: request.ApproveStatus,
+		Notes:         request.Notes,
 	})
 	if err != nil {
 		helper.
@@ -73,10 +72,14 @@ func (h handler) Update(ctx iris.Context) {
 	helper.CreateResponse(ctx).Ok().WithData(siteDocument).JSON()
 	ctx.Next()
 }
-
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	siteDocument, err := h.siteDocument.CreateSiteDocument(request.DocumentID, request.SiteID)
+	siteDocument, err := h.siteDocuments.CreateSiteDocument(
+		request.DocumentID,
+		request.SiteID,
+		request.ApproveStatus,
+		request.Notes,
+	)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

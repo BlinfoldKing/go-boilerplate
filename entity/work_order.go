@@ -9,21 +9,87 @@ import (
 // WorkOrderType work order type
 type WorkOrderType = int
 
+// StatusType status type
+type StatusType = int
+
 const (
-	// SiteAcquisitionType site acquisition
-	SiteAcquisitionType WorkOrderType = 0
-	// CMEType cme
-	CMEType WorkOrderType = 1
-	// InstallationAndCommissioningType installation and commissioning
-	InstallationAndCommissioningType WorkOrderType = 2
-	// PreventiveMaintenanceType preventive maintenance type
-	PreventiveMaintenanceType WorkOrderType = 3
-	// CorrectiveMaintenanceType corrective maintenance type
-	CorrectiveMaintenanceType WorkOrderType = 4
-	// InternalAuditType internal audit type
-	InternalAuditType WorkOrderType = 5
-	// ExternalAuditType external external audit type
-	ExternalAuditType WorkOrderType = 6
+	// Installation :nodoc
+	Installation WorkOrderType = iota
+	// Maintenance cme
+	Maintenance
+	// Troubleshooting :nodoc
+	Troubleshooting
+	// Assesment :nodoc
+	Assesment
+	// Audit :nodoc
+	Audit
+)
+
+const (
+	// InstallationDelivery :nodoc
+	InstallationDelivery StatusType = iota
+	// InstallationCheckpoint :nodoc
+	InstallationCheckpoint
+	// InstallationCheckin :nodoc
+	InstallationCheckin
+	// InstallationInstalling :nodoc
+	InstallationInstalling
+	// InstallationVerification :nodoc
+	InstallationVerification
+	// InstallationComplete :nodoc
+	InstallationComplete
+
+	// MaintenanceIssued :nodoc
+	MaintenanceIssued
+	// MaintenanceCheckpoint :nodoc
+	MaintenanceCheckpoint
+	// MaintenanceCheckin :nodoc
+	MaintenanceCheckin
+	// MaintenanceMaintenance :nodoc
+	MaintenanceMaintenance
+	// MaintenanceVerification :nodoc
+	MaintenanceVerification
+	// MaintenanceComplete :nodoc
+	MaintenanceComplete
+
+	// TroubleshootingIssued :nodoc
+	TroubleshootingIssued
+	// TroubleshootingCheckpoint :nodoc
+	TroubleshootingCheckpoint
+	// TroubleshootingCheckin :nodoc
+	TroubleshootingCheckin
+	// TroubleshootingTroubleshooting :nodoc
+	TroubleshootingTroubleshooting
+	// TroubleshootingVerification :nodoc
+	TroubleshootingVerification
+	// TroubleshootingComplete :nodoc
+	TroubleshootingComplete
+
+	// AssestmentIssued :nodoc
+	AssestmentIssued
+	// AssestmentCheckpoint :nodoc
+	AssestmentCheckpoint
+	// AssestmentCheckin :nodoc
+	AssestmentCheckin
+	// AssestmentAssestment :nodoc
+	AssestmentAssestment
+	// AssestmentVerification :nodoc
+	AssestmentVerification
+	// AssestmentComplete :nodoc
+	AssestmentComplete
+
+	// AuditIssued :nodoc
+	AuditIssued
+	// AuditCheckpoint :nodoc
+	AuditCheckpoint
+	// AuditCheckin :nodoc
+	AuditCheckin
+	// AuditAudit :nodoc
+	AuditAudit
+	// AuditVerification :nodoc
+	AuditVerification
+	// AuditComplete :nodoc
+	AuditComplete
 )
 
 // WorkOrder work_order entity
@@ -32,6 +98,7 @@ type WorkOrder struct {
 	PICID       string        `json:"pic_id" xorm:"pic_id"`
 	Name        string        `json:"name" xorm:"name"`
 	Type        WorkOrderType `json:"type" xorm:"type"`
+	Status      StatusType    `json:"status" xorm:"status"`
 	Description string        `json:"description" xorm:"description"`
 	CreatedAt   time.Time     `json:"created_at" xorm:"created"`
 	UpdatedAt   time.Time     `json:"updated_at" xorm:"updated"`
@@ -51,17 +118,19 @@ type WorkOrderChangeSet struct {
 	PICID       string        `json:"pic_id" xorm:"pic_id"`
 	Name        string        `json:"name" xorm:"name"`
 	Type        WorkOrderType `json:"type" xorm:"type"`
+	Status      StatusType    `json:"status" xorm:"status"`
 	Description string        `json:"description" xorm:"description"`
 }
 
 // NewWorkOrder create newwork_order
-func NewWorkOrder(picid, name, description string, workOrderType WorkOrderType) (workOrder WorkOrder, err error) {
+func NewWorkOrder(picid, name, description string, workOrderType WorkOrderType, status StatusType) (workOrder WorkOrder, err error) {
 	workOrder = WorkOrder{
 		ID:          uuid.NewV4().String(),
 		PICID:       picid,
 		Name:        name,
 		Type:        workOrderType,
 		Description: description,
+		Status:      status,
 	}
 	return
 }
