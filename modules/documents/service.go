@@ -1,6 +1,7 @@
 package documents
 
 import (
+	"fmt"
 	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 	"time"
@@ -14,6 +15,7 @@ type Service struct {
 	fileRepository    FileRepository
 }
 
+// InitDocumentsService init document service
 func InitDocumentsService(adapters adapters.Adapters) Service {
 	storageRepository := CreatePostgresRepository(adapters.Postgres)
 	fileRepository := CreateMinioRepository(adapters.Minio)
@@ -70,7 +72,7 @@ func (service Service) GetByObjectBucketName(objectName, bucketName string) (doc
 
 // UploadDocument gets the presigned put link for the object
 func (service Service) UploadDocument(objectName, bucketName string) (url string, err error) {
-	objectName = time.Now().Format(time.RFC3339) + "_" + objectName
+	objectName = fmt.Sprintf("%d", time.Now().Unix()) + "-" + objectName
 	return service.fileRepository.GeneratePutURL(objectName, bucketName)
 }
 
