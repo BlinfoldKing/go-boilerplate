@@ -11,4 +11,5 @@ type Repository interface {
 	FindByID(id string) (entity.Warehouse, error)
 	Update(id string, changeset entity.WarehouseChangeSet) error
 	GetList(pagination entity.Pagination) (Warehouses []entity.Warehouse, count int, err error)
+	GetAllWarehousebyAssetID(id string) (warehouse []entity.Warehouse, err error)
 }

@@ -1,4 +1,4 @@
-package sitedocument
+package templates
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	siteDocuments Service
-	adapters      adapters.Adapters
+	templatess Service
+	adapters   adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	siteDocuments, count, err := h.siteDocuments.GetList(request)
+	templatess, count, err := h.templatess.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,12 +24,12 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, siteDocuments, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, templatess, count).JSON()
 	ctx.Next()
 }
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	siteDocument, err := h.siteDocuments.GetByID(id)
+	templates, err := h.templatess.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -37,12 +37,12 @@ func (h handler) GetByID(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(siteDocument).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(templates).JSON()
 	ctx.Next()
 }
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.siteDocuments.DeleteByID(id)
+	err := h.templatess.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -56,11 +56,9 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	siteDocument, err := h.siteDocuments.Update(id, entity.SiteDocumentChangeSet{
-		DocumentID:    request.DocumentID,
-		SiteID:        request.SiteID,
-		ApproveStatus: request.ApproveStatus,
-		Notes:         request.Notes,
+	templates, err := h.templatess.Update(id, entity.TemplatesChangeSet{
+		Name:        request.Name,
+		Description: request.Description,
 	})
 	if err != nil {
 		helper.
@@ -69,17 +67,12 @@ func (h handler) Update(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(siteDocument).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(templates).JSON()
 	ctx.Next()
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	siteDocument, err := h.siteDocuments.CreateSiteDocument(
-		request.DocumentID,
-		request.SiteID,
-		request.ApproveStatus,
-		request.Notes,
-	)
+	templates, err := h.templatess.CreateTemplates(request.Name, request.Description)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -87,6 +80,6 @@ func (h handler) Create(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(siteDocument).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(templates).JSON()
 	ctx.Next()
 }

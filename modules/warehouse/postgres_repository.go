@@ -45,3 +45,17 @@ func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Table("warehouses").Where("id = ?", id).Delete(&entity.Warehouse{})
 	return err
 }
+
+// GetAllWarehousebyAssetID get all warehouse
+func (repo PostgresRepository) GetAllWarehousebyAssetID(id string) (warehouse []entity.Warehouse, err error) {
+	err = repo.db.
+		SQL(`SELECT
+				w.*
+			FROM
+				warehouse w
+			INNER JOIN asset_warehouses aw
+				ON aw.asset_id = ?
+			`, id).Find(&warehouse)
+
+	return
+}

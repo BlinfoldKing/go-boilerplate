@@ -25,8 +25,20 @@ func CreateService(repo Repository) Service {
 }
 
 // CreateSiteDocument create new siteDocument
-func (service Service) CreateSiteDocument(documentID string, siteID string) (siteDocument entity.SiteDocument, err error) {
-	siteDocument, err = entity.NewSiteDocument(documentID, siteID)
+func (service Service) CreateSiteDocument(
+	documentID string,
+	siteID string,
+	approveStatus int,
+	notes string,
+
+) (siteDocument entity.SiteDocument, err error) {
+	siteDocument = entity.NewSiteDocument(
+		documentID,
+		siteID,
+		approveStatus,
+		notes,
+	)
+
 	if err != nil {
 		return
 	}
@@ -37,7 +49,7 @@ func (service Service) CreateSiteDocument(documentID string, siteID string) (sit
 // CreateBatchSiteDocument creates a batch of new siteDocuments
 func (service Service) CreateBatchSiteDocument(siteID string, documentIDs []string) (siteDocuments []entity.SiteDocument, err error) {
 	for _, documentID := range documentIDs {
-		siteDocument, err := entity.NewSiteDocument(documentID, siteID)
+		siteDocument := entity.NewSiteDocument(documentID, siteID, 0, "")
 		if err != nil {
 			return []entity.SiteDocument{}, err
 		}

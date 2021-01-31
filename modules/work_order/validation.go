@@ -5,9 +5,13 @@ type CreateRequest struct {
 	PICID       string   `json:"pic_id" validate:"required"`
 	Name        string   `json:"name" validate:"required"`
 	Type        int      `json:"type" validate:"required"`
+	Status      int      `json:"status" validate:"required"`
 	Description string   `json:"description" validate:"required"`
 	InvolvedIDs []string `json:"involved_ids"`
-	AssetIDs    []string `json:"asset_ids"`
+	Assets      []struct {
+		ID  string `json:"id" validate:"required"`
+		Qty int    `json:"qty" validate:"required"`
+	} `json:"assets"`
 	DocumentIDs []string `json:"document_ids"`
 }
 
@@ -16,5 +20,6 @@ type UpdateRequest struct {
 	PICID       string `json:"pic_id"`
 	Name        string `json:"name"`
 	Type        int    `json:"type"`
+	Status      int    `json:"status"`
 	Description string `json:"description"`
 }
