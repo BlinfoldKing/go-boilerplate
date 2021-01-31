@@ -3,6 +3,7 @@ package documents
 import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
+	"strconv"
 	"time"
 
 	"github.com/satori/uuid"
@@ -14,6 +15,7 @@ type Service struct {
 	fileRepository    FileRepository
 }
 
+// InitDocumentsService init document service
 func InitDocumentsService(adapters adapters.Adapters) Service {
 	storageRepository := CreatePostgresRepository(adapters.Postgres)
 	fileRepository := CreateMinioRepository(adapters.Minio)
@@ -58,6 +60,11 @@ func (service Service) GetByWorkOrderID(workOrderID string) (documents []entity.
 	return service.storageRepository.FindByWorkOrderID(workOrderID)
 }
 
+// GetBySiteID finds document by site ID
+func (service Service) GetBySiteID(siteID string) (documents []entity.Document, err error) {
+	return service.storageRepository.FindBySiteID(siteID)
+}
+
 // GetByObjectBucketName find document by objectName and bucketName
 func (service Service) GetByObjectBucketName(objectName, bucketName string) (document entity.Document, err error) {
 	return service.storageRepository.FindByObjectBucketName(objectName, bucketName)
@@ -65,7 +72,8 @@ func (service Service) GetByObjectBucketName(objectName, bucketName string) (doc
 
 // UploadDocument gets the presigned put link for the object
 func (service Service) UploadDocument(objectName, bucketName string) (url string, err error) {
-	objectName = time.Now().Format(time.RFC3339) + "_" + objectName
+	now := time.Now().UnixNano() / 1000000
+	objectName = strconv.FormatInt(now, 10) + "-" + objectName
 	return service.fileRepository.GeneratePutURL(objectName, bucketName)
 }
 

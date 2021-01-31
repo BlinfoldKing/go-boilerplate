@@ -60,3 +60,49 @@ func (repo Neo4jRepository) CreateRelation(sourceProps PropertiesVal, destProp P
 
 	return err
 }
+
+// DeleteNode create single relation to neo4j
+func (repo Neo4jRepository) DeleteNode(label string, properties map[string]interface{}) error {
+	queryn := fmt.Sprintf("MATCH (n:%s $data) DELETE n", label)
+
+	_, err := repo.session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(queryn, map[string]interface{}{
+			"data": properties,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().Values(), nil
+		}
+
+		return nil, result.Err()
+	})
+
+	return err
+}
+
+// DeleteRelation create single relation to neo4j
+func (repo Neo4jRepository) DeleteRelation(label string, properties map[string]interface{}) error {
+	queryn := fmt.Sprintf("MATCH (n:%s $data)-[r:KNOWS]->() DELETE r", label)
+
+	_, err := repo.session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(queryn, map[string]interface{}{
+			"data": properties,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().Values(), nil
+		}
+
+		return nil, result.Err()
+	})
+
+	return err
+}
