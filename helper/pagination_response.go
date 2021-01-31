@@ -40,7 +40,7 @@ func CreatePaginationResponse(ctx iris.Context, request entity.Pagination, list 
 			prevPag.Offset = &limit
 		}
 
-		if t == "inline_offset" {
+		if t == "offset" {
 			nextQuery, err := json.Marshal(nextPag)
 			if err != nil {
 				return CreateErrorResponse(ctx, err).InternalServer()
@@ -116,6 +116,8 @@ func CreatePaginationResponse(ctx iris.Context, request entity.Pagination, list 
 					result = append(result, CreateContentMap(item))
 				}
 			}
+
+			data["data"] = result
 		}
 	case entity.CursorPagination:
 		nextPag := request.(entity.CursorPagination)
@@ -174,6 +176,8 @@ func CreatePaginationResponse(ctx iris.Context, request entity.Pagination, list 
 					result = append(result, CreateContentMap(item))
 				}
 			}
+
+			data["data"] = result
 		}
 	}
 

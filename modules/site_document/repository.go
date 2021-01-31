@@ -7,6 +7,7 @@ import (
 // Repository abstraction for storage
 type Repository interface {
 	Save(entity.SiteDocument) error
+	SaveBatch([]entity.SiteDocument) error
 	DeleteByID(id string) error
 	FindByID(id string) (entity.SiteDocument, error)
 	Update(id string, changeset entity.SiteDocumentChangeSet) error

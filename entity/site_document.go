@@ -1,8 +1,9 @@
 package entity
 
 import (
-	"github.com/satori/uuid"
 	"time"
+
+	"github.com/satori/uuid"
 )
 
 // SiteDocument site_document entity

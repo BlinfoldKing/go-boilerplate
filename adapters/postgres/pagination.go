@@ -20,7 +20,8 @@ func (postgres Postgres) Paginate(tableName string, data interface{}, opt entity
 		return
 	}
 
-	c, err := postgres.Table(tableName).Count()
+	query, values = opt.GetWhere()
+	c, err := postgres.Table(tableName).Where(query, values...).Count()
 	count = int(c)
 	return
 }

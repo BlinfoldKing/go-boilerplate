@@ -108,6 +108,11 @@ func (service Service) GetByWorkOrderID(workOrderID string) (assets []entity.Ass
 	return service.repository.FindByWorkOrderID(workOrderID)
 }
 
+// GetBySiteID finds asset by site ID
+func (service Service) GetBySiteID(siteID string) (assets []entity.Asset, err error) {
+	return service.repository.FindBySiteID(siteID)
+}
+
 // DeleteByID delete assetby id
 func (service Service) DeleteByID(id string) (err error) {
 	return service.repository.DeleteByID(id)
