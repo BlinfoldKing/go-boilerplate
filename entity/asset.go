@@ -9,12 +9,12 @@ import (
 // Asset asset entity
 type Asset struct {
 	ID                string     `json:"id" xorm:"id"`
-	ProductID         string     `json:"-" xorm:"product_id"`
+	ProductID         string     `json:"product_id" xorm:"product_id"`
 	SerialNumber      string     `json:"serial_number" xorm:"serial_number"`
 	Status            int        `json:"status" xorm:"status"`
 	PurchaseDate      time.Time  `json:"purchase_date" xorm:"purchase_date"`
 	PurchasePrice     float32    `json:"purchase_price" xorm:"purchase_price"`
-	SupplierCompanyID string     `json:"-" xorm:"supplier_company_id"`
+	SupplierCompanyID string     `json:"supplier_company_id" xorm:"supplier_company_id"`
 	CreatedAt         time.Time  `json:"created_at"`
 	UpdatedAt         time.Time  `json:"updated_at"`
 	DeletedAt         *time.Time `json:"deleted_at"`
