@@ -1,8 +1,9 @@
 package entity
 
 import (
-	"github.com/satori/uuid"
 	"time"
+
+	"github.com/satori/uuid"
 )
 
 // Asset asset entity
@@ -22,9 +23,9 @@ type Asset struct {
 // AssetGroup asset with mapped data
 type AssetGroup struct {
 	Asset
-	Product   ProductGroup
-	Warehouse []Warehouse
-	Company   CompanyGroup
+	Product   ProductGroup `json:"product"`
+	Warehouse []Warehouse  `json:"warehouses"`
+	Company   CompanyGroup `json:"company"`
 }
 
 // AssetChangeSet change set forasset
