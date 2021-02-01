@@ -16,6 +16,12 @@ type Templates struct {
 	DeletedAt   *time.Time `json:"deleted_at" xorm:"deleted"`
 }
 
+// TemplatesGroup templates with items mapped
+type TemplatesGroup struct {
+	Templates
+	TemplateItems []TemplateItems `json:"items"`
+}
+
 // TemplatesChangeSet change set fortemplates
 type TemplatesChangeSet struct {
 	Name        string `json:"name" xorm:"name"`

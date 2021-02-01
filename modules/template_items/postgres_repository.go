@@ -40,6 +40,12 @@ func (repo PostgresRepository) FindByID(id string) (templateItems entity.Templat
 	return
 }
 
+// FindByTemplateID find templateItems by id
+func (repo PostgresRepository) FindByTemplateID(templateID string) (templateItems []entity.TemplateItems, err error) {
+	err = repo.db.SQL("SELECT * FROM template_items WHERE template_id = ? AND deleted_at IS null", templateID).Find(&templateItems)
+	return
+}
+
 // DeleteByID delete templateItems by id
 func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Table("template_items").Where("id = ?", id).Delete(&entity.TemplateItems{})

@@ -11,8 +11,7 @@ const name = "/template:items"
 
 // Routes init templateItems
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	repository := CreatePosgresRepository(adapters.Postgres)
-	service := CreateService(repository)
+	service := InitTemplateItemsService(adapters)
 	handler := handler{service, adapters}
 	templateItems := prefix.Party(name)
 	templateItems.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)

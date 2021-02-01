@@ -1,12 +1,19 @@
 package templateitems
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 )
 
 // Service contains business logic
 type Service struct {
 	repository Repository
+}
+
+// InitTemplateItemsService create templates items service
+func InitTemplateItemsService(adapters adapters.Adapters) Service {
+	repository := CreatePosgresRepository(adapters.Postgres)
+	return CreateService(repository)
 }
 
 // CreateService init service
@@ -37,6 +44,11 @@ func (service Service) Update(id string, changeset entity.TemplateItemsChangeSet
 		return entity.TemplateItems{}, err
 	}
 	return service.GetByID(id)
+}
+
+// GetByTemplateID get template items by template id
+func (service Service) GetByTemplateID(templateID string) (templateItems []entity.TemplateItems, err error) {
+	return service.repository.FindByTemplateID(templateID)
 }
 
 // GetByID find templateItems by id

@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	templatess Service
-	adapters   adapters.Adapters
+	templates Service
+	adapters  adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	templatess, count, err := h.templatess.GetList(request)
+	templates, count, err := h.templates.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,12 +24,12 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, templatess, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, templates, count).JSON()
 	ctx.Next()
 }
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	templates, err := h.templatess.GetByID(id)
+	templates, err := h.templates.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -42,7 +42,7 @@ func (h handler) GetByID(ctx iris.Context) {
 }
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.templatess.DeleteByID(id)
+	err := h.templates.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -56,7 +56,7 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	templates, err := h.templatess.Update(id, entity.TemplatesChangeSet{
+	templates, err := h.templates.Update(id, entity.TemplatesChangeSet{
 		Name:        request.Name,
 		Description: request.Description,
 	})
@@ -72,7 +72,7 @@ func (h handler) Update(ctx iris.Context) {
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	templates, err := h.templatess.CreateTemplates(request.Name, request.Description)
+	templates, err := h.templates.CreateTemplates(request.Name, request.Description)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
