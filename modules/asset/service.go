@@ -84,8 +84,16 @@ func (service Service) CreateAsset(
 }
 
 // GetList get list of asset
-func (service Service) GetList(pagination entity.Pagination) (asset []entity.Asset, count int, err error) {
-	asset, count, err = service.repository.GetList(pagination)
+func (service Service) GetList(pagination entity.Pagination) (assetGroups []entity.AssetGroup, count int, err error) {
+	assets, count, err := service.repository.GetList(pagination)
+	if err != nil {
+		return
+	}
+	for _, asset := range assets {
+		assetGroup, _ := service.mapAssetToAssetGroup(asset)
+		assetGroups = append(assetGroups, assetGroup)
+	}
+
 	return
 }
 
