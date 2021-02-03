@@ -1,34 +1,39 @@
 package entity
 
 import (
+	"time"
+
 	"github.com/alexedwards/argon2id"
 	"github.com/satori/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 // User user entity
 type User struct {
-	ID           string     `xorm:"id" json:"id"`
-	Email        string     `xorm:"email" json:"email"`
-	PasswordHash string     `xorm:"password_hash" json:"-"`
-	ActiveStatus int        `xorm:"active_status" json:"-"`
-	CreatedAt    time.Time  `json:"created_at" xorm:"created"`
-	UpdatedAt    time.Time  `json:"updated_at" xorm:"updated"`
-	DeletedAt    *time.Time `json:"deleted_at" xorm:"deleted"`
+	ID               string     `xorm:"id" json:"id"`
+	Email            string     `xorm:"email" json:"email"`
+	PasswordHash     string     `xorm:"password_hash" json:"-"`
+	ActiveStatus     int        `xorm:"active_status" json:"-"`
+	CompanyContactID string     `xorm:"company_contact_id" json:"-"`
+	CreatedAt        time.Time  `json:"created_at" xorm:"created"`
+	UpdatedAt        time.Time  `json:"updated_at" xorm:"updated"`
+	DeletedAt        *time.Time `json:"deleted_at" xorm:"deleted"`
 }
 
 // UserGroup user data with role mapped
 type UserGroup struct {
 	User
-	Roles []Role `json:"roles"`
+	Roles   []Role `json:"roles"`
+	Company Company
+	Contact Contact
 }
 
 // UserChangeSet changeset for user
 type UserChangeSet struct {
-	Email        string `xorm:"email" json:"email"`
-	ActiveStatus int    `xorm:"active_status" json:"active_status"`
-	PasswordHash string `xorm:"password_hash" json:"password_hash"`
+	Email            string `xorm:"email" json:"email"`
+	CompanyContactID string `xorm:"company_contact_id" json:"company_contact_id"`
+	ActiveStatus     int    `xorm:"active_status" json:"active_status"`
+	PasswordHash     string `xorm:"password_hash" json:"password_hash"`
 }
 
 // HashType specifiy hashing for password
