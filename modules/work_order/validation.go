@@ -23,3 +23,8 @@ type UpdateRequest struct {
 	Status      int    `json:"status"`
 	Description string `json:"description"`
 }
+
+// ApproveRequest request for aprroval
+type ApproveRequest struct {
+	SiteID string `json:"site_id" validae:"required"`
+}
