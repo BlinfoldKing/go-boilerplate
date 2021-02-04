@@ -51,3 +51,5 @@ policy:
       route: /templates*
     - method: (POST) || (PUT) || (GET) || (DELETE)
       route: /template:items*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /sites*

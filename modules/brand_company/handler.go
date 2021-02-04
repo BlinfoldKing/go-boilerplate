@@ -1,4 +1,4 @@
-package users
+package brandcompany
 
 import (
 	"fmt"
@@ -10,14 +10,13 @@ import (
 )
 
 type handler struct {
-	users    Service
-	adapters adapters.Adapters
+	brandCompanys Service
+	adapters      adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-
-	users, count, err := h.users.GetList(request)
+	brandCompanys, count, err := h.brandCompanys.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -25,15 +24,12 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-
-	helper.CreatePaginationResponse(ctx, request, users, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, brandCompanys, count).JSON()
 	ctx.Next()
 }
-
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-
-	users, err := h.users.GetByID(id)
+	brandCompany, err := h.brandCompanys.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -41,15 +37,12 @@ func (h handler) GetByID(ctx iris.Context) {
 			JSON()
 		return
 	}
-
-	helper.CreateResponse(ctx).Ok().WithData(users).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(brandCompany).JSON()
 	ctx.Next()
 }
-
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-
-	err := h.users.DeleteByID(id)
+	err := h.brandCompanys.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -57,22 +50,15 @@ func (h handler) DeleteByID(ctx iris.Context) {
 			JSON()
 		return
 	}
-
-	helper.
-		CreateResponse(ctx).
-		Ok().
-		WithMessage(fmt.Sprintf("%s deleted", id)).
-		JSON()
+	helper.CreateResponse(ctx).Ok().WithMessage(fmt.Sprintf("%s deleted", id)).JSON()
 	ctx.Next()
 }
-
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-
-	user, err := h.users.Update(id, entity.UserChangeSet{
-		Email:            request.Email,
-		CompanyContactID: request.CompanyContactID,
+	brandCompany, err := h.brandCompanys.Update(id, entity.BrandCompanyChangeSet{
+		BrandID:   request.BrandID,
+		CompanyID: request.CompanyID,
 	})
 	if err != nil {
 		helper.
@@ -81,11 +67,19 @@ func (h handler) Update(ctx iris.Context) {
 			JSON()
 		return
 	}
-
-	helper.
-		CreateResponse(ctx).
-		Ok().
-		WithData(user).
-		JSON()
+	helper.CreateResponse(ctx).Ok().WithData(brandCompany).JSON()
+	ctx.Next()
+}
+func (h handler) Create(ctx iris.Context) {
+	request := ctx.Values().Get("body").(*CreateRequest)
+	brandCompany, err := h.brandCompanys.CreateBrandCompany(request.BrandID, request.CompanyID)
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+	helper.CreateResponse(ctx).Ok().WithData(brandCompany).JSON()
 	ctx.Next()
 }

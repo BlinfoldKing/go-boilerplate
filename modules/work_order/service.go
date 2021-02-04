@@ -1,14 +1,18 @@
 package workorder
 
 import (
+	"encoding/json"
 	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 	"go-boilerplate/modules/asset"
 	"go-boilerplate/modules/documents"
 	involveduser "go-boilerplate/modules/involved_user"
+	"go-boilerplate/modules/notifications"
 	"go-boilerplate/modules/users"
 	workorderasset "go-boilerplate/modules/work_order_asset"
 	workorderdocument "go-boilerplate/modules/work_order_document"
+
+	"github.com/fatih/structs"
 )
 
 // Service contains business logic
@@ -152,6 +156,66 @@ func (service Service) Update(id string, changeset entity.WorkOrderChangeSet) (w
 		return entity.WorkOrderGroup{}, err
 	}
 	return service.GetByID(id)
+}
+
+// Decline update work_order
+func (service Service) Decline(id string) (workOrderGroup entity.WorkOrderGroup, err error) {
+	wo, _ := service.GetByID(id)
+	body, _ := json.Marshal(structs.Map(wo))
+
+	notifications.PublishToQueue(notifications.Message{
+		UserID:   wo.PICID,
+		Title:    "Site mutation declined",
+		Subtitle: "Site mutation declined",
+		URLLink:  "",
+		Body:     string(body),
+	})
+
+	for _, user := range wo.User {
+		notifications.PublishToQueue(notifications.Message{
+			UserID:   user.ID,
+			Title:    "Site mutation declined",
+			Subtitle: "Site mutation declined",
+			URLLink:  "",
+			Body:     string(body),
+		})
+	}
+
+	return wo, err
+}
+
+// Approve update work_order
+func (service Service) Approve(id, siteid string) (workOrderGroup entity.WorkOrderGroup, err error) {
+	err = service.repository.Update(id, entity.WorkOrderChangeSet{
+		SiteID: siteid,
+	})
+
+	if err != nil {
+		return entity.WorkOrderGroup{}, err
+	}
+
+	wo, _ := service.GetByID(id)
+	body, _ := json.Marshal(structs.Map(wo))
+
+	notifications.PublishToQueue(notifications.Message{
+		UserID:   wo.PICID,
+		Title:    "Site mutation approved",
+		Subtitle: "Site mutation approved",
+		URLLink:  "",
+		Body:     string(body),
+	})
+
+	for _, user := range wo.User {
+		notifications.PublishToQueue(notifications.Message{
+			UserID:   user.ID,
+			Title:    "Site mutation approved",
+			Subtitle: "Site mutation approved",
+			URLLink:  "",
+			Body:     string(body),
+		})
+	}
+
+	return wo, err
 }
 
 // GetByID find work_orderby id

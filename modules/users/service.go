@@ -5,15 +5,21 @@ import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/config"
 	"go-boilerplate/entity"
+	"go-boilerplate/modules/company"
+	companycontact "go-boilerplate/modules/company_contact"
+	"go-boilerplate/modules/contact"
 	"go-boilerplate/modules/roles"
 	userroles "go-boilerplate/modules/user_roles"
 )
 
 // Service contains business logic for users
 type Service struct {
-	repository Repository
-	roles      roles.Service
-	userRoles  userroles.Service
+	repository      Repository
+	roles           roles.Service
+	userRoles       userroles.Service
+	companyContacts companycontact.Service
+	companies       company.Service
+	contacts        contact.Service
 }
 
 func InitUserService(adapters adapters.Adapters) Service {
@@ -22,17 +28,25 @@ func InitUserService(adapters adapters.Adapters) Service {
 
 	userRoleRepository := userroles.CreatePosgresRepository(adapters.Postgres)
 	userRoleService := userroles.CreateService(userRoleRepository)
+
+	companyContactService := companycontact.InitCompanyContactService(adapters)
+	companyService := company.InitCompanyService(adapters)
+	contactService := contact.InitContactService(adapters)
+
 	repository := CreatePosgresRepository(adapters.Postgres)
 
-	return CreateService(repository, roleService, userRoleService)
+	return CreateService(repository, roleService, userRoleService, companyContactService, companyService, contactService)
 }
 
 // CreateService init service
 func CreateService(repo Repository,
 	roles roles.Service,
 	userRoles userroles.Service,
+	companyContacts companycontact.Service,
+	companies company.Service,
+	contacts contact.Service,
 ) Service {
-	return Service{repo, roles, userRoles}
+	return Service{repo, roles, userRoles, companyContacts, companies, contacts}
 }
 
 // helper
@@ -61,9 +75,21 @@ func (service Service) mapUserToUserGroup(user entity.User) (ug entity.UserGroup
 		return
 	}
 
+	companyContact, err := service.companyContacts.GetByID(user.CompanyContactID)
+	company := entity.CompanyGroup{}
+	contact := entity.Contact{}
+	if err == nil {
+		company, _ = service.companies.GetByID(companyContact.CompanyID)
+		contact, _ = service.contacts.GetByID(companyContact.ContactID)
+	} else {
+		err = nil
+	}
+
 	ug = entity.UserGroup{
-		User:  user,
-		Roles: roles,
+		User:    user,
+		Roles:   roles,
+		Company: company.Company,
+		Contact: contact,
 	}
 
 	return

@@ -6,10 +6,14 @@ import (
 	"go-boilerplate/modules/asset"
 	"go-boilerplate/modules/auth"
 	"go-boilerplate/modules/brand"
+	brandcompany "go-boilerplate/modules/brand_company"
 	"go-boilerplate/modules/company"
+	companycontact "go-boilerplate/modules/company_contact"
+	companydocument "go-boilerplate/modules/company_document"
 	"go-boilerplate/modules/contact"
 	"go-boilerplate/modules/documents"
 	"go-boilerplate/modules/history"
+	historydocument "go-boilerplate/modules/history_document"
 	involveduser "go-boilerplate/modules/involved_user"
 	"go-boilerplate/modules/mail"
 	"go-boilerplate/modules/neo4j"
@@ -18,14 +22,19 @@ import (
 	"go-boilerplate/modules/policy"
 	"go-boilerplate/modules/product"
 	productcategory "go-boilerplate/modules/product_category"
+	productdocument "go-boilerplate/modules/product_document"
 	productspecification "go-boilerplate/modules/product_specification"
 	"go-boilerplate/modules/roles"
+	"go-boilerplate/modules/site"
 	templateitems "go-boilerplate/modules/template_items"
 	"go-boilerplate/modules/templates"
 	userroles "go-boilerplate/modules/user_roles"
 	"go-boilerplate/modules/users"
 	"go-boilerplate/modules/warehouse"
+	warehousecontact "go-boilerplate/modules/warehouse_contact"
 	workorder "go-boilerplate/modules/work_order"
+	workorderasset "go-boilerplate/modules/work_order_asset"
+	workorderdocument "go-boilerplate/modules/work_order_document"
 
 	"github.com/kataras/iris/v12"
 )
@@ -57,8 +66,18 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	warehouse.Routes(prefix, adapters)
 	templates.Routes(prefix, adapters)
 	templateitems.Routes(prefix, adapters)
+	brandcompany.Routes(prefix, adapters)
+	companycontact.Routes(prefix, adapters)
+	companydocument.Routes(prefix, adapters)
+	historydocument.Routes(prefix, adapters)
+	productdocument.Routes(prefix, adapters)
+	warehousecontact.Routes(prefix, adapters)
+	workorderasset.Routes(prefix, adapters)
+	workorderdocument.Routes(prefix, adapters)
+	site.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)
 	mail.Queue(adapters)
+	notifications.Queue(adapters)
 }
