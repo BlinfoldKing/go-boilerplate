@@ -25,6 +25,7 @@ import (
 	productdocument "go-boilerplate/modules/product_document"
 	productspecification "go-boilerplate/modules/product_specification"
 	"go-boilerplate/modules/roles"
+	"go-boilerplate/modules/site"
 	templateitems "go-boilerplate/modules/template_items"
 	"go-boilerplate/modules/templates"
 	userroles "go-boilerplate/modules/user_roles"
@@ -73,6 +74,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	warehousecontact.Routes(prefix, adapters)
 	workorderasset.Routes(prefix, adapters)
 	workorderdocument.Routes(prefix, adapters)
+	site.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)
