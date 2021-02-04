@@ -64,6 +64,7 @@ func (h handler) Update(ctx iris.Context) {
 		Name:        request.Name,
 		Description: request.Description,
 		Type:        request.Type,
+		Status:      request.Status,
 	})
 	if err != nil {
 		helper.
