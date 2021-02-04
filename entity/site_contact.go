@@ -19,26 +19,26 @@ type SiteContact struct {
 
 // SiteContactChangeSet change set forsite_contact
 type SiteContactChangeSet struct {
-	SiteID    string     `json:"site_id" xorm:"site_id"`
-	ContactID string     `json:"contact_id" xorm:"contact_id"`
-	Position  string     `json:"position" xorm:"position"`
+	SiteID    string `json:"site_id" xorm:"site_id"`
+	ContactID string `json:"contact_id" xorm:"contact_id"`
+	Position  string `json:"position" xorm:"position"`
 }
 
 // SiteContactIDS request for
 type SiteContactIDS struct {
-	ID       string  `json:"id"`
+	ID       string `json:"id"`
 	Position string `json:"position"`
 }
 
 // NewSiteContact create newsite_contact
 func NewSiteContact(siteID string, contactID string, position string) (siteContact SiteContact, err error) {
 	id := uuid.NewV4().String()
-	
+
 	siteContact = SiteContact{
-		ID: id,
-		SiteID: siteID,
+		ID:        id,
+		SiteID:    siteID,
 		ContactID: contactID,
-		Position: position,
+		Position:  position,
 	}
 	return
 }
