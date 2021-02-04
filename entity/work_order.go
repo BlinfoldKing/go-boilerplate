@@ -126,10 +126,11 @@ type WorkOrderChangeSet struct {
 }
 
 // NewWorkOrder create newwork_order
-func NewWorkOrder(picid, name, description string, workOrderType WorkOrderType, status StatusType) (workOrder WorkOrder, err error) {
+func NewWorkOrder(picid, siteID, name, description string, workOrderType WorkOrderType, status StatusType) (workOrder WorkOrder, err error) {
 	workOrder = WorkOrder{
 		ID:          uuid.NewV4().String(),
 		PICID:       picid,
+		SiteID:      siteID,
 		Name:        name,
 		Type:        workOrderType,
 		Description: description,

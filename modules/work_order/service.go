@@ -108,6 +108,7 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 // CreateWorkOrder create new work_order
 func (service Service) CreateWorkOrder(
 	picID,
+	siteID,
 	name,
 	description string,
 	workOrderType entity.WorkOrderType,
@@ -121,6 +122,7 @@ func (service Service) CreateWorkOrder(
 ) (workOrder entity.WorkOrder, err error) {
 	workOrder, err = entity.NewWorkOrder(
 		picID,
+		siteID,
 		name,
 		description,
 		workOrderType,

@@ -13,6 +13,7 @@ type CreateRequest struct {
 		Qty int    `json:"qty" validate:"required"`
 	} `json:"assets"`
 	DocumentIDs []string `json:"document_ids"`
+	SiteID      string   `json:"site_id"`
 }
 
 // UpdateRequest request for update work_order
@@ -22,6 +23,7 @@ type UpdateRequest struct {
 	Type        int    `json:"type"`
 	Status      int    `json:"status"`
 	Description string `json:"description"`
+	SiteID      string `json:"site_id"`
 }
 
 // ApproveRequest request for aprroval
