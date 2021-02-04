@@ -112,6 +112,7 @@ type WorkOrderGroup struct {
 	User     []User     `json:"user"`
 	Asset    []Asset    `json:"asset"`
 	Document []Document `json:"document"`
+	Site     Site       `json:"site"`
 }
 
 // WorkOrderChangeSet change set forwork_order
@@ -125,10 +126,11 @@ type WorkOrderChangeSet struct {
 }
 
 // NewWorkOrder create newwork_order
-func NewWorkOrder(picid, name, description string, workOrderType WorkOrderType, status StatusType) (workOrder WorkOrder, err error) {
+func NewWorkOrder(picid, siteID, name, description string, workOrderType WorkOrderType, status StatusType) (workOrder WorkOrder, err error) {
 	workOrder = WorkOrder{
 		ID:          uuid.NewV4().String(),
 		PICID:       picid,
+		SiteID:      siteID,
 		Name:        name,
 		Type:        workOrderType,
 		Description: description,

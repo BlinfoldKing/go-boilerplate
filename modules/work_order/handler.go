@@ -61,6 +61,7 @@ func (h handler) Update(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 	workOrder, err := h.workorders.Update(id, entity.WorkOrderChangeSet{
 		PICID:       request.PICID,
+		SiteID:      request.SiteID,
 		Name:        request.Name,
 		Description: request.Description,
 		Type:        request.Type,
@@ -114,6 +115,7 @@ func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
 	workOrder, err := h.workorders.CreateWorkOrder(
 		request.PICID,
+		request.SiteID,
 		request.Name,
 		request.Description,
 		request.Type,
