@@ -78,10 +78,10 @@ func (h handler) Update(ctx iris.Context) {
 	ctx.Next()
 }
 
-func (h handler) Approve(ctx iris.Context) {
+func (h handler) ApproveMutation(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*ApproveRequest)
 	id := ctx.Params().GetString("id")
-	workOrder, err := h.workorders.Approve(id, request.SiteID)
+	workOrder, err := h.workorders.ApproveMutation(id, request.SiteID)
 
 	if err != nil {
 		helper.
@@ -95,9 +95,43 @@ func (h handler) Approve(ctx iris.Context) {
 	ctx.Next()
 }
 
-func (h handler) Decline(ctx iris.Context) {
+func (h handler) DeclineMutation(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	workOrder, err := h.workorders.Decline(id)
+	workOrder, err := h.workorders.DeclineMutation(id)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
+func (h handler) ApproveAsset(ctx iris.Context) {
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	id := ctx.Params().GetString("id")
+	workOrder, err := h.workorders.ApproveAsset(id, user.ID)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
+func (h handler) DeclineAsset(ctx iris.Context) {
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	id := ctx.Params().GetString("id")
+	workOrder, err := h.workorders.DeclineAsset(id, user.ID)
 
 	if err != nil {
 		helper.

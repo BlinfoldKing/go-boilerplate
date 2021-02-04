@@ -41,7 +41,7 @@ func (repo PostgresRepository) FindByID(id string) (userdevice entity.UserDevice
 }
 
 // FindByUserID find user_device by id
-func (repo PostgresRepository) FindByUserID(userid string) (userdevice entity.UserDevice, err error) {
+func (repo PostgresRepository) FindByUserID(userid string) (userdevice []entity.UserDevice, err error) {
 	_, err = repo.db.SQL("SELECT * FROM user_devices WHERE user_id = ? AND deleted_at IS null", userid).Get(&userdevice)
 	return
 }

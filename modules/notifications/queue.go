@@ -7,7 +7,7 @@ import (
 	"go-boilerplate/modules/user_device"
 )
 
-const topic = "mail"
+const topic = "notifications"
 
 // Message message for ping
 type Message struct {
@@ -33,12 +33,16 @@ func Queue(adapters adapters.Adapters) {
 		func(data interface{}) {
 			msg := data.(Message)
 
-			device, err := deviceservice.GetByUserID(msg.UserID)
+			devices, err := deviceservice.GetByUserID(msg.UserID)
 			if err != nil {
-
 				helper.Logger.
 					WithField("msg", msg).
 					Error(err)
+			}
+
+			tokens := make([]string, 0)
+			for _, device := range devices {
+				tokens = append(tokens, device.DeviceToken)
 			}
 
 			notif, err := service.CreateNotification(msg.UserID, msg.Title, msg.Subtitle, msg.URLLink, msg.Body)
@@ -49,7 +53,7 @@ func Queue(adapters adapters.Adapters) {
 					Error(err)
 			}
 
-			err = firebase.SendToMultipleDevices(adapters.Firebase, []string{device.DeviceToken}, notif)
+			err = firebase.SendToMultipleDevices(adapters.Firebase, tokens, notif)
 			if err != nil {
 				helper.Logger.
 					WithField("msg", msg).

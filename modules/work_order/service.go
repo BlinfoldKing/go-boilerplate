@@ -6,6 +6,7 @@ import (
 	"go-boilerplate/entity"
 	"go-boilerplate/modules/asset"
 	"go-boilerplate/modules/documents"
+	"go-boilerplate/modules/history"
 	involveduser "go-boilerplate/modules/involved_user"
 	"go-boilerplate/modules/notifications"
 	"go-boilerplate/modules/site"
@@ -26,6 +27,7 @@ type Service struct {
 	workOrderAssets    workorderasset.Service
 	workOrderDocuments workorderdocument.Service
 	sites              site.Service
+	history            history.Service
 }
 
 // InitWorkOrderService is used to init work order service
@@ -39,6 +41,8 @@ func InitWorkOrderService(adapters adapters.Adapters) Service {
 	workOrderAssetService := workorderasset.InitWorkOrderAssetService(adapters)
 	workOrderDocumentService := workorderdocument.InitWorkOrderDocumentService(adapters)
 	siteService := site.InitSiteService(adapters)
+	historyService := history.InitHistoryService(adapters)
+
 	return CreateService(
 		repository,
 		assetService,
@@ -48,6 +52,7 @@ func InitWorkOrderService(adapters adapters.Adapters) Service {
 		workOrderAssetService,
 		workOrderDocumentService,
 		siteService,
+		historyService,
 	)
 }
 
@@ -61,6 +66,7 @@ func CreateService(
 	workOrderAssets workorderasset.Service,
 	workorderDocuments workorderdocument.Service,
 	sites site.Service,
+	histories history.Service,
 ) Service {
 	return Service{
 		repo,
@@ -71,6 +77,7 @@ func CreateService(
 		workOrderAssets,
 		workorderDocuments,
 		sites,
+		histories,
 	}
 }
 
@@ -177,8 +184,8 @@ func (service Service) Update(id string, changeset entity.WorkOrderChangeSet) (w
 	return service.GetByID(id)
 }
 
-// Decline update work_order
-func (service Service) Decline(id string) (workOrderGroup entity.WorkOrderGroup, err error) {
+// DeclineMutation update work_order
+func (service Service) DeclineMutation(id string) (workOrderGroup entity.WorkOrderGroup, err error) {
 	wo, _ := service.GetByID(id)
 	body, _ := json.Marshal(structs.Map(wo))
 
@@ -203,8 +210,8 @@ func (service Service) Decline(id string) (workOrderGroup entity.WorkOrderGroup,
 	return wo, err
 }
 
-// Approve update work_order
-func (service Service) Approve(id, siteid string) (workOrderGroup entity.WorkOrderGroup, err error) {
+// ApproveMutation update work_order
+func (service Service) ApproveMutation(id, siteid string) (workOrderGroup entity.WorkOrderGroup, err error) {
 	err = service.repository.Update(id, entity.WorkOrderChangeSet{
 		SiteID: &siteid,
 	})
@@ -229,6 +236,80 @@ func (service Service) Approve(id, siteid string) (workOrderGroup entity.WorkOrd
 			UserID:   user.ID,
 			Title:    "Site mutation approved",
 			Subtitle: "Site mutation approved",
+			URLLink:  "",
+			Body:     string(body),
+		})
+	}
+
+	return wo, err
+}
+
+// DeclineAsset update work_order
+func (service Service) DeclineAsset(id, userid string) (wo entity.WorkOrderGroup, err error) {
+	wo, err = service.GetByID(id)
+	if err != nil {
+		return entity.WorkOrderGroup{}, err
+	}
+
+	body, _ := json.Marshal(structs.Map(wo))
+
+	for _, asset := range wo.Asset {
+		_, err := service.history.CreateHistory(userid, asset.ID, "declined", "declined", float64(asset.PurchasePrice), []string{})
+		if err != nil {
+			return wo, err
+		}
+	}
+
+	notifications.PublishToQueue(notifications.Message{
+		UserID:   wo.PICID,
+		Title:    "asset declined",
+		Subtitle: "asset declined",
+		URLLink:  "",
+		Body:     string(body),
+	})
+
+	for _, user := range wo.User {
+		notifications.PublishToQueue(notifications.Message{
+			UserID:   user.ID,
+			Title:    "asset declined",
+			Subtitle: "asset declined",
+			URLLink:  "",
+			Body:     string(body),
+		})
+	}
+
+	return wo, err
+}
+
+// ApproveAsset update work_order
+func (service Service) ApproveAsset(id, userid string) (wo entity.WorkOrderGroup, err error) {
+	wo, err = service.GetByID(id)
+	if err != nil {
+		return entity.WorkOrderGroup{}, err
+	}
+
+	body, _ := json.Marshal(structs.Map(wo))
+
+	for _, asset := range wo.Asset {
+		_, err := service.history.CreateHistory(userid, asset.ID, "approved", "approved", float64(asset.PurchasePrice), []string{})
+		if err != nil {
+			return wo, err
+		}
+	}
+
+	notifications.PublishToQueue(notifications.Message{
+		UserID:   wo.PICID,
+		Title:    "asset approved",
+		Subtitle: "asset approved",
+		URLLink:  "",
+		Body:     string(body),
+	})
+
+	for _, user := range wo.User {
+		notifications.PublishToQueue(notifications.Message{
+			UserID:   user.ID,
+			Title:    "asset approved",
+			Subtitle: "asset approved",
 			URLLink:  "",
 			Body:     string(body),
 		})

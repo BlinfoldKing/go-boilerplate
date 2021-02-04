@@ -1,10 +1,9 @@
 package userdevice
 
 import (
+	"github.com/kataras/iris/v12"
 	"go-boilerplate/adapters"
 	"go-boilerplate/middlewares"
-
-	"github.com/kataras/iris/v12"
 )
 
 const name = "/user_device"
