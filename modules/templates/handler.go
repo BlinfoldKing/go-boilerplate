@@ -72,7 +72,6 @@ func (h handler) Update(ctx iris.Context) {
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	fmt.Println(request.TemplateItems)
 	templates, err := h.templates.CreateTemplates(request.Name, request.Description, request.TemplateItems)
 	if err != nil {
 		helper.
