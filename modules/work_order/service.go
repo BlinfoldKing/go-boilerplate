@@ -91,19 +91,24 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 			return []entity.WorkOrderGroup{}, err
 		}
 
-		var site entity.Site
+		var site *entity.Site
 		if workOrder.SiteID != nil {
-			site, err = service.sites.GetByID(*workOrder.SiteID)
-			workOrderGroup := entity.WorkOrderGroup{
-				WorkOrder: workOrder,
-				User:      users,
-				Asset:     assets,
-				Document:  documents,
-				Site:      site,
+			s, err := service.sites.GetByID(*workOrder.SiteID)
+			if err != nil {
+				return []entity.WorkOrderGroup{}, err
 			}
 
-			workOrderGroups = append(workOrderGroups, workOrderGroup)
+			site = &s
 		}
+
+		workOrderGroup := entity.WorkOrderGroup{
+			WorkOrder: workOrder,
+			User:      users,
+			Asset:     assets,
+			Document:  documents,
+			Site:      site,
+		}
+		workOrderGroups = append(workOrderGroups, workOrderGroup)
 	}
 	return
 }
