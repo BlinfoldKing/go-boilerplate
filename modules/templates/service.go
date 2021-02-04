@@ -31,20 +31,24 @@ func (service Service) mapTemplateItemsToTemplateGroup(template entity.Templates
 	templatesGroup.Templates = template
 
 	templatesGroup.TemplateItems, err = service.templateItems.GetByTemplateID(template.ID)
-	if err != nil {
-		return
-	}
-
 	return
 }
 
 // CreateTemplates create new templates
-func (service Service) CreateTemplates(name, description string) (templates entity.Templates, err error) {
+func (service Service) CreateTemplates(name, description string, templateItems []entity.TemplateItems) (templates entity.Templates, err error) {
 	templates, err = entity.NewTemplates(name, description)
 	if err != nil {
 		return
 	}
 	err = service.repository.Save(templates)
+
+	for _, templateItem := range templateItems {
+		_, err = service.templateItems.CreateTemplateItems(
+			templates.ID,
+			templateItem.ProductID,
+			templateItem.Qty,
+		)
+	}
 	return
 }
 
@@ -62,17 +66,23 @@ func (service Service) GetList(pagination entity.Pagination) (templatesGroups []
 }
 
 // Update update templates
-func (service Service) Update(id string, changeset entity.TemplatesChangeSet) (templates entity.Templates, err error) {
+func (service Service) Update(id string, changeset entity.TemplatesChangeSet) (templates entity.TemplatesGroup, err error) {
 	err = service.repository.Update(id, changeset)
 	if err != nil {
-		return entity.Templates{}, err
+		return entity.TemplatesGroup{}, err
 	}
 	return service.GetByID(id)
 }
 
 // GetByID find templates by id
-func (service Service) GetByID(id string) (templates entity.Templates, err error) {
-	return service.repository.FindByID(id)
+func (service Service) GetByID(id string) (templateGroup entity.TemplatesGroup, err error) {
+	template, err := service.repository.FindByID(id)
+	if err != nil {
+		return
+	}
+
+	templateGroup, _ = service.mapTemplateItemsToTemplateGroup(template)
+	return
 }
 
 // DeleteByID delete templates by id
