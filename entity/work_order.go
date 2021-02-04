@@ -99,7 +99,7 @@ type WorkOrder struct {
 	Name        string        `json:"name" xorm:"name"`
 	Type        WorkOrderType `json:"type" xorm:"type"`
 	Status      StatusType    `json:"status" xorm:"status"`
-	SiteID      string        `json:"site_id" xorm:"site_id"`
+	SiteID      *string       `json:"site_id" xorm:"site_id"`
 	Description string        `json:"description" xorm:"description"`
 	CreatedAt   time.Time     `json:"created_at" xorm:"created"`
 	UpdatedAt   time.Time     `json:"updated_at" xorm:"updated"`
