@@ -1,5 +1,5 @@
 -- +migrate Up
-CREATE TABLE IF NOT EXISTS "new_table" (
+CREATE TABLE IF NOT EXISTS "sites" (
     "id" UUID NOT NULL PRIMARY KEY,
     "name" VARCHAR NOT NULL,
     "latitude" FLOAT NOT NULL,
@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS "new_table" (
 );
 
 -- +migrate Down
-DROP TABLE IF EXISTS "new_table";
+DROP TABLE IF EXISTS "sites";
