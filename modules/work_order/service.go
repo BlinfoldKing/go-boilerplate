@@ -8,6 +8,7 @@ import (
 	"go-boilerplate/modules/documents"
 	involveduser "go-boilerplate/modules/involved_user"
 	"go-boilerplate/modules/notifications"
+	"go-boilerplate/modules/site"
 	"go-boilerplate/modules/users"
 	workorderasset "go-boilerplate/modules/work_order_asset"
 	workorderdocument "go-boilerplate/modules/work_order_document"
@@ -24,6 +25,7 @@ type Service struct {
 	users              users.Service
 	workOrderAssets    workorderasset.Service
 	workOrderDocuments workorderdocument.Service
+	sites              site.Service
 }
 
 // InitWorkOrderService is used to init work order service
@@ -36,6 +38,7 @@ func InitWorkOrderService(adapters adapters.Adapters) Service {
 	userService := users.InitUserService(adapters)
 	workOrderAssetService := workorderasset.InitWorkOrderAssetService(adapters)
 	workOrderDocumentService := workorderdocument.InitWorkOrderDocumentService(adapters)
+	siteService := site.InitSiteService(adapters)
 	return CreateService(
 		repository,
 		assetService,
@@ -44,6 +47,7 @@ func InitWorkOrderService(adapters adapters.Adapters) Service {
 		userService,
 		workOrderAssetService,
 		workOrderDocumentService,
+		siteService,
 	)
 }
 
@@ -56,6 +60,7 @@ func CreateService(
 	users users.Service,
 	workOrderAssets workorderasset.Service,
 	workorderDocuments workorderdocument.Service,
+	sites site.Service,
 ) Service {
 	return Service{
 		repo,
@@ -65,6 +70,7 @@ func CreateService(
 		users,
 		workOrderAssets,
 		workorderDocuments,
+		sites,
 	}
 }
 
@@ -84,11 +90,14 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 		if err != nil {
 			return []entity.WorkOrderGroup{}, err
 		}
+
+		site, err := service.sites.GetByID(workOrder.SiteID)
 		workOrderGroup := entity.WorkOrderGroup{
 			WorkOrder: workOrder,
 			User:      users,
 			Asset:     assets,
 			Document:  documents,
+			Site:      site,
 		}
 
 		workOrderGroups = append(workOrderGroups, workOrderGroup)

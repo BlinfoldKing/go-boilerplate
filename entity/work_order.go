@@ -112,6 +112,7 @@ type WorkOrderGroup struct {
 	User     []User     `json:"user"`
 	Asset    []Asset    `json:"asset"`
 	Document []Document `json:"document"`
+	Site     Site       `json:"site"`
 }
 
 // WorkOrderChangeSet change set forwork_order
