@@ -22,6 +22,7 @@ type Service struct {
 	contacts        contact.Service
 }
 
+// InitUserService create new user service
 func InitUserService(adapters adapters.Adapters) Service {
 	roleRepository := roles.CreatePosgresRepository(adapters.Postgres)
 	roleService := roles.CreateService(roleRepository)
@@ -75,14 +76,17 @@ func (service Service) mapUserToUserGroup(user entity.User) (ug entity.UserGroup
 		return
 	}
 
-	companyContact, err := service.companyContacts.GetByID(user.CompanyContactID)
 	company := entity.CompanyGroup{}
 	contact := entity.Contact{}
-	if err == nil {
-		company, _ = service.companies.GetByID(companyContact.CompanyID)
-		contact, _ = service.contacts.GetByID(companyContact.ContactID)
-	} else {
-		err = nil
+
+	if user.CompanyContactID != nil {
+		companyContact, err := service.companyContacts.GetByID(*user.CompanyContactID)
+		if err == nil {
+			company, _ = service.companies.GetByID(companyContact.CompanyID)
+			contact, _ = service.contacts.GetByID(companyContact.ContactID)
+		} else {
+			err = nil
+		}
 	}
 
 	ug = entity.UserGroup{
