@@ -4,8 +4,6 @@ import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/middlewares"
 	"go-boilerplate/modules/otps"
-	"go-boilerplate/modules/roles"
-	userroles "go-boilerplate/modules/user_roles"
 	"go-boilerplate/modules/users"
 
 	"github.com/kataras/iris/v12"
@@ -15,18 +13,10 @@ const name = "/auth"
 
 // Routes init auth
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
-	userRepository := users.CreatePosgresRepository(adapters.Postgres)
-
-	roleRepository := roles.CreatePosgresRepository(adapters.Postgres)
-	roleService := roles.CreateService(roleRepository)
-
-	userRoleRepository := userroles.CreatePosgresRepository(adapters.Postgres)
-	userRoleService := userroles.CreateService(userRoleRepository)
-
 	otpsRepository := otps.CreatePostgresRepository(adapters.Postgres)
 	otpsService := otps.CreateService(otpsRepository)
 
-	userService := users.CreateService(userRepository, roleService, userRoleService)
+	userService := users.InitUserService(adapters)
 
 	authService := CreateAuthService(userService, otpsService)
 

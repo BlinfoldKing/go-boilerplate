@@ -71,7 +71,8 @@ func (h handler) Update(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 
 	user, err := h.users.Update(id, entity.UserChangeSet{
-		Email: request.Email,
+		Email:            request.Email,
+		CompanyContactID: request.CompanyContactID,
 	})
 	if err != nil {
 		helper.
