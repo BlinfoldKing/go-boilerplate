@@ -77,4 +77,5 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	// init queues
 	ping.Queue(adapters)
 	mail.Queue(adapters)
+	notifications.Queue(adapters)
 }

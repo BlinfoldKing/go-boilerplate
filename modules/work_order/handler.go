@@ -76,6 +76,39 @@ func (h handler) Update(ctx iris.Context) {
 	ctx.Next()
 }
 
+func (h handler) Approve(ctx iris.Context) {
+	request := ctx.Values().Get("body").(*ApproveRequest)
+	id := ctx.Params().GetString("id")
+	workOrder, err := h.workorders.Approve(id, request.SiteID)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
+func (h handler) Decline(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+	workOrder, err := h.workorders.Decline(id)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
 	workOrder, err := h.workorders.CreateWorkOrder(
