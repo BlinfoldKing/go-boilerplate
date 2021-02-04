@@ -18,6 +18,7 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	workOrder.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)
 	workOrder.Get("/{id:string}", handler.GetByID)
 	workOrder.Delete("/{id:string}", handler.DeleteByID)
+	workOrder.Put("/{id:string}", middlewares.ValidateBody(&UpdateRequest{}), handler.Update)
 	workOrder.Put("/{id:string}/mutation:approve", middlewares.ValidateBody(&ApproveRequest{}), handler.Approve)
 	workOrder.Put("/{id:string}/mutation:decline", handler.Decline)
 }
