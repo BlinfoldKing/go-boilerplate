@@ -13,17 +13,17 @@ type CreateRequest struct {
 		Qty int    `json:"qty" validate:"required"`
 	} `json:"assets"`
 	DocumentIDs []string `json:"document_ids"`
-	SiteID      string   `json:"site_id"`
+	SiteID      *string  `json:"site_id"`
 }
 
 // UpdateRequest request for update work_order
 type UpdateRequest struct {
-	PICID       string `json:"pic_id"`
-	Name        string `json:"name"`
-	Type        int    `json:"type"`
-	Status      int    `json:"status"`
-	Description string `json:"description"`
-	SiteID      string `json:"site_id"`
+	PICID       string  `json:"pic_id"`
+	Name        string  `json:"name"`
+	Type        int     `json:"type"`
+	Status      int     `json:"status"`
+	Description string  `json:"description"`
+	SiteID      *string `json:"site_id"`
 }
 
 // ApproveRequest request for aprroval
