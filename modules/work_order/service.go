@@ -91,7 +91,16 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 			return []entity.WorkOrderGroup{}, err
 		}
 
-		site, err := service.sites.GetByID(workOrder.SiteID)
+		var site *entity.Site
+		if workOrder.SiteID != nil {
+			s, err := service.sites.GetByID(*workOrder.SiteID)
+			if err != nil {
+				return []entity.WorkOrderGroup{}, err
+			}
+
+			site = &s
+		}
+
 		workOrderGroup := entity.WorkOrderGroup{
 			WorkOrder: workOrder,
 			User:      users,
@@ -99,7 +108,6 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 			Document:  documents,
 			Site:      site,
 		}
-
 		workOrderGroups = append(workOrderGroups, workOrderGroup)
 	}
 	return
@@ -107,8 +115,8 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 
 // CreateWorkOrder create new work_order
 func (service Service) CreateWorkOrder(
-	picID,
-	siteID,
+	picID string,
+	siteID *string,
 	name,
 	description string,
 	workOrderType entity.WorkOrderType,
@@ -198,7 +206,7 @@ func (service Service) Decline(id string) (workOrderGroup entity.WorkOrderGroup,
 // Approve update work_order
 func (service Service) Approve(id, siteid string) (workOrderGroup entity.WorkOrderGroup, err error) {
 	err = service.repository.Update(id, entity.WorkOrderChangeSet{
-		SiteID: siteid,
+		SiteID: &siteid,
 	})
 
 	if err != nil {
