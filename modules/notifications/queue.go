@@ -31,7 +31,7 @@ func Queue(adapters adapters.Adapters) {
 	push := adapters.Nats.NewQueue(
 		topic,
 		func(data interface{}) {
-			msg := data.(Message)
+			msg := data.(*Message)
 
 			devices, err := deviceservice.GetByUserID(msg.UserID)
 			if err != nil {
@@ -44,6 +44,8 @@ func Queue(adapters adapters.Adapters) {
 			for _, device := range devices {
 				tokens = append(tokens, device.DeviceToken)
 			}
+
+			tokens = []string{"cCr3j_BnRI-FfsSTf14J4r:APA91bHxFfPciKEZ3M-o8PKQHnLIkZhBwEsAeFTa8qJeqIlELAn8zqUy8LUajgkQLsqQcseLPos_oZnKq9VUskasybQOa-bOQ7bSKWjrAwOwZAJ8JTFdXhVr4lh2-EhY1ZUrzA5GybTY", "ceL8CJ4DTs6aFtY5GifMps:APA91bH4OQ9-9LVDoXkqd69R6nW-h3og-JKfoxRyVs0pj-SXZl3xmr1XHqdmd3rtfhzoXjrwOU2D8r-p_bnFrFfwBjeqTIw9MmGHsxZh29dDk-1KfnSdJQdqbwd3wT6Hle-4S0o6bow6"}
 
 			notif, err := service.CreateNotification(msg.UserID, msg.Title, msg.Subtitle, msg.URLLink, msg.Body)
 			if err != nil {

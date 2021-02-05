@@ -13,4 +13,5 @@ type Repository interface {
 	FindByID(id string) (entity.WorkOrderAsset, error)
 	Update(id string, changeset entity.WorkOrderAssetChangeSet) error
 	GetList(pagination entity.Pagination) (WorkOrderAssets []entity.WorkOrderAsset, count int, err error)
+	GetAllByWorkorderID(id string) (WorkOrderAssets []entity.WorkOrderAsset, err error)
 }
