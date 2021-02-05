@@ -130,7 +130,7 @@ func NewWorkOrder(picid, siteID, name, description string, workOrderType WorkOrd
 	workOrder = WorkOrder{
 		ID:          uuid.NewV4().String(),
 		PICID:       picid,
-		SiteID:      siteID,
+		SiteID:      &siteID,
 		Name:        name,
 		Type:        workOrderType,
 		Description: description,

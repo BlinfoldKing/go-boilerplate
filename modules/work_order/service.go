@@ -91,7 +91,7 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 			return []entity.WorkOrderGroup{}, err
 		}
 
-		site, err := service.sites.GetByID(workOrder.SiteID)
+		site, err := service.sites.GetByID(*workOrder.SiteID)
 		workOrderGroup := entity.WorkOrderGroup{
 			WorkOrder: workOrder,
 			User:      users,
