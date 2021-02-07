@@ -55,3 +55,5 @@ policy:
       route: /sites*
     - method: (POST) || (PUT) || (GET) || (DELETE)
       route: /user_device*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /site-assets*
