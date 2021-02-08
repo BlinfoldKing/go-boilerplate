@@ -2,8 +2,9 @@ package auth
 
 // RegisterRequest request for register
 type RegisterRequest struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
+	Email            string  `json:"email" validate:"required,email"`
+	Password         string  `json:"password" validate:"required"`
+	CompanyContactID *string `json:"company_contact_id"`
 }
 
 // LoginRequest request for register

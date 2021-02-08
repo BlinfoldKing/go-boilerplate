@@ -17,7 +17,7 @@ type handler struct {
 func (handler handler) Register(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*RegisterRequest)
 
-	user, err := handler.auth.Register(request.Email, request.Password)
+	user, err := handler.auth.Register(request.Email, request.Password, request.CompanyContactID)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
