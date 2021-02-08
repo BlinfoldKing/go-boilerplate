@@ -47,8 +47,8 @@ func (service Service) Login(email, password string) (entity.UserGroup, error) {
 }
 
 // Register Create new user
-func (service Service) Register(email, password string) (userGroup entity.UserGroup, err error) {
-	userGroup, err = service.users.CreateUser(email, password)
+func (service Service) Register(email, password string, companyContactID *string) (userGroup entity.UserGroup, err error) {
+	userGroup, err = service.users.CreateUser(email, password, companyContactID)
 	if err != nil {
 		return
 	}

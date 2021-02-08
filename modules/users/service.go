@@ -114,8 +114,8 @@ func (service Service) mapUsersToUserGroups(users []entity.User) (ug []entity.Us
 }
 
 // CreateUser create new user
-func (service Service) CreateUser(email, password string) (res entity.UserGroup, err error) {
-	user, err := entity.NewUser(email, password, entity.UserConfig{})
+func (service Service) CreateUser(email, password string, companyContactID *string) (res entity.UserGroup, err error) {
+	user, err := entity.NewUser(email, password, companyContactID, entity.UserConfig{})
 	if err != nil {
 		return
 	}
