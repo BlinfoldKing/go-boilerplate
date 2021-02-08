@@ -26,12 +26,18 @@ const (
 )
 
 const (
+	// InstallationCreated :nodoc
+	InstallationCreated StatusType = iota
+	// InstallationPreDeliveryCheck :nodoc
+	InstallationPreDeliveryCheck
 	// InstallationDelivery :nodoc
-	InstallationDelivery StatusType = iota
-	// InstallationCheckpoint :nodoc
-	InstallationCheckpoint
+	InstallationDelivery
+	// InstallationDeliveryCheckpoint :nodoc
+	InstallationDeliveryCheckpoint
 	// InstallationCheckin :nodoc
 	InstallationCheckin
+	// InstallationRevision :nodoc
+	InstallationRevision
 	// InstallationInstalling :nodoc
 	InstallationInstalling
 	// InstallationVerification :nodoc
@@ -75,6 +81,8 @@ const (
 	AssestmentAssestment
 	// AssestmentVerification :nodoc
 	AssestmentVerification
+	// AssestmentRevision :nodoc
+	AssestmentRevision
 	// AssestmentComplete :nodoc
 	AssestmentComplete
 
@@ -88,6 +96,8 @@ const (
 	AuditAudit
 	// AuditVerification :nodoc
 	AuditVerification
+	// AuditRevision :nodoc
+	AuditRevision
 	// AuditComplete :nodoc
 	AuditComplete
 )
@@ -109,10 +119,10 @@ type WorkOrder struct {
 // WorkOrderGroup stores work order group with mapped tables
 type WorkOrderGroup struct {
 	WorkOrder
-	User     []User     `json:"user"`
-	Asset    []Asset    `json:"asset"`
-	Document []Document `json:"document"`
-	Site     *Site      `json:"site"`
+	User     []User       `json:"user"`
+	Asset    []AssetGroup `json:"asset"`
+	Document []Document   `json:"document"`
+	Site     *Site        `json:"site"`
 }
 
 // WorkOrderChangeSet change set forwork_order

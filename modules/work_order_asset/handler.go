@@ -60,6 +60,7 @@ func (h handler) Update(ctx iris.Context) {
 		WorkOrderID: request.WorkOrderID,
 		AssetID:     request.AssetID,
 		Qty:         request.Qty,
+		Status:      request.Status,
 	})
 	if err != nil {
 		helper.

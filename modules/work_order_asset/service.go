@@ -76,3 +76,8 @@ func (service Service) DeleteByID(id string) (err error) {
 func (service Service) DeleteByWorkOrderID(workorderID string) (err error) {
 	return service.repository.DeleteByWorkOrderID(workorderID)
 }
+
+// GetAllByWorkorderID delete workorder_asset by workorder id
+func (service Service) GetAllByWorkorderID(workorderID string) ([]entity.WorkOrderAsset, error) {
+	return service.repository.GetAllByWorkorderID(workorderID)
+}

@@ -19,6 +19,14 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	workOrder.Get("/{id:string}", handler.GetByID)
 	workOrder.Delete("/{id:string}", handler.DeleteByID)
 	workOrder.Put("/{id:string}", middlewares.ValidateBody(&UpdateRequest{}), handler.Update)
-	workOrder.Put("/{id:string}/mutation:approve", middlewares.ValidateBody(&ApproveRequest{}), handler.Approve)
-	workOrder.Put("/{id:string}/mutation:decline", handler.Decline)
+	workOrder.Post("/{id:string}/mutation:approve", handler.ApproveMutation)
+	workOrder.Post("/{id:string}/mutation:decline", handler.DeclineMutation)
+	workOrder.Post("/{id:string}/audit:approve", handler.ApproveAudit)
+	workOrder.Post("/{id:string}/audit:decline", handler.DeclineAudit)
+	workOrder.Post("/{id:string}/assestment:approve", handler.ApproveAudit)
+	workOrder.Post("/{id:string}/assestment:decline", handler.DeclineAudit)
+	workOrder.Post("/{id:string}/mutation:request", handler.RequestMutation)
+	workOrder.Post("/{id:string}/audit:request", handler.RequestAudit)
+	workOrder.Post("/{id:string}/assestment:request", handler.RequestAssestment)
+
 }

@@ -9,6 +9,7 @@ import (
 	brandcompany "go-boilerplate/modules/brand_company"
 	"go-boilerplate/modules/company"
 	companycontact "go-boilerplate/modules/company_contact"
+	companycontactget "go-boilerplate/modules/company_contact_get"
 	companydocument "go-boilerplate/modules/company_document"
 	"go-boilerplate/modules/contact"
 	"go-boilerplate/modules/documents"
@@ -26,8 +27,11 @@ import (
 	productspecification "go-boilerplate/modules/product_specification"
 	"go-boilerplate/modules/roles"
 	"go-boilerplate/modules/site"
+	siteasset "go-boilerplate/modules/site_asset"
+	sitecontact "go-boilerplate/modules/site_contact"
 	templateitems "go-boilerplate/modules/template_items"
 	"go-boilerplate/modules/templates"
+	userdevice "go-boilerplate/modules/user_device"
 	userroles "go-boilerplate/modules/user_roles"
 	"go-boilerplate/modules/users"
 	"go-boilerplate/modules/warehouse"
@@ -75,6 +79,10 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	workorderasset.Routes(prefix, adapters)
 	workorderdocument.Routes(prefix, adapters)
 	site.Routes(prefix, adapters)
+	siteasset.Routes(prefix, adapters)
+	sitecontact.Routes(prefix, adapters)
+	userdevice.Routes(prefix, adapters)
+	companycontactget.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)
