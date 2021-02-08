@@ -29,6 +29,7 @@ import (
 	"go-boilerplate/modules/site"
 	siteasset "go-boilerplate/modules/site_asset"
 	sitecontact "go-boilerplate/modules/site_contact"
+	sitedocument "go-boilerplate/modules/site_document"
 	templateitems "go-boilerplate/modules/template_items"
 	"go-boilerplate/modules/templates"
 	userdevice "go-boilerplate/modules/user_device"
@@ -82,6 +83,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	siteasset.Routes(prefix, adapters)
 	sitecontact.Routes(prefix, adapters)
 	userdevice.Routes(prefix, adapters)
+	sitedocument.Routes(prefix, adapters)
 	companycontactget.Routes(prefix, adapters)
 
 	// init queues
