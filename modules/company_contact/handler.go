@@ -14,32 +14,6 @@ type handler struct {
 	adapters        adapters.Adapters
 }
 
-func (h handler) GetList(ctx iris.Context) {
-	request := ctx.Values().Get("pagination").(entity.Pagination)
-	companyContacts, count, err := h.companyContacts.GetList(request)
-	if err != nil {
-		helper.
-			CreateErrorResponse(ctx, err).
-			InternalServer().
-			JSON()
-		return
-	}
-	helper.CreatePaginationResponse(ctx, request, companyContacts, count).JSON()
-	ctx.Next()
-}
-func (h handler) GetByID(ctx iris.Context) {
-	id := ctx.Params().GetString("id")
-	companyContact, err := h.companyContacts.GetByID(id)
-	if err != nil {
-		helper.
-			CreateErrorResponse(ctx, err).
-			InternalServer().
-			JSON()
-		return
-	}
-	helper.CreateResponse(ctx).Ok().WithData(companyContact).JSON()
-	ctx.Next()
-}
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 	err := h.companyContacts.DeleteByID(id)
