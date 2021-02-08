@@ -53,3 +53,5 @@ policy:
       route: /template:items*
     - method: (POST) || (PUT) || (GET) || (DELETE)
       route: /sites*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /user_device*

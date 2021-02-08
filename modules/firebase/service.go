@@ -26,10 +26,12 @@ func SendToMultipleDevices(app *firebase.App, deviceTokens []string, data entity
 		Tokens: deviceTokens,
 	}
 	response, err := client.SendMulticast(ctx, notification)
-	if err != nil {
-		return err
+
+	for _, resp := range response.Responses {
+		if resp.Error != nil {
+			return resp.Error
+		}
 	}
-	fmt.Println("Successfully sent notification:", response)
 	return nil
 }
 

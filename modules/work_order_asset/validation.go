@@ -12,4 +12,5 @@ type UpdateRequest struct {
 	WorkOrderID string `json:"workorder_id"`
 	AssetID     string `json:"asset_id"`
 	Qty         int    `json:"qty"`
+	Status      int    `json:"status"`
 }

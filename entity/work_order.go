@@ -26,12 +26,18 @@ const (
 )
 
 const (
+	// InstallationCreated :nodoc
+	InstallationCreated StatusType = iota
+	// InstallationPreDeliveryCheck :nodoc
+	InstallationPreDeliveryCheck
 	// InstallationDelivery :nodoc
-	InstallationDelivery StatusType = iota
-	// InstallationCheckpoint :nodoc
-	InstallationCheckpoint
+	InstallationDelivery
+	// InstallationDeliveryCheckpoint :nodoc
+	InstallationDeliveryCheckpoint
 	// InstallationCheckin :nodoc
 	InstallationCheckin
+	// InstallationRevision :nodoc
+	InstallationRevision
 	// InstallationInstalling :nodoc
 	InstallationInstalling
 	// InstallationVerification :nodoc
@@ -75,6 +81,8 @@ const (
 	AssestmentAssestment
 	// AssestmentVerification :nodoc
 	AssestmentVerification
+	// AssestmentRevision :nodoc
+	AssestmentRevision
 	// AssestmentComplete :nodoc
 	AssestmentComplete
 
@@ -88,6 +96,8 @@ const (
 	AuditAudit
 	// AuditVerification :nodoc
 	AuditVerification
+	// AuditRevision :nodoc
+	AuditRevision
 	// AuditComplete :nodoc
 	AuditComplete
 )

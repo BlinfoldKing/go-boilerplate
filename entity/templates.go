@@ -19,7 +19,7 @@ type Templates struct {
 // TemplatesGroup templates with items mapped
 type TemplatesGroup struct {
 	Templates
-	TemplateItems []TemplateItems `json:"items"`
+	TemplateItems []TemplateItemsGroup `json:"items"`
 }
 
 // TemplatesChangeSet change set fortemplates
