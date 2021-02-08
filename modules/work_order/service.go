@@ -279,8 +279,8 @@ func (service Service) ApproveMutation(id string) (workOrderGroup entity.WorkOrd
 	body, _ := json.Marshal(structs.Map(wo))
 	notifications.PublishToQueue(notifications.Message{
 		UserID:   wo.PICID,
-		Title:    "mutation request",
-		Subtitle: "mutation request",
+		Title:    "mutation approved",
+		Subtitle: "mutation approved",
 		URLLink:  "",
 		Body:     string(body),
 	})
@@ -288,8 +288,8 @@ func (service Service) ApproveMutation(id string) (workOrderGroup entity.WorkOrd
 	for _, user := range wo.User {
 		notifications.PublishToQueue(notifications.Message{
 			UserID:   user.ID,
-			Title:    "mutation request",
-			Subtitle: "mutation request",
+			Title:    "mutation approved",
+			Subtitle: "mutation approved",
 			URLLink:  "",
 			Body:     string(body),
 		})
