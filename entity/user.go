@@ -61,7 +61,7 @@ type UserConfig struct {
 }
 
 // NewUser create new user
-func NewUser(email, password string, config UserConfig) (user User, err error) {
+func NewUser(email, password string, companyContactID *string, config UserConfig) (user User, err error) {
 	id := uuid.NewV4().String()
 	var bytes []byte
 	var hash string
@@ -74,9 +74,10 @@ func NewUser(email, password string, config UserConfig) (user User, err error) {
 	}
 
 	user = User{
-		ID:           id,
-		Email:        email,
-		PasswordHash: string(bytes),
+		ID:               id,
+		Email:            email,
+		CompanyContactID: companyContactID,
+		PasswordHash:     string(bytes),
 	}
 
 	return
