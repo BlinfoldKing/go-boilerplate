@@ -16,6 +16,13 @@ type CompanyContact struct {
 	DeletedAt *time.Time `json:"deleted_at" xorm:"deleted"`
 }
 
+// CompanyContactGroup company contact data with mapped tables
+type CompanyContactGroup struct {
+	CompanyContact
+	Company Company `json:"company"`
+	Contact Contact `json:"contact"`
+}
+
 // CompanyContactChangeSet change set forcompany_contact
 type CompanyContactChangeSet struct {
 	CompanyID string `json:"company_id" xorm:"company_id"`
