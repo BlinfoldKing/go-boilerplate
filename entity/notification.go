@@ -14,9 +14,9 @@ type Notification struct {
 	Subtitle  string     `xorm:"subtitle" json:"subtitle"`
 	URLLink   string     `xorm:"url_link" json:"url_link"`
 	Body      string     `xorm:"body" json:"body"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
+	CreatedAt time.Time  `json:"created_at" xorm:"created"`
+	UpdatedAt time.Time  `json:"updated_at" xorm:"updated"`
+	DeletedAt *time.Time `json:"deleted_at" xorm:"deleted"`
 }
 
 // NotificationChangeSet change set fornotification
