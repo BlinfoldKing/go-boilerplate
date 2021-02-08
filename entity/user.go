@@ -23,9 +23,9 @@ type User struct {
 // UserGroup user data with role mapped
 type UserGroup struct {
 	User
-	Roles   []Role `json:"roles"`
-	Company Company
-	Contact Contact
+	Roles   []Role  `json:"roles"`
+	Company Company `json:"company"`
+	Contact Contact `json:"contact"`
 }
 
 // UserChangeSet changeset for user
