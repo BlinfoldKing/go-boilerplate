@@ -13,6 +13,7 @@ type SiteDocument struct {
 	SiteID        string     `json:"site_id" xorm:"site_id"`
 	ApproveStatus int        `json:"approve_status" xorm:"approve_status"`
 	Notes         string     `json:"notes" xorm:"notes"`
+	Position      string     `json:"position" xorm:"position"`
 	CreatedAt     time.Time  `json:"created_at" xorm:"created"`
 	UpdatedAt     time.Time  `json:"updated_at" xorm:"updated"`
 	DeletedAt     *time.Time `json:"deleted_at" xorm:"deleted"`
@@ -35,8 +36,10 @@ func NewSiteDocument(
 ) SiteDocument {
 	site := SiteDocument{
 		ID:            uuid.NewV4().String(),
+		SiteID:        siteID,
 		DocumentID:    documentID,
 		ApproveStatus: approveStatus,
+		Position:      "",
 		Notes:         notes,
 	}
 	return site
