@@ -112,8 +112,16 @@ func (service Service) GetByID(id string) (asset entity.Asset, err error) {
 }
 
 // GetByWorkOrderID finds asset by work order ID
-func (service Service) GetByWorkOrderID(workOrderID string) (assets []entity.Asset, err error) {
-	return service.repository.FindByWorkOrderID(workOrderID)
+func (service Service) GetByWorkOrderID(workOrderID string) (assetGroups []entity.AssetGroup, err error) {
+	assets, err := service.repository.FindByWorkOrderID(workOrderID)
+	if err != nil {
+		return
+	}
+	for _, asset := range assets {
+		assetGroup, _ := service.mapAssetToAssetGroup(asset)
+		assetGroups = append(assetGroups, assetGroup)
+	}
+	return
 }
 
 // GetBySiteID finds asset by site ID
