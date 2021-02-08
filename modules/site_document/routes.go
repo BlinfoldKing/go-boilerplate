@@ -7,7 +7,7 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-const name = "/site_document"
+const name = "/site-documents"
 
 // Routes init siteDocument
 func Routes(prefix iris.Party, adapters adapters.Adapters) {

@@ -57,3 +57,7 @@ policy:
       route: /user_device*
     - method: (POST) || (PUT) || (GET) || (DELETE)
       route: /site-assets*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /site-contacts*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /site-documents*

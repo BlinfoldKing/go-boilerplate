@@ -6,9 +6,9 @@ import (
 	"go-boilerplate/modules/asset"
 	"go-boilerplate/modules/contact"
 	"go-boilerplate/modules/documents"
+	siteasset "go-boilerplate/modules/site_asset"
 	sitecontact "go-boilerplate/modules/site_contact"
 	sitedocument "go-boilerplate/modules/site_document"
-	siteasset "go-boilerplate/modules/site_asset"
 )
 
 // Service contains business logic
@@ -19,7 +19,7 @@ type Service struct {
 	assets        asset.Service
 	siteContacts  sitecontact.Service
 	siteDocuments sitedocument.Service
-	siteAssets siteasset.Service
+	siteAssets    siteasset.Service
 }
 
 // InitSiteService contains business logic
@@ -65,7 +65,7 @@ func (service Service) mapSitesToSiteGroups(sites []entity.Site) (siteGroups []e
 			Site:      site,
 			Documents: documents,
 			Contact:   contacts,
-			Assets: asset,
+			Assets:    asset,
 		}
 
 		siteGroups = append(siteGroups, siteGroup)
@@ -101,9 +101,9 @@ func (service Service) CreateSite(
 	longitude float32,
 	description string,
 	address string,
-	documentIDs []string,
-	contactIDs []entity.SiteContactIDS,
-	assetIDs []string,
+	documentIDs *[]string,
+	contactIDs *[]entity.SiteContactIDS,
+	assetIDs *[]string,
 ) (site entity.Site, err error) {
 	site, err = entity.NewSite(name, latitude, longitude, description, address)
 	if err != nil {
@@ -111,9 +111,18 @@ func (service Service) CreateSite(
 	}
 	err = service.repository.Save(site)
 
-	_, err = service.siteDocuments.CreateBatchSiteDocument(site.ID, documentIDs)
-	_, err = service.siteContacts.CreateBatchSiteContact(site.ID, contactIDs)
-	_, err = service.siteAssets.CreateBatchSiteAsset(site.ID, assetIDs)
+	if documentIDs != nil {
+		_, err = service.siteDocuments.CreateBatchSiteDocument(site.ID, *documentIDs)
+	}
+
+	if contactIDs != nil {
+		_, err = service.siteContacts.CreateBatchSiteContact(site.ID, *contactIDs)
+	}
+
+	if assetIDs != nil {
+		_, err = service.siteAssets.CreateBatchSiteAsset(site.ID, *assetIDs)
+	}
+
 	return
 }
 
