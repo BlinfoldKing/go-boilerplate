@@ -188,6 +188,11 @@ func (service Service) GetByWorkOrderID(workOrderID string) (users []entity.User
 	return service.repository.FindByWorkOrderID(workOrderID)
 }
 
+// GetByTemplatesID finds user by work order ID
+func (service Service) GetByTemplatesID(templatesID string) (users []entity.User, err error) {
+	return service.repository.FindByTemplatesID(templatesID)
+}
+
 // Update update user
 func (service Service) Update(id string, changeset entity.UserChangeSet) (entity.UserGroup, error) {
 	err := service.repository.Update(id, changeset)
