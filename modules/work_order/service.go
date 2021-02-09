@@ -290,7 +290,7 @@ func (service Service) ApproveMutationV2(id, userid string) (wo entity.WorkOrder
 	}
 
 	for _, asset := range assets {
-		service.siteAsset.CreateAssetSite(asset.AssetID, wo.Site.ID)
+		service.siteAsset.CreateAssetSite(asset.AssetID, *wo.NextSiteID)
 	}
 
 	now := time.Now()
