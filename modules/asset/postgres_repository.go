@@ -30,7 +30,7 @@ func (repo PostgresRepository) GetList(pagination entity.Pagination) (assets []e
 
 // Update update asset
 func (repo PostgresRepository) Update(id string, changeset entity.AssetChangeSet) error {
-	_, err := repo.db.Table("assets").Where("id = ?", id).Update(&changeset)
+	_, err := repo.db.Table("assets").Where("id = ?", id).AllCols().Update(&changeset)
 	return err
 }
 
