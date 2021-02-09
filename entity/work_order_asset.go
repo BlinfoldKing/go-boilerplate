@@ -25,6 +25,7 @@ type WorkOrderAsset struct {
 	AssetID     string               `json:"asset_id" xorm:"asset_id"`
 	Qty         int                  `json:"qty" xorm:"qty"`
 	Status      WorkOrderAssetStatus `json:"status" xorm:"status"`
+	EditedBy    *string              `json:"edited_by" xorm:"edited_by"`
 	CreatedAt   time.Time            `json:"created_at" xorm:"created"`
 	UpdatedAt   time.Time            `json:"updated_at" xorm:"updated"`
 	DeletedAt   *time.Time           `json:"deleted_at" xorm:"deleted"`
@@ -36,6 +37,7 @@ type WorkOrderAssetChangeSet struct {
 	AssetID     string               `json:"asset_id" xorm:"asset_id"`
 	Status      WorkOrderAssetStatus `json:"status" xorm:"status"`
 	Qty         int                  `json:"qty" xorm:"qty"`
+	EditedBy    string               `json:"edited_by" xorm:"edited_by"`
 }
 
 // NewWorkOrderAsset create newwork_order_asset

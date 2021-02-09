@@ -54,6 +54,7 @@ func (h handler) DeleteByID(ctx iris.Context) {
 	ctx.Next()
 }
 func (h handler) Update(ctx iris.Context) {
+	user := ctx.Values().Get("user").(entity.UserGroup)
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
 	workorderAsset, err := h.workorderAssets.Update(id, entity.WorkOrderAssetChangeSet{
@@ -61,6 +62,7 @@ func (h handler) Update(ctx iris.Context) {
 		AssetID:     request.AssetID,
 		Qty:         request.Qty,
 		Status:      request.Status,
+		EditedBy:    user.ID,
 	})
 	if err != nil {
 		helper.

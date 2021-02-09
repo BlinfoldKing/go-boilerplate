@@ -28,5 +28,5 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	workOrder.Post("/{id:string}/mutation:request", handler.RequestMutation)
 	workOrder.Post("/{id:string}/audit:request", handler.RequestAudit)
 	workOrder.Post("/{id:string}/assestment:request", handler.RequestAssestment)
-
+	workOrder.Post("/{id:string}/status:verify-install", handler.VerifyInstallation)
 }
