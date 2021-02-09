@@ -20,6 +20,7 @@ type Templates struct {
 type TemplatesGroup struct {
 	Templates
 	TemplateItems []TemplateItemsGroup `json:"items"`
+	InvolvedIDs   []User               `json:"involved_ids"`
 }
 
 // TemplatesChangeSet change set fortemplates

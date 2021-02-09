@@ -1,4 +1,4 @@
-package templates
+package templatesinvolvedid
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	templates Service
-	adapters  adapters.Adapters
+	templatesInvolvedIDs Service
+	adapters             adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	templates, count, err := h.templates.GetList(request)
+	templatesInvolvedIDs, count, err := h.templatesInvolvedIDs.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,12 +24,12 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, templates, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, templatesInvolvedIDs, count).JSON()
 	ctx.Next()
 }
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	templates, err := h.templates.GetByID(id)
+	templatesInvolvedID, err := h.templatesInvolvedIDs.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -37,12 +37,12 @@ func (h handler) GetByID(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(templates).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(templatesInvolvedID).JSON()
 	ctx.Next()
 }
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.templates.DeleteByID(id)
+	err := h.templatesInvolvedIDs.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -56,9 +56,9 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	templates, err := h.templates.Update(id, entity.TemplatesChangeSet{
-		Name:        request.Name,
-		Description: request.Description,
+	templatesInvolvedID, err := h.templatesInvolvedIDs.Update(id, entity.TemplatesInvolvedIDChangeSet{
+		UserID:      request.UserID,
+		TemplatesID: request.TemplatesID,
 	})
 	if err != nil {
 		helper.
@@ -67,12 +67,12 @@ func (h handler) Update(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(templates).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(templatesInvolvedID).JSON()
 	ctx.Next()
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	templates, err := h.templates.CreateTemplates(request.Name, request.Description, request.TemplateItems, request.InvolvedIDs)
+	templatesInvolvedID, err := h.templatesInvolvedIDs.CreateTemplatesInvolvedID(request.UserID, request.TemplatesID)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -80,6 +80,6 @@ func (h handler) Create(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(templates).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(templatesInvolvedID).JSON()
 	ctx.Next()
 }
