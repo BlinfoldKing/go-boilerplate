@@ -60,6 +60,20 @@ func (repo PostgresRepository) FindByWorkOrderID(workOrderID string) (users []en
 	return
 }
 
+// FindByTemplatesID find users by work order id
+func (repo PostgresRepository) FindByTemplatesID(templatesID string) (users []entity.User, err error) {
+	err = repo.db.
+		SQL(`SELECT 
+				u.*
+			FROM 
+				templates_involved_ids tii
+			INNER JOIN users u
+				ON tii.templates_id = ?
+				AND tii.user_id = u.id`,
+			templatesID).Find(&users)
+	return
+}
+
 // DeleteByID delete user by id
 func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Exec("DELETE FROM users WHERE id = ?", id)

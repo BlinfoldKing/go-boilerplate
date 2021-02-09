@@ -31,6 +31,7 @@ import (
 	sitecontact "go-boilerplate/modules/site_contact"
 	templateitems "go-boilerplate/modules/template_items"
 	"go-boilerplate/modules/templates"
+	templatesinvolvedid "go-boilerplate/modules/templates_involved_id"
 	userdevice "go-boilerplate/modules/user_device"
 	userroles "go-boilerplate/modules/user_roles"
 	"go-boilerplate/modules/users"
@@ -83,6 +84,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	sitecontact.Routes(prefix, adapters)
 	userdevice.Routes(prefix, adapters)
 	companycontactget.Routes(prefix, adapters)
+	templatesinvolvedid.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)

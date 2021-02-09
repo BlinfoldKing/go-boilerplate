@@ -7,6 +7,7 @@ type CreateRequest struct {
 	Name          string                 `json:"name" validate:"required"`
 	Description   string                 `json:"description" validate:"required"`
 	TemplateItems []entity.TemplateItems `json:"template_items"`
+	InvolvedIDs   []string               `json:"involved_ids"`
 }
 
 // UpdateRequest request for update templates
