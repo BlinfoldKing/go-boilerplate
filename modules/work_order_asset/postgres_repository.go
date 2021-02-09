@@ -36,7 +36,7 @@ func (repo PostgresRepository) GetList(pagination entity.Pagination) (workOrderA
 
 // GetAllByWorkorderID get list of work_order_asset
 func (repo PostgresRepository) GetAllByWorkorderID(id string) (workOrderAssets []entity.WorkOrderAsset, err error) {
-	_, err = repo.db.SQL("SELECT * FROM work_order_assets WHERE work_order_id = ? AND deleted_at IS null", id).Get(&workOrderAssets)
+	err = repo.db.SQL("SELECT * FROM work_order_assets WHERE work_order_id = ? AND deleted_at IS null", id).Find(&workOrderAssets)
 	return
 }
 
