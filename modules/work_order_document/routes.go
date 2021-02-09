@@ -7,7 +7,7 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-const name = "/workorder:document"
+const name = "/work-order:document"
 
 // Routes init workorderDocument
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
