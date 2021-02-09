@@ -570,7 +570,11 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 		return
 	}
 
-	var mutationRequester, mutationApprover *entity.User
+	var (
+		mutationRequester *entity.User
+		mutationApprover  *entity.User
+		verifier          *entity.User
+	)
 	if workOrder.MutationRequestedBy != nil {
 		user, err := service.users.GetByID(*workOrder.MutationRequestedBy)
 		if err == nil {
@@ -585,6 +589,14 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 		}
 	}
 
+	if workOrder.VerifiedBy != nil {
+		user, err := service.users.GetByID(*workOrder.MutationApprovedBy)
+		if err == nil {
+			verifier = &user.User
+		}
+
+	}
+
 	documents, err := service.documents.GetByWorkOrderID(workOrder.ID)
 	return entity.WorkOrderGroup{
 		WorkOrder:           workOrder,
@@ -593,6 +605,7 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 		Document:            documents,
 		MutationRequestedBy: mutationApprover,
 		MutationApprovedBy:  mutationRequester,
+		VerifiedBy:          verifier,
 	}, err
 }
 

@@ -131,6 +131,7 @@ type WorkOrderGroup struct {
 	Site                *Site        `json:"site"`
 	MutationApprovedBy  *User        `json:"mutation_approved_by"`
 	MutationRequestedBy *User        `json:"mutation_requested_by"`
+	VerifiedBy          *User        `json:"verify_by"`
 }
 
 // WorkOrderChangeSet change set forwork_order
