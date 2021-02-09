@@ -2,6 +2,7 @@ package workorder
 
 // CreateRequest request for create new work_order
 type CreateRequest struct {
+	NoOrder     string   `json:"no_order" validate:"required"`
 	PICID       string   `json:"pic_id" validate:"required"`
 	Name        string   `json:"name" validate:"required"`
 	Type        int      `json:"type"`
