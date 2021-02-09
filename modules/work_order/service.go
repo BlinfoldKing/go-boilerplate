@@ -244,8 +244,8 @@ func (service Service) RequestMutation(id, userid string) (err error) {
 }
 
 // DeclineMutation update work_order
-func (service Service) DeclineMutation(id string) (workOrderGroup entity.WorkOrderGroup, err error) {
-	wo, err := service.GetByID(id)
+func (service Service) DeclineMutation(id string) (wo entity.WorkOrderGroup, err error) {
+	wo, err = service.GetByID(id)
 	if err != nil {
 		return
 	}
@@ -303,10 +303,10 @@ func (service Service) ApproveMutation(id, userid string) (wo entity.WorkOrderGr
 
 	now := time.Now()
 	service.repository.Update(id, entity.WorkOrderChangeSet{
-		Status:              entity.InstallationInstalling,
-		MutationApprovedBy:  &userid,
-		MutationRequestedAt: &now,
-		PreviousSiteID:      prevSiteID,
+		Status:             entity.InstallationInstalling,
+		MutationApprovedBy: &userid,
+		MutationApprovedAt: &now,
+		PreviousSiteID:     prevSiteID,
 	})
 
 	body, _ := json.Marshal(structs.Map(wo))
@@ -328,7 +328,7 @@ func (service Service) ApproveMutation(id, userid string) (wo entity.WorkOrderGr
 		})
 	}
 
-	return
+	return service.GetByID(id)
 }
 
 // RequestAssestment update work_order
