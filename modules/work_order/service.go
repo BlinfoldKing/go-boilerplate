@@ -207,6 +207,123 @@ func (service Service) VerifyInstallation(id, userid string) (workOrderGroup ent
 	return service.GetByID(id)
 }
 
+// RequestMutationV2 update work_order
+func (service Service) RequestMutationV2(id, userid, nextSiteID string) (wo entity.WorkOrderGroup, err error) {
+	wo, err = service.GetByID(id)
+	if err != nil {
+		return
+	}
+
+	now := time.Now()
+	service.repository.Update(id, entity.WorkOrderChangeSet{
+		Status:              entity.InstallationRevision,
+		MutationRequestedBy: &userid,
+		MutationRequestedAt: &now,
+		NextSiteID:          &nextSiteID,
+	})
+
+	body, _ := json.Marshal(structs.Map(wo))
+	notifications.PublishToQueue(notifications.Message{
+		UserID:   wo.PICID,
+		Title:    "mutation request",
+		Subtitle: "mutation request",
+		URLLink:  "",
+		Body:     string(body),
+	})
+
+	for _, user := range wo.User {
+		notifications.PublishToQueue(notifications.Message{
+			UserID:   user.ID,
+			Title:    "mutation request",
+			Subtitle: "mutation request",
+			URLLink:  "",
+			Body:     string(body),
+		})
+	}
+
+	return service.GetByID(id)
+}
+
+// DeclineMutationV2 update work_order
+func (service Service) DeclineMutationV2(id string) (wo entity.WorkOrderGroup, err error) {
+	wo, err = service.GetByID(id)
+	if err != nil {
+		return
+	}
+
+	service.repository.Update(id, entity.WorkOrderChangeSet{
+		Status: entity.InstallationCheckin,
+	})
+
+	body, _ := json.Marshal(structs.Map(wo))
+	notifications.PublishToQueue(notifications.Message{
+		UserID:   wo.PICID,
+		Title:    "mutation declined",
+		Subtitle: "mutation declined",
+		URLLink:  "",
+		Body:     string(body),
+	})
+
+	for _, user := range wo.User {
+		notifications.PublishToQueue(notifications.Message{
+			UserID:   user.ID,
+			Title:    "mutation declined",
+			Subtitle: "mutation declined",
+			URLLink:  "",
+			Body:     string(body),
+		})
+	}
+
+	return
+}
+
+// ApproveMutationV2 update work_order
+func (service Service) ApproveMutationV2(id, userid string) (wo entity.WorkOrderGroup, err error) {
+	wo, err = service.GetByID(id)
+	if err != nil {
+		return
+	}
+
+	assets, err := service.workOrderAssets.GetAllByWorkorderID(wo.ID)
+	if err != nil {
+		return
+	}
+
+	for _, asset := range assets {
+		service.siteAsset.CreateAssetSite(asset.AssetID, wo.Site.ID)
+	}
+
+	now := time.Now()
+	service.repository.Update(id, entity.WorkOrderChangeSet{
+		Status:             entity.InstallationInstalling,
+		MutationApprovedBy: &userid,
+		MutationApprovedAt: &now,
+		PreviousSiteID:     wo.SiteID,
+		SiteID:             wo.NextSiteID,
+	})
+
+	body, _ := json.Marshal(structs.Map(wo))
+	notifications.PublishToQueue(notifications.Message{
+		UserID:   wo.PICID,
+		Title:    "mutation approved",
+		Subtitle: "mutation approved",
+		URLLink:  "",
+		Body:     string(body),
+	})
+
+	for _, user := range wo.User {
+		notifications.PublishToQueue(notifications.Message{
+			UserID:   user.ID,
+			Title:    "mutation approved",
+			Subtitle: "mutation approved",
+			URLLink:  "",
+			Body:     string(body),
+		})
+	}
+
+	return service.GetByID(id)
+}
+
 // RequestMutation update work_order
 func (service Service) RequestMutation(id, userid string) (err error) {
 	wo, err := service.GetByID(id)
@@ -257,8 +374,8 @@ func (service Service) DeclineMutation(id string) (wo entity.WorkOrderGroup, err
 	body, _ := json.Marshal(structs.Map(wo))
 	notifications.PublishToQueue(notifications.Message{
 		UserID:   wo.PICID,
-		Title:    "mutation request",
-		Subtitle: "mutation request",
+		Title:    "mutation declined",
+		Subtitle: "mutation declined",
 		URLLink:  "",
 		Body:     string(body),
 	})
@@ -266,8 +383,8 @@ func (service Service) DeclineMutation(id string) (wo entity.WorkOrderGroup, err
 	for _, user := range wo.User {
 		notifications.PublishToQueue(notifications.Message{
 			UserID:   user.ID,
-			Title:    "mutation request",
-			Subtitle: "mutation request",
+			Title:    "mutation declined",
+			Subtitle: "mutation declined",
 			URLLink:  "",
 			Body:     string(body),
 		})

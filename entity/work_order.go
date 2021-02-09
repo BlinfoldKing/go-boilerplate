@@ -104,6 +104,7 @@ type WorkOrder struct {
 	Type        WorkOrderType `json:"type" xorm:"type"`
 	Status      StatusType    `json:"status" xorm:"status"`
 	SiteID      *string       `json:"site_id" xorm:"site_id"`
+	NextSiteID  *string       `json:"next_site_id" xorm:"next_site_id"`
 	Description string        `json:"description" xorm:"description"`
 	NoOrder     string        `json:"no_order" xorm:"no_order"`
 
@@ -141,6 +142,7 @@ type WorkOrderChangeSet struct {
 	Type                WorkOrderType `json:"type" xorm:"type"`
 	Status              StatusType    `json:"status" xorm:"status"`
 	SiteID              *string       `json:"site_id" xorm:"site_id"`
+	NextSiteID          *string       `json:"next_site_id" xorm:"next_site_id"`
 	Description         string        `json:"description" xorm:"description"`
 	NoOrder             string        `json:"no_order" xorm:"no_order"`
 	PreviousSiteID      *string       `json:"previous_site_id" xorm:"previous_site_id"`

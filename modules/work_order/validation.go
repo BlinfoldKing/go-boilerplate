@@ -31,3 +31,8 @@ type UpdateRequest struct {
 type ApproveRequest struct {
 	SiteID string `json:"site_id" validate:"required"`
 }
+
+// MutationRequest request for aprroval
+type MutationRequest struct {
+	NextSiteID string `json:"next_site_id" validae:"required"`
+}
