@@ -125,10 +125,13 @@ type WorkOrder struct {
 // WorkOrderGroup stores work order group with mapped tables
 type WorkOrderGroup struct {
 	WorkOrder
-	User     []User       `json:"user"`
-	Asset    []AssetGroup `json:"asset"`
-	Document []Document   `json:"document"`
-	Site     *Site        `json:"site"`
+	User                []User       `json:"user"`
+	Asset               []AssetGroup `json:"asset"`
+	Document            []Document   `json:"document"`
+	Site                *Site        `json:"site"`
+	MutationApprovedBy  *User        `json:"mutation_approved_by"`
+	MutationRequestedBy *User        `json:"mutation_requested_by"`
+	VerifiedBy          *User        `json:"verify_by"`
 }
 
 // WorkOrderChangeSet change set forwork_order
