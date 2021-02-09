@@ -599,13 +599,13 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 
 	documents, err := service.documents.GetByWorkOrderID(workOrder.ID)
 	return entity.WorkOrderGroup{
-		WorkOrder:           workOrder,
-		User:                users,
-		Asset:               assets,
-		Document:            documents,
-		MutationRequestedBy: mutationApprover,
-		MutationApprovedBy:  mutationRequester,
-		VerifiedBy:          verifier,
+		WorkOrder:               workOrder,
+		User:                    users,
+		Asset:                   assets,
+		Document:                documents,
+		MutationRequestedByUser: mutationApprover,
+		MutationApprovedByUser:  mutationRequester,
+		VerifiedByUser:          verifier,
 	}, err
 }
 
