@@ -71,3 +71,8 @@ func (service Service) GetByID(id string) (siteAsset entity.SiteAsset, err error
 func (service Service) DeleteByID(id string) (err error) {
 	return service.repository.DeleteByID(id)
 }
+
+// GetByAssetID find siteAssetby id
+func (service Service) GetByAssetID(id string) (siteAsset entity.SiteAsset, err error) {
+	return service.repository.FindByAssetID(id)
+}
