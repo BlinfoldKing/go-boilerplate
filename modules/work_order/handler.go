@@ -80,7 +80,7 @@ func (h handler) Update(ctx iris.Context) {
 
 func (h handler) RequestMutation(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	user := ctx.Values().Get("body").(entity.UserGroup)
+	user := ctx.Values().Get("user").(entity.UserGroup)
 	err := h.workorders.RequestMutation(id, user.ID)
 
 	if err != nil {
@@ -129,7 +129,7 @@ func (h handler) RequestAudit(ctx iris.Context) {
 
 func (h handler) ApproveMutation(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	user := ctx.Values().Get("body").(entity.UserGroup)
+	user := ctx.Values().Get("user").(entity.UserGroup)
 	workOrder, err := h.workorders.ApproveMutation(id, user.ID)
 
 	if err != nil {
@@ -146,7 +146,7 @@ func (h handler) ApproveMutation(ctx iris.Context) {
 
 func (h handler) VerifyInstallation(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	user := ctx.Values().Get("body").(entity.UserGroup)
+	user := ctx.Values().Get("user").(entity.UserGroup)
 	workOrder, err := h.workorders.VerifyInstallation(id, user.ID)
 
 	if err != nil {

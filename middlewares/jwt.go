@@ -199,6 +199,7 @@ func InitJWT(adapters adapters.Adapters) error {
 		for _, role := range roles {
 			sub = role.Slug
 			if ok, err := adapters.Enforcer.Enforce(sub, obj, act); err == nil && ok {
+				ctx.Values().Set("user", user)
 				ctx.Next()
 				return
 			}
