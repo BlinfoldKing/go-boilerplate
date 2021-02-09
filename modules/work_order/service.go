@@ -570,12 +570,42 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 		return
 	}
 
+	var (
+		mutationRequester *entity.User
+		mutationApprover  *entity.User
+		verifier          *entity.User
+	)
+	if workOrder.MutationRequestedBy != nil {
+		user, err := service.users.GetByID(*workOrder.MutationRequestedBy)
+		if err == nil {
+			mutationRequester = &user.User
+		}
+	}
+
+	if workOrder.MutationApprovedBy != nil {
+		user, err := service.users.GetByID(*workOrder.MutationApprovedBy)
+		if err == nil {
+			mutationApprover = &user.User
+		}
+	}
+
+	if workOrder.VerifiedBy != nil {
+		user, err := service.users.GetByID(*workOrder.MutationApprovedBy)
+		if err == nil {
+			verifier = &user.User
+		}
+
+	}
+
 	documents, err := service.documents.GetByWorkOrderID(workOrder.ID)
 	return entity.WorkOrderGroup{
-		WorkOrder: workOrder,
-		User:      users,
-		Asset:     assets,
-		Document:  documents,
+		WorkOrder:           workOrder,
+		User:                users,
+		Asset:               assets,
+		Document:            documents,
+		MutationRequestedBy: mutationApprover,
+		MutationApprovedBy:  mutationRequester,
+		VerifiedBy:          verifier,
 	}, err
 }
 
