@@ -707,7 +707,7 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 	}
 
 	if workOrder.VerifiedBy != nil {
-		user, err := service.users.GetByID(*workOrder.MutationApprovedBy)
+		user, err := service.users.GetByID(*workOrder.VerifiedBy)
 		if err == nil {
 			verifier = &user.User
 		}
