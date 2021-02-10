@@ -19,14 +19,22 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	workOrder.Get("/{id:string}", handler.GetByID)
 	workOrder.Delete("/{id:string}", handler.DeleteByID)
 	workOrder.Put("/{id:string}", middlewares.ValidateBody(&UpdateRequest{}), handler.Update)
+
+	workOrder.Post("/{id:string}/mutation:request", handler.RequestMutation)
 	workOrder.Post("/{id:string}/mutation:approve", handler.ApproveMutation)
 	workOrder.Post("/{id:string}/mutation:decline", handler.DeclineMutation)
+
+	workOrder.Post("/{id:string}/mutation:request-v2", middlewares.ValidateBody(&MutationRequest{}), handler.RequestMutationV2)
+	workOrder.Post("/{id:string}/mutation:approve-v2", handler.ApproveMutationV2)
+	workOrder.Post("/{id:string}/mutation:decline-v2", handler.DeclineMutationV2)
+
+	workOrder.Post("/{id:string}/audit:request", handler.RequestAudit)
 	workOrder.Post("/{id:string}/audit:approve", handler.ApproveAudit)
 	workOrder.Post("/{id:string}/audit:decline", handler.DeclineAudit)
+
+	workOrder.Post("/{id:string}/assestment:request", handler.RequestAssestment)
 	workOrder.Post("/{id:string}/assestment:approve", handler.ApproveAudit)
 	workOrder.Post("/{id:string}/assestment:decline", handler.DeclineAudit)
-	workOrder.Post("/{id:string}/mutation:request", handler.RequestMutation)
-	workOrder.Post("/{id:string}/audit:request", handler.RequestAudit)
-	workOrder.Post("/{id:string}/assestment:request", handler.RequestAssestment)
 
+	workOrder.Post("/{id:string}/status:verify-install", handler.VerifyInstallation)
 }

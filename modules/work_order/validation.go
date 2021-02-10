@@ -2,6 +2,7 @@ package workorder
 
 // CreateRequest request for create new work_order
 type CreateRequest struct {
+	NoOrder     string   `json:"no_order" validate:"required"`
 	PICID       string   `json:"pic_id" validate:"required"`
 	Name        string   `json:"name" validate:"required"`
 	Type        int      `json:"type"`
@@ -29,4 +30,9 @@ type UpdateRequest struct {
 // ApproveRequest request for aprroval
 type ApproveRequest struct {
 	SiteID string `json:"site_id" validate:"required"`
+}
+
+// MutationRequest request for aprroval
+type MutationRequest struct {
+	NextSiteID string `json:"next_site_id" validae:"required"`
 }

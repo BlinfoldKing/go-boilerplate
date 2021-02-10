@@ -78,9 +78,29 @@ func (h handler) Update(ctx iris.Context) {
 	ctx.Next()
 }
 
+func (h handler) RequestMutationV2(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	request := ctx.Values().Get("body").(*MutationRequest)
+
+	wo, err := h.workorders.RequestMutationV2(id, user.ID, request.NextSiteID)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(wo).JSON()
+	ctx.Next()
+}
+
 func (h handler) RequestMutation(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.workorders.RequestMutation(id)
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	err := h.workorders.RequestMutation(id, user.ID)
 
 	if err != nil {
 		helper.
@@ -126,9 +146,60 @@ func (h handler) RequestAudit(ctx iris.Context) {
 	ctx.Next()
 }
 
+func (h handler) ApproveMutationV2(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	workOrder, err := h.workorders.ApproveMutationV2(id, user.ID)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
 func (h handler) ApproveMutation(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	workOrder, err := h.workorders.ApproveMutation(id)
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	workOrder, err := h.workorders.ApproveMutation(id, user.ID)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
+func (h handler) VerifyInstallation(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	workOrder, err := h.workorders.VerifyInstallation(id, user.ID)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
+func (h handler) DeclineMutationV2(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+	workOrder, err := h.workorders.DeclineMutationV2(id)
 
 	if err != nil {
 		helper.
@@ -229,6 +300,7 @@ func (h handler) DeclineAssestment(ctx iris.Context) {
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
 	workOrder, err := h.workorders.CreateWorkOrder(
+		request.NoOrder,
 		request.PICID,
 		request.SiteID,
 		request.Name,

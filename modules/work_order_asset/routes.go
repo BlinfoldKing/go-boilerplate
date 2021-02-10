@@ -7,7 +7,7 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-const name = "/workorder:asset"
+const name = "/work-order:asset"
 
 // Routes init workorderAsset
 func Routes(prefix iris.Party, adapters adapters.Adapters) {
