@@ -12,4 +12,5 @@ type Repository interface {
 	FindByUserID(userid string) ([]entity.UserDevice, error)
 	Update(id string, changeset entity.UserDeviceChangeSet) error
 	GetList(pagination entity.Pagination) (UserDevices []entity.UserDevice, count int, err error)
+	DeleteByToken(token string) error
 }

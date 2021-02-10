@@ -9,8 +9,14 @@ type RegisterRequest struct {
 
 // LoginRequest request for register
 type LoginRequest struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
+	Email       string  `json:"email" validate:"required,email"`
+	Password    string  `json:"password" validate:"required"`
+	DeviceToken *string `json:"device_token"`
+}
+
+// LogoutRequest request for register
+type LogoutRequest struct {
+	DeviceToken *string `json:"device_token"`
 }
 
 // ResetPasswordRequest request for reset request

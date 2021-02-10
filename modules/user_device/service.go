@@ -53,3 +53,8 @@ func (service Service) GetByUserID(id string) (userdevice []entity.UserDevice, e
 func (service Service) DeleteByID(id string) (err error) {
 	return service.repository.DeleteByID(id)
 }
+
+// DeleteByToken delete user_deviceby token
+func (service Service) DeleteByToken(token string) (err error) {
+	return service.repository.DeleteByToken(token)
+}

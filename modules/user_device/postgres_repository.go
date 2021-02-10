@@ -51,3 +51,9 @@ func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Table("user_devices").Where("id = ?", id).Delete(&entity.UserDevice{})
 	return err
 }
+
+// DeleteByToken delete user_device by token
+func (repo PostgresRepository) DeleteByToken(token string) error {
+	_, err := repo.db.Table("user_devices").Where("device_token = ?", token).Delete(&entity.UserDevice{})
+	return err
+}

@@ -8,22 +8,25 @@ import (
 	"go-boilerplate/helper"
 	"go-boilerplate/modules/mail"
 	"go-boilerplate/modules/otps"
+	userdevice "go-boilerplate/modules/user_device"
 	"go-boilerplate/modules/users"
 	"time"
 )
 
 // Service service for auth
 type Service struct {
-	users users.Service
-	otps  otps.Service
+	users  users.Service
+	device userdevice.Service
+	otps   otps.Service
 }
 
 // CreateAuthService create new service
 func CreateAuthService(
 	users users.Service,
+	device userdevice.Service,
 	otps otps.Service,
 ) Service {
-	return Service{users, otps}
+	return Service{users, device, otps}
 }
 
 func generateLink(token entity.OTP, email string) string {
@@ -42,8 +45,23 @@ func generateLink(token entity.OTP, email string) string {
 }
 
 // Login authenticate user
-func (service Service) Login(email, password string) (entity.UserGroup, error) {
-	return service.users.AuthenticateUser(email, password)
+func (service Service) Login(email, password string, deviceToken *string) (entity.UserGroup, error) {
+	user, err := service.users.AuthenticateUser(email, password)
+	if err != nil {
+		return user, err
+	}
+	if deviceToken != nil {
+		service.device.CreateUserDevice(user.ID, *deviceToken)
+	}
+	return user, err
+}
+
+// Logout logout user
+func (service Service) Logout(deviceToken *string) error {
+	if deviceToken != nil {
+		return service.device.DeleteByToken(*deviceToken)
+	}
+	return nil
 }
 
 // Register Create new user
