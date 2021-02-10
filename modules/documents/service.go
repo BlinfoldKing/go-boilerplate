@@ -35,6 +35,21 @@ func (service Service) CreateDocument(document entity.Document) (entity.Document
 	return document, err
 }
 
+// GetList get list of document
+func (service Service) GetList(pagination entity.Pagination) (document []entity.Document, count int, err error) {
+	document, count, err = service.storageRepository.GetList(pagination)
+	return
+}
+
+// Update update document
+func (service Service) Update(id string, changeset entity.DocumentChangeSet) (document entity.Document, err error) {
+	err = service.storageRepository.Update(id, changeset)
+	if err != nil {
+		return entity.Document{}, err
+	}
+	return service.GetByID(id)
+}
+
 // GetByID find document by id
 func (service Service) GetByID(id string) (document entity.Document, err error) {
 	return service.storageRepository.FindByID(id)
@@ -80,4 +95,9 @@ func (service Service) UploadDocument(objectName, bucketName string) (url string
 // DownloadDocument gets the presigned get link for the object
 func (service Service) DownloadDocument(objectName, bucketName string) (url string, err error) {
 	return service.fileRepository.GenerateGetURL(objectName, bucketName)
+}
+
+// DeleteByID delete documentby id
+func (service Service) DeleteByID(id string) (err error) {
+	return service.storageRepository.DeleteByID(id)
 }

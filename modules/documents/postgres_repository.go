@@ -21,6 +21,19 @@ func (repo PostgresRepository) Save(document entity.Document) error {
 	return err
 }
 
+// GetList get list of document
+func (repo PostgresRepository) GetList(pagination entity.Pagination) (documents []entity.Document, count int, err error) {
+	count, err = repo.db.
+		Paginate("documents", &documents, pagination)
+	return
+}
+
+// Update update document
+func (repo PostgresRepository) Update(id string, changeset entity.DocumentChangeSet) error {
+	_, err := repo.db.Table("documents").Where("id = ?", id).Update(&changeset)
+	return err
+}
+
 // FindByID find document by id
 func (repo PostgresRepository) FindByID(id string) (document entity.Document, err error) {
 	_, err = repo.db.SQL("SELECT * FROM documents WHERE id = ? AND deleted_at IS NULL", id).Get(&document)
@@ -101,4 +114,10 @@ func (repo PostgresRepository) FindBySiteID(siteID string) (documents []entity.D
 func (repo PostgresRepository) FindByObjectBucketName(objectName, bucketName string) (document entity.Document, err error) {
 	_, err = repo.db.SQL("SELECT * FROM documents WHERE object_name = ? AND bucket_name = ?", objectName, bucketName).Get(&document)
 	return
+}
+
+// DeleteByID delete document by id
+func (repo PostgresRepository) DeleteByID(id string) error {
+	_, err := repo.db.Table("documents").Where("id = ?", id).Delete(&entity.Document{})
+	return err
 }
