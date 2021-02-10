@@ -37,7 +37,7 @@ func (service Service) CreateAssetSite(assetID string, siteID string) (siteAsset
 // CreateBatchSiteAsset creates a batch of new siteAssets
 func (service Service) CreateBatchSiteAsset(siteID string, assetIDs []string) (siteAssets []entity.SiteAsset, err error) {
 	for _, assetID := range assetIDs {
-		siteAsset, err := entity.NewSiteAsset(siteID, assetID)
+		siteAsset, err := entity.NewSiteAsset(assetID, siteID)
 		if err != nil {
 			return []entity.SiteAsset{}, err
 		}
