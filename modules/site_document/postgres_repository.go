@@ -36,7 +36,7 @@ func (repo PostgresRepository) GetList(pagination entity.Pagination) (siteDocume
 
 // Update update siteDocument
 func (repo PostgresRepository) Update(id string, changeset entity.SiteDocumentChangeSet) error {
-	_, err := repo.db.Table("site_documents").Where("id = ?", id).Update(&changeset)
+	_, err := repo.db.Table("site_documents").Where("id = ?", id).AllCols().Update(&changeset)
 	return err
 }
 
