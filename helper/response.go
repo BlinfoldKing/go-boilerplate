@@ -2,6 +2,8 @@ package helper
 
 import (
 	"fmt"
+	"reflect"
+
 	"github.com/kataras/iris/v12"
 
 	"bytes"
@@ -62,12 +64,19 @@ func (ms ContentMap) Less(i, j int) bool {
 	}
 
 	var p1, p2 = 999, 999
+
+	k1 := reflect.ValueOf(ms[i].Value).Kind()
+	k2 := reflect.ValueOf(ms[j].Value).Kind()
 	if val, ok := priority[ms[i].Key]; ok {
 		p1 = val
+	} else if k1 == reflect.Slice || k1 == reflect.Map {
+		p1 = 1003
 	}
 
 	if val, ok := priority[ms[j].Key]; ok {
 		p2 = val
+	} else if k2 == reflect.Slice || k2 == reflect.Map {
+		p2 = 1003
 	}
 
 	return p1 < p2
