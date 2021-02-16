@@ -90,9 +90,7 @@ func (ms ContentMap) Less(i, j int) bool {
 		switch ms[i].Value.(type) {
 		case []interface{}, []map[string]interface{}:
 			p1 = 1003
-
 		}
-		p1 = 1003
 	}
 
 	if val, ok := priority[ms[j].Key]; ok {
@@ -100,11 +98,8 @@ func (ms ContentMap) Less(i, j int) bool {
 	} else {
 		switch ms[i].Value.(type) {
 		case []interface{}, []map[string]interface{}:
-			p1 = 1003
-
+			p2 = 1003
 		}
-
-		p1 = 1003
 	}
 
 	if p1 == p2 {
