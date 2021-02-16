@@ -301,7 +301,7 @@ func (service Service) ApproveMutationV2(id, userid string) (wo entity.WorkOrder
 
 	now := time.Now()
 	service.repository.Update(id, entity.WorkOrderChangeSet{
-		Status:             entity.InstallationInstalling,
+		Status:             entity.InstallationDeliveryCheckpoint,
 		MutationApprovedBy: &userid,
 		MutationApprovedAt: &now,
 		PreviousSiteID:     wo.SiteID,
