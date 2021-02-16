@@ -52,7 +52,7 @@ func (repo PostgresRepository) GetAllWarehousebyAssetID(id string) (warehouse []
 		SQL(`SELECT
 				w.*
 			FROM
-				warehouse w
+				warehouses w
 			INNER JOIN asset_warehouses aw
 				ON aw.asset_id = ?
 			`, id).Find(&warehouse)
