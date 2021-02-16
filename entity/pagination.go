@@ -2,6 +2,7 @@ package entity
 
 import (
 	"fmt"
+	"go-boilerplate/entity/common"
 )
 
 // Pagination pagination interace
@@ -238,6 +239,7 @@ func parseBoolOperator(operator string, items []map[string]interface{}) (query s
 }
 
 func getOperation(key string, op string, value interface{}) (res string, err error) {
+
 	switch op {
 	case "lte", "<=":
 		res = fmt.Sprintf("%s <= ?", key)
@@ -296,6 +298,12 @@ func parseValueOperator(attribute string, val interface{}) (query string, values
 			}
 
 			if v != nil {
+				switch v.(type) {
+				case []string:
+					v = common.StrArr(v.([]string))
+				case []interface{}:
+					v = common.InterfaceArr(v.([]interface{}))
+				}
 				values = append(values, v)
 			}
 		}
@@ -311,6 +319,12 @@ func parseValueOperator(attribute string, val interface{}) (query string, values
 		}
 
 		if val != nil {
+			switch val.(type) {
+			case []string:
+				val = common.StrArr(val.([]string))
+			case []interface{}:
+				val = common.InterfaceArr(val.([]interface{}))
+			}
 			values = append(values, val)
 		}
 	}
