@@ -135,7 +135,7 @@ func (handler handler) ResetPassword(ctx iris.Context) {
 func (handler handler) Login(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*LoginRequest)
 
-	user, err := handler.auth.Login(request.Email, request.Password)
+	user, err := handler.auth.Login(request.Email, request.Password, request.AsRole)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
