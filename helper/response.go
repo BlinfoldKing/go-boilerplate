@@ -2,7 +2,6 @@ package helper
 
 import (
 	"fmt"
-	"reflect"
 
 	"github.com/kataras/iris/v12"
 
@@ -37,19 +36,26 @@ func CreateContentMap(m map[string]interface{}, selections ...string) (newMap Co
 
 // Add new entry
 func (ms ContentMap) Add(content Content) (newMap ContentMap) {
-	if reflect.ValueOf(content.Value).Kind() == reflect.Map {
+	switch content.Value.(type) {
+	case map[string]interface{}:
 		content.Value = CreateContentMap(content.Value.(map[string]interface{}))
-	} else if reflect.ValueOf(content.Value).Kind() == reflect.Slice {
+	case []interface{}:
 		slice := content.Value.([]interface{})
-		if len(slice) > 0 && reflect.ValueOf(slice[0]).Kind() == reflect.Map {
-			value := []ContentMap{}
-			for _, i := range slice {
-				v := CreateContentMap(i.(map[string]interface{}))
+		value := make([]interface{}, 0)
+		for _, item := range slice {
+			switch item.(type) {
+			case map[string]interface{}:
+				v := CreateContentMap(item.(map[string]interface{}))
+				value = append(value, v)
+			default:
+				v := item
 				value = append(value, v)
 			}
-			content.Value = value
+
 		}
+		content.Value = value
 	}
+
 	newMap = append(ms, content)
 	return newMap
 }
@@ -78,26 +84,20 @@ func (ms ContentMap) Less(i, j int) bool {
 
 	var p1, p2 = 999, 999
 
-	k1 := reflect.ValueOf(ms[i].Value).Kind()
-	k2 := reflect.ValueOf(ms[j].Value).Kind()
 	if val, ok := priority[ms[i].Key]; ok {
 		p1 = val
-	} else if k1 == reflect.Map {
-		p1 = 1003
-	} else if k1 == reflect.Slice {
-		typ := reflect.TypeOf(ms[i].Value)
-		if typ != reflect.TypeOf([]interface{}{}) {
+	} else {
+		switch ms[i].Value.(type) {
+		case []interface{}, []map[string]interface{}:
 			p1 = 1003
 		}
 	}
 
 	if val, ok := priority[ms[j].Key]; ok {
 		p2 = val
-	} else if k2 == reflect.Map {
-		p2 = 1003
-	} else if k2 == reflect.Slice {
-		typ := reflect.TypeOf(ms[j].Value)
-		if typ != reflect.TypeOf([]interface{}{}) {
+	} else {
+		switch ms[i].Value.(type) {
+		case []interface{}, []map[string]interface{}:
 			p2 = 1003
 		}
 	}
