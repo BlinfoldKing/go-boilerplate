@@ -212,13 +212,22 @@ func processFilter(f interface{}) interface{} {
 					return res
 
 				}
-				res := map[string]interface{}{
-					filter[0].(string): map[string]interface{}{
-						filter[1].(string): processFilter(filter[2]),
-					},
-				}
 
-				fmt.Println(res)
+				var res interface{}
+				switch filter[1].(string) {
+				case "in", "nin":
+					res = map[string]interface{}{
+						filter[0].(string): map[string]interface{}{
+							filter[1].(string): filter[2],
+						},
+					}
+				default:
+					res = map[string]interface{}{
+						filter[0].(string): map[string]interface{}{
+							filter[1].(string): processFilter(filter[2]),
+						},
+					}
+				}
 
 				return res
 			}
