@@ -112,7 +112,7 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 				return []entity.WorkOrderGroup{}, err
 			}
 
-			site = &s
+			site = &s.Site
 		}
 
 		workOrderGroup := entity.WorkOrderGroup{

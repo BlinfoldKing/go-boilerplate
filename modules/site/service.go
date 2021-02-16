@@ -44,32 +44,19 @@ func InitSiteService(adapters adapters.Adapters) Service {
 	)
 }
 
-func (service Service) mapSitesToSiteGroups(sites []entity.Site) (siteGroups []entity.SiteGroup, err error) {
-	for _, site := range sites {
-		documents, err := service.documents.GetBySiteID(site.ID)
-		if err != nil {
-			return []entity.SiteGroup{}, err
-		}
-
-		contacts, err := service.contacts.GetBySiteID(site.ID)
-		if err != nil {
-			return []entity.SiteGroup{}, err
-		}
-
-		asset, err := service.assets.GetBySiteID(site.ID)
-		if err != nil {
-			return []entity.SiteGroup{}, err
-		}
-
-		siteGroup := entity.SiteGroup{
-			Site:      site,
-			Documents: documents,
-			Contact:   contacts,
-			Assets:    asset,
-		}
-
-		siteGroups = append(siteGroups, siteGroup)
+func (service Service) mapSiteToSiteGroup(site entity.Site) (siteGroup entity.SiteGroup, err error) {
+	siteGroup.Site = site
+	siteGroup.Documents, err = service.documents.GetBySiteID(site.ID)
+	if err != nil {
+		return
 	}
+
+	siteGroup.Contact, err = service.contacts.GetBySiteID(site.ID)
+	if err != nil {
+		return
+	}
+
+	siteGroup.Assets, err = service.assets.GetBySiteID(site.ID)
 	return
 }
 
@@ -132,22 +119,30 @@ func (service Service) GetList(pagination entity.Pagination) (siteGroups []entit
 	if err != nil {
 		return
 	}
-	siteGroups, err = service.mapSitesToSiteGroups(sites)
+	for _, site := range sites {
+		siteGroup, _ := service.mapSiteToSiteGroup(site)
+		siteGroups = append(siteGroups, siteGroup)
+	}
 	return
 }
 
 // Update update site
-func (service Service) Update(id string, changeset entity.SiteChangeSet) (site entity.Site, err error) {
+func (service Service) Update(id string, changeset entity.SiteChangeSet) (site entity.SiteGroup, err error) {
 	err = service.repository.Update(id, changeset)
 	if err != nil {
-		return entity.Site{}, err
+		return entity.SiteGroup{}, err
 	}
 	return service.GetByID(id)
 }
 
 // GetByID find siteby id
-func (service Service) GetByID(id string) (site entity.Site, err error) {
-	return service.repository.FindByID(id)
+func (service Service) GetByID(id string) (siteGroup entity.SiteGroup, err error) {
+	site, err := service.repository.FindByID(id)
+	if err != nil {
+		return
+	}
+	siteGroup, err = service.mapSiteToSiteGroup(site)
+	return
 }
 
 // DeleteByID delete siteby id
