@@ -42,8 +42,20 @@ func generateLink(token entity.OTP, email string) string {
 }
 
 // Login authenticate user
-func (service Service) Login(email, password string) (entity.UserGroup, error) {
-	return service.users.AuthenticateUser(email, password)
+func (service Service) Login(email, password string, asRole *string) (entity.UserGroup, error) {
+	user, err := service.users.AuthenticateUser(email, password)
+
+	if asRole != nil {
+		for _, role := range user.Roles {
+			if role.Slug == *asRole {
+				return user, err
+			}
+		}
+
+		return user, fmt.Errorf("invalid role: user doesn't have that role")
+	}
+
+	return user, err
 }
 
 // Register Create new user

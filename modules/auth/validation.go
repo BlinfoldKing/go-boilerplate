@@ -9,8 +9,9 @@ type RegisterRequest struct {
 
 // LoginRequest request for register
 type LoginRequest struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
+	Email    string  `json:"email" validate:"required,email"`
+	Password string  `json:"password" validate:"required"`
+	AsRole   *string `json:"as_role"`
 }
 
 // ResetPasswordRequest request for reset request
