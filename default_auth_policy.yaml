@@ -286,3 +286,48 @@ policy:
       route: /site-contacts*
     - method: (POST) || (PUT) || (GET) || (DELETE)
       route: /site-documents*
+  branch-office:
+    - method: (GET) || (POST)
+      route: /documents*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /users*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /roles*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /product*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /company*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /asset*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /notifications*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /brand*
+    - method: POST
+      route: /user_roles*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /policy*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /history*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /contact*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /work-order*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /involved-user*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /warehouse*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /templates*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /template:items*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /sites*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /user_device*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /site-assets*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /site-contacts*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /site-documents*
