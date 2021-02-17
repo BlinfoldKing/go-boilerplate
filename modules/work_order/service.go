@@ -608,7 +608,7 @@ func (service Service) ApproveAudit(id, userid string) (wo entity.WorkOrderGroup
 
 	body, _ := json.Marshal(structs.Map(wo))
 
-	err := service.repository.ApproveAudit(wo, userid)
+	err = service.repository.ApproveAudit(wo, userid)
 	if err != nil {
 		return
 	}
