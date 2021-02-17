@@ -114,7 +114,7 @@ func (service Service) mapUsersToUserGroups(users []entity.User) (ug []entity.Us
 }
 
 // CreateUser create new user
-func (service Service) CreateUser(email, password string, companyContactID *string) (res entity.UserGroup, err error) {
+func (service Service) CreateUser(email, password string, companyContactID *string, roleIDs *[]string) (res entity.UserGroup, err error) {
 	user, err := entity.NewUser(email, password, companyContactID, entity.UserConfig{})
 	if err != nil {
 		return
@@ -129,9 +129,19 @@ func (service Service) CreateUser(email, password string, companyContactID *stri
 		return
 	}
 
-	_, err = service.userRoles.CreateRole(user.ID, entity.DefaultMEMBER)
-	if err != nil {
-		return
+	if roleIDs != nil {
+		for _, id := range *roleIDs {
+			_, err = service.userRoles.CreateRole(user.ID, id)
+			if err != nil {
+				return
+			}
+
+		}
+	} else {
+		_, err = service.userRoles.CreateRole(user.ID, entity.DefaultMEMBER)
+		if err != nil {
+			return
+		}
 	}
 
 	res, err = service.mapUserToUserGroup(user)
