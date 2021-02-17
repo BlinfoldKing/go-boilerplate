@@ -155,28 +155,11 @@ func (service Service) CreateWorkOrder(
 	if err != nil {
 		return
 	}
-	err = service.repository.Save(workOrder)
+	err = service.repository.Create(workOrder, involvedIDs, documentIDs, assets)
 	if err != nil {
 		return
 	}
 
-	if assets != nil && len(*assets) > 0 {
-		_, err = service.workOrderAssets.CreateBatchWorkOrderAssets(workOrder.ID, *assets)
-		if err != nil {
-			return
-		}
-	}
-
-	if documentIDs != nil && len(*documentIDs) > 0 {
-		_, err = service.workOrderDocuments.CreateBatchWorkOrderDocuments(workOrder.ID, *documentIDs)
-		if err != nil {
-			return
-		}
-	}
-
-	if involvedIDs != nil && len(*involvedIDs) > 0 {
-		_, err = service.involvedUsers.CreateBatchInvolvedUsers(workOrder.ID, *involvedIDs)
-	}
 	return
 }
 
@@ -290,23 +273,10 @@ func (service Service) ApproveMutationV2(id, userid string) (wo entity.WorkOrder
 		return
 	}
 
-	assets, err := service.workOrderAssets.GetAllByWorkorderID(wo.ID)
+	err = service.repository.ApproveMutationV2(wo, userid)
 	if err != nil {
 		return
 	}
-
-	for _, asset := range assets {
-		service.siteAsset.CreateAssetSite(asset.AssetID, *wo.NextSiteID)
-	}
-
-	now := time.Now()
-	service.repository.Update(id, entity.WorkOrderChangeSet{
-		Status:             entity.InstallationDeliveryCheckpoint,
-		MutationApprovedBy: &userid,
-		MutationApprovedAt: &now,
-		PreviousSiteID:     wo.SiteID,
-		SiteID:             wo.NextSiteID,
-	})
 
 	body, _ := json.Marshal(structs.Map(wo))
 	notifications.PublishToQueue(notifications.Message{
@@ -533,16 +503,10 @@ func (service Service) ApproveAssestment(id, userid string) (wo entity.WorkOrder
 
 	body, _ := json.Marshal(structs.Map(wo))
 
-	for _, asset := range wo.Asset {
-		_, err := service.history.CreateHistory(userid, asset.ID, "approved", "approved", float64(asset.PurchasePrice), []string{})
-		if err != nil {
-			return wo, err
-		}
+	err = service.repository.ApproveAssestment(wo, userid)
+	if err != nil {
+		return
 	}
-
-	service.repository.Update(id, entity.WorkOrderChangeSet{
-		Status: entity.AssestmentComplete,
-	})
 
 	notifications.PublishToQueue(notifications.Message{
 		UserID:   wo.PICID,
@@ -644,16 +608,10 @@ func (service Service) ApproveAudit(id, userid string) (wo entity.WorkOrderGroup
 
 	body, _ := json.Marshal(structs.Map(wo))
 
-	for _, asset := range wo.Asset {
-		_, err := service.history.CreateHistory(userid, asset.ID, "approved", "approved", float64(asset.PurchasePrice), []string{})
-		if err != nil {
-			return wo, err
-		}
+	err := service.repository.ApproveAudit(wo, userid)
+	if err != nil {
+		return
 	}
-
-	service.repository.Update(id, entity.WorkOrderChangeSet{
-		Status: entity.AuditComplete,
-	})
 
 	notifications.PublishToQueue(notifications.Message{
 		UserID:   wo.PICID,
