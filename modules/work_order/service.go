@@ -258,7 +258,7 @@ func (service Service) DeclineMutationV2(id string) (wo entity.WorkOrderGroup, e
 	}
 
 	service.repository.Update(id, entity.WorkOrderChangeSet{
-		Status: entity.InstallationCheckin,
+		Status: entity.InstallationDeliveryCheckpoint,
 	})
 
 	body, _ := json.Marshal(structs.Map(wo))
