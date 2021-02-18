@@ -263,14 +263,40 @@ func getOperation(key string, op string, value interface{}) (res string, err err
 		}
 	case "in":
 		res = fmt.Sprintf("%s = ANY(?)", key)
-	case "nin":
+	case "notIn":
 		res = fmt.Sprintf("NOT %s = ANY(?)", key)
-	case "startWith":
+	case "between":
+		res = key + " BETWEEN ? AND ?"
+	case "notBetween":
+		res = key + " NOT BETWEEN ? AND ?"
+	case "startsWith":
 		res = key + " LIKE ? || '%'"
-	case "endWith":
+	case "endsWith":
 		res = key + " LIKE '%' || ?"
-	case "contains":
+	case "substring":
 		res = key + " LIKE '%' || ? || '%'"
+	case "istartsWith":
+		res = key + " ILIKE ? || '%'"
+	case "iendsWith":
+		res = key + " ILIKE '%' || ?"
+	case "isubstring":
+		res = key + " ILIKE '%' || ? || '%'"
+	case "like":
+		res = key + " LIKE ?"
+	case "ilike":
+		res = key + " ILIKE ?"
+	case "notLike":
+		res = key + " NOT LIKE ?"
+	case "notIlike":
+		res = key + " NOT ILIKE ?"
+	case "regexp":
+		res = key + " REGEXP/~ ?"
+	case "notRegexp":
+		res = key + " NOT REGEXP/~ ?"
+	case "iRegexp":
+		res = key + " NOT ~* ?"
+	case "notIRegexp":
+		res = key + " NOT !~* ?"
 	default:
 		if value == nil {
 			res = fmt.Sprintf("%s IS NULL", key)
