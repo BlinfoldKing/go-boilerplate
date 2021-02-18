@@ -46,6 +46,12 @@ func (repo PostgresRepository) FindByUserID(userid string) (userdevice []entity.
 	return
 }
 
+// FindByToken find user_device by id
+func (repo PostgresRepository) FindByToken(token string) (userdevice []entity.UserDevice, err error) {
+	_, err = repo.db.SQL("SELECT * FROM user_devices WHERE device_token = ? AND deleted_at IS null", token).Get(&userdevice)
+	return
+}
+
 // DeleteByID delete user_device by id
 func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Table("user_devices").Where("id = ?", id).Delete(&entity.UserDevice{})

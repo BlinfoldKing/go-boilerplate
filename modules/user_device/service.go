@@ -44,6 +44,11 @@ func (service Service) GetByID(id string) (userdevice entity.UserDevice, err err
 	return service.repository.FindByID(id)
 }
 
+// GetByToken find user_deviceby token
+func (service Service) GetByToken(id string) (userdevice []entity.UserDevice, err error) {
+	return service.repository.FindByToken(id)
+}
+
 // GetByUserID find user_deviceby id
 func (service Service) GetByUserID(id string) (userdevice []entity.UserDevice, err error) {
 	return service.repository.FindByUserID(id)

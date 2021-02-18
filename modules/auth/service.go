@@ -51,7 +51,9 @@ func (service Service) Login(email, password string, deviceToken *string) (entit
 		return user, err
 	}
 	if deviceToken != nil {
-		service.device.CreateUserDevice(user.ID, *deviceToken)
+		if device, err := service.device.GetByToken(*deviceToken); err == nil && len(device) > 0 {
+			service.device.CreateUserDevice(user.ID, *deviceToken)
+		}
 	}
 	return user, err
 }
