@@ -4,6 +4,7 @@ import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/middlewares"
 	"go-boilerplate/modules/otps"
+	userdevice "go-boilerplate/modules/user_device"
 	"go-boilerplate/modules/users"
 
 	"github.com/kataras/iris/v12"
@@ -16,9 +17,12 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	otpsRepository := otps.CreatePostgresRepository(adapters.Postgres)
 	otpsService := otps.CreateService(otpsRepository)
 
+	deviceRepository := userdevice.CreatePosgresRepository(adapters.Postgres)
+	deviceService := userdevice.CreateService(deviceRepository)
+
 	userService := users.InitUserService(adapters)
 
-	authService := CreateAuthService(userService, otpsService)
+	authService := CreateAuthService(userService, deviceService, otpsService)
 
 	handler := handler{authService, adapters}
 
@@ -30,7 +34,8 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	auth.Post("/login", middlewares.ValidateBody(&LoginRequest{}),
 		handler.Login, middlewares.GenerateToken)
 
-	auth.Post("/logout", middlewares.InvalidateToken, handler.Logout)
+	auth.Post("/logout", middlewares.ValidateBody(&LogoutRequest{}),
+		middlewares.InvalidateToken, handler.Logout)
 
 	auth.Post("/password:request", middlewares.ValidateBody(&ResetPasswordRequest{}),
 		handler.ResetPasswordRequest)

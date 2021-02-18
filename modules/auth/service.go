@@ -8,22 +8,25 @@ import (
 	"go-boilerplate/helper"
 	"go-boilerplate/modules/mail"
 	"go-boilerplate/modules/otps"
+	userdevice "go-boilerplate/modules/user_device"
 	"go-boilerplate/modules/users"
 	"time"
 )
 
 // Service service for auth
 type Service struct {
-	users users.Service
-	otps  otps.Service
+	users  users.Service
+	device userdevice.Service
+	otps   otps.Service
 }
 
 // CreateAuthService create new service
 func CreateAuthService(
 	users users.Service,
+	device userdevice.Service,
 	otps otps.Service,
 ) Service {
-	return Service{users, otps}
+	return Service{users, device, otps}
 }
 
 func generateLink(token entity.OTP, email string) string {
@@ -42,20 +45,40 @@ func generateLink(token entity.OTP, email string) string {
 }
 
 // Login authenticate user
-func (service Service) Login(email, password string, asRole *string) (entity.UserGroup, error) {
+func (service Service) Login(email, password string, asRole, deviceToken *string) (entity.UserGroup, error) {
 	user, err := service.users.AuthenticateUser(email, password)
+	if err != nil {
+		return user, err
+	}
 
 	if asRole != nil {
+		valid := false
 		for _, role := range user.Roles {
 			if role.Slug == *asRole {
-				return user, err
+				valid = true
 			}
 		}
 
-		return user, fmt.Errorf("invalid role: user doesn't have that role")
+		if !valid {
+			return user, fmt.Errorf("invalid role: user doesn't have that role")
+		}
+	}
+
+	if deviceToken != nil {
+		if device, err := service.device.GetByToken(*deviceToken); err == nil && len(device) > 0 {
+			service.device.CreateUserDevice(user.ID, *deviceToken)
+		}
 	}
 
 	return user, err
+}
+
+// Logout logout user
+func (service Service) Logout(deviceToken *string) error {
+	if deviceToken != nil {
+		return service.device.DeleteByToken(*deviceToken)
+	}
+	return nil
 }
 
 // Register Create new user
