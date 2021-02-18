@@ -2,6 +2,7 @@ package entity
 
 import (
 	"fmt"
+	"go-boilerplate/entity/common"
 )
 
 // Pagination pagination interace
@@ -238,6 +239,7 @@ func parseBoolOperator(operator string, items []map[string]interface{}) (query s
 }
 
 func getOperation(key string, op string, value interface{}) (res string, err error) {
+
 	switch op {
 	case "lte", "<=":
 		res = fmt.Sprintf("%s <= ?", key)
@@ -260,9 +262,9 @@ func getOperation(key string, op string, value interface{}) (res string, err err
 			res = fmt.Sprintf("%s != ?", key)
 		}
 	case "in":
-		res = fmt.Sprintf("%s IN ?", key)
+		res = fmt.Sprintf("%s = ANY(?)", key)
 	case "nin":
-		res = fmt.Sprintf("%s NOT IN ?", key)
+		res = fmt.Sprintf("NOT %s = ANY(?)", key)
 	case "startWith":
 		res = key + " LIKE ? || '%'"
 	case "endWith":
@@ -296,6 +298,19 @@ func parseValueOperator(attribute string, val interface{}) (query string, values
 			}
 
 			if v != nil {
+				switch v.(type) {
+				case []interface{}:
+					switch v.([]interface{})[0].(type) {
+					case string:
+						arr := make(common.StrArr, 0)
+						for _, item := range v.([]interface{}) {
+							arr = append(arr, item.(string))
+						}
+
+						s, _ := arr.ToDB()
+						v = string(s)
+					}
+				}
 				values = append(values, v)
 			}
 		}
@@ -311,6 +326,19 @@ func parseValueOperator(attribute string, val interface{}) (query string, values
 		}
 
 		if val != nil {
+			switch val.(type) {
+			case []interface{}:
+				switch val.([]interface{})[0].(type) {
+				case string:
+					arr := make(common.StrArr, 0)
+					for _, item := range val.([]interface{}) {
+						arr = append(arr, item.(string))
+					}
+
+					s, _ := arr.ToDB()
+					val = string(s)
+				}
+			}
 			values = append(values, val)
 		}
 	}

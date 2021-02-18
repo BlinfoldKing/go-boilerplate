@@ -17,7 +17,13 @@ type handler struct {
 func (handler handler) Register(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*RegisterRequest)
 
-	user, err := handler.auth.Register(request.Email, request.Password, request.CompanyContactID)
+	user, err := handler.auth.Register(
+		request.Email,
+		request.Password,
+		request.CompanyContactID,
+		request.RoleIDs,
+	)
+
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -135,7 +141,7 @@ func (handler handler) ResetPassword(ctx iris.Context) {
 func (handler handler) Login(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*LoginRequest)
 
-	user, err := handler.auth.Login(request.Email, request.Password, request.DeviceToken)
+	user, err := handler.auth.Login(request.Email, request.Password, request.AsRole, request.DeviceToken)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

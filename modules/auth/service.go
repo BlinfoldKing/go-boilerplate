@@ -45,16 +45,31 @@ func generateLink(token entity.OTP, email string) string {
 }
 
 // Login authenticate user
-func (service Service) Login(email, password string, deviceToken *string) (entity.UserGroup, error) {
+func (service Service) Login(email, password string, asRole, deviceToken *string) (entity.UserGroup, error) {
 	user, err := service.users.AuthenticateUser(email, password)
 	if err != nil {
 		return user, err
 	}
+
+	if asRole != nil {
+		valid := false
+		for _, role := range user.Roles {
+			if role.Slug == *asRole {
+				valid = true
+			}
+		}
+
+		if !valid {
+			return user, fmt.Errorf("invalid role: user doesn't have that role")
+		}
+	}
+
 	if deviceToken != nil {
 		if device, err := service.device.GetByToken(*deviceToken); err == nil && len(device) > 0 {
 			service.device.CreateUserDevice(user.ID, *deviceToken)
 		}
 	}
+
 	return user, err
 }
 
@@ -67,8 +82,8 @@ func (service Service) Logout(deviceToken *string) error {
 }
 
 // Register Create new user
-func (service Service) Register(email, password string, companyContactID *string) (userGroup entity.UserGroup, err error) {
-	userGroup, err = service.users.CreateUser(email, password, companyContactID)
+func (service Service) Register(email, password string, companyContactID *string, roleIDs *[]string) (userGroup entity.UserGroup, err error) {
+	userGroup, err = service.users.CreateUser(email, password, companyContactID, roleIDs)
 	if err != nil {
 		return
 	}

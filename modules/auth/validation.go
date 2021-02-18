@@ -2,9 +2,10 @@ package auth
 
 // RegisterRequest request for register
 type RegisterRequest struct {
-	Email            string  `json:"email" validate:"required,email"`
-	Password         string  `json:"password" validate:"required"`
-	CompanyContactID *string `json:"company_contact_id"`
+	Email            string    `json:"email" validate:"required,email"`
+	Password         string    `json:"password" validate:"required"`
+	CompanyContactID *string   `json:"company_contact_id"`
+	RoleIDs          *[]string `json:"role_ids"`
 }
 
 // LoginRequest request for register
@@ -12,6 +13,7 @@ type LoginRequest struct {
 	Email       string  `json:"email" validate:"required,email"`
 	Password    string  `json:"password" validate:"required"`
 	DeviceToken *string `json:"device_token"`
+	AsRole      *string `json:"as_role"`
 }
 
 // LogoutRequest request for register

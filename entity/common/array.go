@@ -6,6 +6,57 @@ import (
 	"strings"
 )
 
+// InterfaceArr interface array
+type InterfaceArr []interface{}
+
+// FromDB create object from db
+func (arr *InterfaceArr) FromDB(bts []byte) error {
+	if len(bts) == 0 {
+		return nil
+	}
+
+	str := string(bts)
+	if strings.HasPrefix(str, "{") {
+		str = str[1:]
+	}
+
+	if strings.HasSuffix(str, "}") {
+		str = str[0 : len(str)-1]
+	}
+
+	items := strings.Split(str, ",")
+	str = ""
+	for _, item := range items {
+		s := fmt.Sprintf(`"%s"`, item)
+		if str == "" {
+			str = s
+		} else {
+			str += ", " + s
+		}
+	}
+
+	str = fmt.Sprintf(`{"data": [%s]}`, str)
+
+	var data map[string]InterfaceArr
+	err := json.Unmarshal([]byte(str), &data)
+	*arr = data["data"]
+	return err
+}
+
+// ToDB create db string
+func (arr *InterfaceArr) ToDB() ([]byte, error) {
+	str := ""
+	for _, item := range *arr {
+		if str == "" {
+			str = fmt.Sprintf("%v", item)
+		} else {
+			str = fmt.Sprintf("%s, %v", str, item)
+		}
+	}
+
+	return []byte(fmt.Sprintf("{%s}", str)), nil
+}
+
 // StrArr string array
 type StrArr []string
 

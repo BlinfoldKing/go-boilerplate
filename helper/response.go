@@ -2,6 +2,7 @@ package helper
 
 import (
 	"fmt"
+
 	"github.com/kataras/iris/v12"
 
 	"bytes"
@@ -34,8 +35,28 @@ func CreateContentMap(m map[string]interface{}, selections ...string) (newMap Co
 }
 
 // Add new entry
-func (ms ContentMap) Add(content Content) ContentMap {
-	newMap := append(ms, content)
+func (ms ContentMap) Add(content Content) (newMap ContentMap) {
+	switch content.Value.(type) {
+	case map[string]interface{}:
+		content.Value = CreateContentMap(content.Value.(map[string]interface{}))
+	case []interface{}:
+		slice := content.Value.([]interface{})
+		value := make([]interface{}, 0)
+		for _, item := range slice {
+			switch item.(type) {
+			case map[string]interface{}:
+				v := CreateContentMap(item.(map[string]interface{}))
+				value = append(value, v)
+			default:
+				v := item
+				value = append(value, v)
+			}
+
+		}
+		content.Value = value
+	}
+
+	newMap = append(ms, content)
 	return newMap
 }
 
@@ -62,12 +83,27 @@ func (ms ContentMap) Less(i, j int) bool {
 	}
 
 	var p1, p2 = 999, 999
+
 	if val, ok := priority[ms[i].Key]; ok {
 		p1 = val
+	} else {
+		switch ms[i].Value.(type) {
+		case []interface{}, []map[string]interface{}:
+			p1 = 1003
+		}
 	}
 
 	if val, ok := priority[ms[j].Key]; ok {
 		p2 = val
+	} else {
+		switch ms[i].Value.(type) {
+		case []interface{}, []map[string]interface{}:
+			p2 = 1003
+		}
+	}
+
+	if p1 == p2 {
+		return ms[i].Key < ms[j].Key
 	}
 
 	return p1 < p2

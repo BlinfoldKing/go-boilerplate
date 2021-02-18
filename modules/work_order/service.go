@@ -112,7 +112,7 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 				return []entity.WorkOrderGroup{}, err
 			}
 
-			site = &s
+			site = &s.Site
 		}
 
 		workOrderGroup := entity.WorkOrderGroup{
@@ -135,13 +135,13 @@ func (service Service) CreateWorkOrder(
 	name,
 	description string,
 	workOrderType entity.WorkOrderType,
-	involvedIDs []string,
+	involvedIDs *[]string,
 	status int,
-	assets []struct {
+	assets *[]struct {
 		ID  string `json:"id" validate:"required"`
 		Qty int    `json:"qty" validate:"required"`
 	},
-	documentIDs []string,
+	documentIDs *[]string,
 ) (workOrder entity.WorkOrder, err error) {
 	workOrder, err = entity.NewWorkOrder(
 		noOrder,
@@ -160,17 +160,23 @@ func (service Service) CreateWorkOrder(
 		return
 	}
 
-	_, err = service.workOrderAssets.CreateBatchWorkOrderAssets(workOrder.ID, assets)
-	if err != nil {
-		return
+	if assets != nil && len(*assets) > 0 {
+		_, err = service.workOrderAssets.CreateBatchWorkOrderAssets(workOrder.ID, *assets)
+		if err != nil {
+			return
+		}
 	}
 
-	_, err = service.workOrderDocuments.CreateBatchWorkOrderDocuments(workOrder.ID, documentIDs)
-	if err != nil {
-		return
+	if documentIDs != nil && len(*documentIDs) > 0 {
+		_, err = service.workOrderDocuments.CreateBatchWorkOrderDocuments(workOrder.ID, *documentIDs)
+		if err != nil {
+			return
+		}
 	}
 
-	_, err = service.involvedUsers.CreateBatchInvolvedUsers(workOrder.ID, involvedIDs)
+	if involvedIDs != nil && len(*involvedIDs) > 0 {
+		_, err = service.involvedUsers.CreateBatchInvolvedUsers(workOrder.ID, *involvedIDs)
+	}
 	return
 }
 
@@ -295,7 +301,7 @@ func (service Service) ApproveMutationV2(id, userid string) (wo entity.WorkOrder
 
 	now := time.Now()
 	service.repository.Update(id, entity.WorkOrderChangeSet{
-		Status:             entity.InstallationInstalling,
+		Status:             entity.InstallationDeliveryCheckpoint,
 		MutationApprovedBy: &userid,
 		MutationApprovedAt: &now,
 		PreviousSiteID:     wo.SiteID,
