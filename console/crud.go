@@ -119,6 +119,8 @@ func moduleGenerator(cmd *cobra.Command, args []string) {
 func generateEntity(pkg, dest string, fields map[string]string) error {
 	file := jen.NewFilePathName(dest, "entity")
 	upperPkg := strcase.UpperCamelCase(pkg)
+	dir := pkg
+	pkg = strcase.LowerCamelCase(pkg)
 
 	file.Add(jen.Id("import").Parens(jen.Id("\n").Id(`"github.com/satori/uuid"`).Id("\n").Id(`"time"`).Id("\n")))
 
@@ -177,13 +179,16 @@ func generateEntity(pkg, dest string, fields map[string]string) error {
 		jen.Return(),
 	)
 
-	err := file.Save(dest + "/" + pkg + ".go")
+	err := file.Save(dest + "/" + dir + ".go")
 	return err
 }
 
 func generateRepository(pkg, dest string) error {
-	file := jen.NewFilePathName(dest, pkg)
 
+	dir := pkg
+	pkg = strcase.LowerCamelCase(pkg)
+
+	file := jen.NewFilePathName(dest, pkg)
 	upperPkg := strcase.UpperCamelCase(pkg)
 
 	file.Add(jen.Id("import").Parens(jen.Id(`"go-boilerplate/entity"`)))
@@ -204,13 +209,16 @@ func generateRepository(pkg, dest string) error {
 		).Params(jen.Id(upperPkg+"s").Id("[]entity."+upperPkg), jen.Id("count").Id("int"), jen.Id("err").Id("error")),
 	)
 
-	err := file.Save(dest + pkg + "/repository.go")
+	err := file.Save(dest + dir + "/repository.go")
 	return err
 }
 
 func generateValidation(pkg, dest string, fields map[string]string) error {
-	file := jen.NewFilePathName(dest, pkg)
 
+	dir := pkg
+	pkg = strcase.LowerCamelCase(pkg)
+
+	file := jen.NewFilePathName(dest, pkg)
 	generatedValidationFields := make([]jen.Code, 0)
 	for field, fieldType := range fields {
 		generatedValidationFields = append(
@@ -229,15 +237,18 @@ func generateValidation(pkg, dest string, fields map[string]string) error {
 		generatedValidationFields...,
 	)
 
-	err := file.Save(dest + pkg + "/validation.go")
+	err := file.Save(dest + dir + "/validation.go")
 	return err
 }
 
 func generateService(pkg, dest string, fields map[string]string) error {
-	file := jen.NewFilePathName(dest, pkg)
+
+	dir := pkg
+	pkg = strcase.LowerCamelCase(pkg)
 
 	upperPkg := strcase.UpperCamelCase(pkg)
 
+	file := jen.NewFilePathName(dest, pkg)
 	file.Add(jen.Id("import").Params(
 		jen.Id(`
 		"go-boilerplate/entity"`),
@@ -263,7 +274,7 @@ func generateService(pkg, dest string, fields map[string]string) error {
 
 	file.Comment("Create" + upperPkg + " create new " + pkg)
 	file.Func().Params(jen.Id("service").Id("Service")).Id("Create"+upperPkg).Params(createParams...).Params(
-		jen.Id(pkg).Id("entity."+upperPkg),
+		jen.Id(strcase.LowerCamelCase(pkg)).Id("entity."+upperPkg),
 		jen.Id("err").Id("error"),
 	).Block(
 		jen.List(jen.Id(pkg), jen.Err()).Op("=").Id("entity.New"+upperPkg).Params(createArgs...),
@@ -278,7 +289,7 @@ func generateService(pkg, dest string, fields map[string]string) error {
 
 	file.Comment("GetList get list of " + pkg)
 	file.Func().Params(jen.Id("service").Id("Service")).Id("GetList").Params(jen.Id("pagination").Id("entity.Pagination")).Params(
-		jen.Id(pkg).Id("[]entity."+upperPkg),
+		jen.Id(strcase.LowerCamelCase(pkg)).Id("[]entity."+upperPkg),
 		jen.Id("count").Id("int"),
 		jen.Id("err").Id("error"),
 	).Block(
@@ -289,7 +300,7 @@ func generateService(pkg, dest string, fields map[string]string) error {
 
 	file.Comment("Update update " + pkg)
 	file.Func().Params(jen.Id("service").Id("Service")).Id("Update").Params(jen.Id("id").Id("string"), jen.Id("changeset").Id("entity."+upperPkg+"ChangeSet")).Params(
-		jen.Id(pkg).Id("entity."+upperPkg),
+		jen.Id(strcase.LowerCamelCase(pkg)).Id("entity."+upperPkg),
 		jen.Id("err").Id("error"),
 	).Block(
 		jen.List(jen.Err()).Op("=").Id("service.repository.Update(id, changeset)"),
@@ -301,7 +312,7 @@ func generateService(pkg, dest string, fields map[string]string) error {
 
 	file.Comment("GetByID find " + pkg + "by id")
 	file.Func().Params(jen.Id("service").Id("Service")).Id("GetByID").Params(jen.Id("id").Id("string")).Params(
-		jen.Id(pkg).Id("entity."+upperPkg),
+		jen.Id(strcase.LowerCamelCase(pkg)).Id("entity."+upperPkg),
 		jen.Id("err").Id("error"),
 	).Block(
 		jen.Return(jen.Id("service.repository.FindByID(id)")),
@@ -314,13 +325,16 @@ func generateService(pkg, dest string, fields map[string]string) error {
 		jen.Return(jen.Id("service.repository.DeleteByID(id)")),
 	)
 
-	err := file.Save(dest + pkg + "/service.go")
+	err := file.Save(dest + dir + "/service.go")
 	return err
 }
 
 func generateRoutes(pkg, dest string) error {
-	file := jen.NewFilePathName(dest, pkg)
 
+	dir := pkg
+	pkg = strcase.LowerCamelCase(pkg)
+
+	file := jen.NewFilePathName(dest, pkg)
 	file.Add(jen.Id("import").Params(
 		jen.Id(`
 		"go-boilerplate/adapters"
@@ -330,7 +344,7 @@ func generateRoutes(pkg, dest string) error {
 	))
 
 	// route
-	file.Const().Id("name").Op("=").Lit("/" + pkg)
+	file.Const().Id("name").Op("=").Lit("/" + strcase.KebabCase(pkg))
 
 	file.Comment("Routes init " + pkg)
 	file.Func().Id("Routes").Params(
@@ -350,16 +364,19 @@ func generateRoutes(pkg, dest string) error {
 		jen.Id(pkg+`.Put("/{id:string}", middlewares.ValidateBody(&UpdateRequest{}), handler.Update)`),
 	)
 
-	err := file.Save(dest + pkg + "/routes.go")
+	err := file.Save(dest + dir + "/routes.go")
 	return err
 }
 
 func generatePostgresRepository(pkg, dest string) error {
-	file := jen.NewFilePathName(dest, pkg)
 
 	upperPkg := strcase.UpperCamelCase(pkg)
 	pkgWithS := pkg + "s"
 
+	dir := pkg
+	pkg = strcase.LowerCamelCase(pkg)
+
+	file := jen.NewFilePathName(dest, pkg)
 	file.Add(jen.Id("import").Params(
 		jen.Id(`"go-boilerplate/adapters/postgres"
 		"go-boilerplate/entity"`),
@@ -406,13 +423,16 @@ func generatePostgresRepository(pkg, dest string) error {
 		jen.Return().Id("err"),
 	)
 
-	err := file.Save(dest + pkg + "/postgres_repository.go")
+	err := file.Save(dest + dir + "/postgres_repository.go")
 	return err
 }
 
 func generateHandler(pkg, dest string, fields map[string]string) error {
-	file := jen.NewFilePathName(dest, pkg)
 
+	dir := pkg
+	pkg = strcase.LowerCamelCase(pkg)
+
+	file := jen.NewFilePathName(dest, pkg)
 	upperPkg := strcase.UpperCamelCase(pkg)
 	pkgWithS := pkg + "s"
 	errResponse := `helper.
@@ -521,6 +541,6 @@ func generateHandler(pkg, dest string, fields map[string]string) error {
 		jen.Id("ctx.Next()"),
 	)
 
-	err := file.Save(dest + pkg + "/handler.go")
+	err := file.Save(dest + dir + "/handler.go")
 	return err
 }
