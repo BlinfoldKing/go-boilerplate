@@ -52,6 +52,12 @@ func (repo PostgresRepository) FindByAssetID(id string) (siteAsset entity.SiteAs
 	return
 }
 
+// FindAllByAssetID find siteAsset by id
+func (repo PostgresRepository) FindAllByAssetID(id string) (siteAsset []entity.SiteAsset, err error) {
+	err = repo.db.SQL("SELECT * FROM site_assets WHERE asset_id = ? AND deleted_at IS null", id).Find(&siteAsset)
+	return
+}
+
 // DeleteByID delete siteAsset by id
 func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Table("site_assets").Where("id = ?", id).Delete(&entity.SiteAsset{})
