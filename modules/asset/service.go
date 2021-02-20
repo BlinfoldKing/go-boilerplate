@@ -5,6 +5,7 @@ import (
 	"go-boilerplate/entity"
 	"go-boilerplate/modules/company"
 	"go-boilerplate/modules/product"
+	siteasset "go-boilerplate/modules/site_asset"
 	"go-boilerplate/modules/warehouse"
 	"time"
 )
@@ -15,6 +16,7 @@ type Service struct {
 	warehouse  warehouse.Service
 	company    company.Service
 	product    product.Service
+	siteasset  siteasset.Service
 }
 
 // InitAssetService create new asset service
@@ -23,14 +25,33 @@ func InitAssetService(adapters adapters.Adapters) Service {
 	product := product.InitProductService(adapters)
 	company := company.InitCompanyService(adapters)
 	warehouse := warehouse.InitWarehouseService(adapters)
+	siteasset := siteasset.InitSiteAssetService(adapters)
 
 	return Service{
 		repository: repository,
 		product:    product,
 		company:    company,
 		warehouse:  warehouse,
+		siteasset:  siteasset,
 	}
 }
+
+func monthDiff(datetime time.Time) int {
+	now := time.Now()
+	months := 0
+	month := datetime.Month()
+	for datetime.Before(now) {
+		datetime = datetime.Add(time.Hour * 24)
+		nextMonth := datetime.Month()
+		if nextMonth != month {
+			months++
+		}
+		month = nextMonth
+	}
+
+	return months
+}
+
 func (service Service) mapAssetToAssetGroup(asset entity.Asset) (ag entity.AssetGroup, err error) {
 	ag.Asset = asset
 
@@ -47,6 +68,29 @@ func (service Service) mapAssetToAssetGroup(asset entity.Asset) (ag entity.Asset
 	ag.Warehouse, err = service.warehouse.GetAllByAssetID(asset.ID)
 	if err != nil {
 		return
+	}
+
+	// calculate linear valuation
+	oldestDate := time.Now()
+	sites, err := service.siteasset.GetAllByAssetID(asset.ID)
+	if err != nil {
+		return
+	}
+
+	// find oldest installation date
+	for _, site := range sites {
+		if site.CreatedAt.Before(oldestDate) {
+			oldestDate = site.CreatedAt
+		}
+	}
+
+	depreciationRate := (ag.PurchasePrice - ag.SalvageValue) / float32(ag.Product.Lifetime)
+	currentPrice := ag.PurchasePrice - (depreciationRate * float32(monthDiff(oldestDate)))
+
+	if currentPrice <= ag.SalvageValue {
+		ag.CurrentValuation = ag.SalvageValue
+	} else {
+		ag.CurrentValuation = currentPrice
 	}
 
 	return
@@ -67,6 +111,7 @@ func (service Service) CreateAsset(
 	purchaseDate time.Time,
 	purchasePrice float32,
 	supplierCompanyID string,
+	salvageValue float32,
 ) (asset entity.Asset, err error) {
 	asset, err = entity.NewAsset(
 		productID,
@@ -75,6 +120,7 @@ func (service Service) CreateAsset(
 		purchaseDate,
 		purchasePrice,
 		supplierCompanyID,
+		salvageValue,
 	)
 	if err != nil {
 		return
@@ -104,6 +150,12 @@ func (service Service) Update(id string, changeset entity.AssetChangeSet) (asset
 		return entity.Asset{}, err
 	}
 	return service.GetByID(id)
+}
+
+// GetDetailByID find assetby id
+func (service Service) GetDetailByID(id string) (asset entity.AssetGroup, err error) {
+	a, err := service.repository.FindByID(id)
+	return service.mapAssetToAssetGroup(a)
 }
 
 // GetByID find assetby id

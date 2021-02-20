@@ -17,6 +17,7 @@ type Product struct {
 	Tags                common.StrArr `json:"tags" xorm:"tags"`
 	Lifetime            int           `json:"lifetime" xorm:"lifetime"`
 	MaintenanceInterval int           `json:"maintenance_interval" xorm:"maintenance_interval"`
+	SalvageValue        float32       `json:"salvage_value" xorm:"salvage_value"`
 	CreatedAt           time.Time     `json:"created_at" xorm:"created"`
 	UpdatedAt           time.Time     `json:"updated_at" xorm:"updated"`
 	DeletedAt           *time.Time    `json:"deleted_at" xorm:"deleted"`
@@ -40,6 +41,7 @@ type ProductChangeSet struct {
 	Tags                common.StrArr `json:"tags" xorm:"tags"`
 	Lifetime            int           `json:"lifetime" xorm:"lifetime"`
 	MaintenanceInterval int           `json:"maintenance_interval" xorm:"maintenance_interval"`
+	SalvageValue        float32       `json:"salvage_value" xorm:"salvage_value"`
 }
 
 // NewProduct create newproduct
@@ -51,7 +53,7 @@ func NewProduct(
 	productTags []string,
 	lifetime int,
 	maintenanceInterval int,
-
+	salvageValue float32,
 ) (product Product, err error) {
 	product = Product{
 		ID:                  uuid.NewV4().String(),
@@ -62,6 +64,7 @@ func NewProduct(
 		Type:                productType,
 		Lifetime:            lifetime,
 		MaintenanceInterval: maintenanceInterval,
+		SalvageValue:        salvageValue,
 	}
 	return
 }

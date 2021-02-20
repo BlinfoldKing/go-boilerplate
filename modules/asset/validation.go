@@ -10,6 +10,7 @@ type CreateRequest struct {
 	PurchaseDate      time.Time `json:"purchase_date" validate:"required"`
 	PurchasePrice     float32   `json:"purchase_price" validate:"required"`
 	SupplierCompanyID string    `json:"supplier_company_id" validate:"required"`
+	SalvageValue      float32   `json:"salvage_value" validate:"required"`
 }
 
 // UpdateRequest request for update asset
@@ -20,4 +21,5 @@ type UpdateRequest struct {
 	PurchaseDate      time.Time `json:"purchase_date"`
 	PurchasePrice     float32   `json:"purchase_price"`
 	SupplierCompanyID string    `json:"supplier_company_id"`
+	SalvageValue      float32   `json:"salvage_value"`
 }

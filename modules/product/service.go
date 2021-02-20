@@ -107,6 +107,7 @@ func (service Service) CreateProduct(
 		Parameter string `json:"parameter" validate:"required"`
 		Value     string `json:"value" validate:"required"`
 	},
+	salvageValue float32,
 ) (product entity.Product, err error) {
 	product, err = entity.NewProduct(
 		name,
@@ -116,6 +117,7 @@ func (service Service) CreateProduct(
 		productTags,
 		lifetime,
 		maintenanceInterval,
+		salvageValue,
 	)
 	if err != nil {
 		return

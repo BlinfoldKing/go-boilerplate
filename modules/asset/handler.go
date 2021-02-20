@@ -29,7 +29,7 @@ func (h handler) GetList(ctx iris.Context) {
 }
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	asset, err := h.assets.GetByID(id)
+	asset, err := h.assets.GetDetailByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -63,6 +63,7 @@ func (h handler) Update(ctx iris.Context) {
 		PurchaseDate:      request.PurchaseDate,
 		PurchasePrice:     request.PurchasePrice,
 		SupplierCompanyID: request.SupplierCompanyID,
+		SalvageValue:      request.SalvageValue,
 	})
 	if err != nil {
 		helper.
@@ -83,6 +84,7 @@ func (h handler) Create(ctx iris.Context) {
 		request.PurchaseDate,
 		request.PurchasePrice,
 		request.SupplierCompanyID,
+		request.SalvageValue,
 	)
 	if err != nil {
 		helper.

@@ -64,6 +64,7 @@ func (h handler) Update(ctx iris.Context) {
 		Tags:                request.Tags,
 		Lifetime:            request.Lifetime,
 		MaintenanceInterval: request.MaintenanceInterval,
+		SalvageValue:        request.SalvageValue,
 	})
 	if err != nil {
 		helper.
@@ -88,6 +89,7 @@ func (h handler) Create(ctx iris.Context) {
 		request.MaintenanceInterval,
 		request.DocumentIDs,
 		request.Specifications,
+		request.SalvageValue,
 	)
 	if err != nil {
 		helper.

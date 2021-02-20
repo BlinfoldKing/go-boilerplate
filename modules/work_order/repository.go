@@ -11,4 +11,14 @@ type Repository interface {
 	FindByID(id string) (entity.WorkOrder, error)
 	Update(id string, changeset entity.WorkOrderChangeSet) error
 	GetList(pagination entity.Pagination) (WorkOrders []entity.WorkOrder, count int, err error)
+	Create(
+		wo entity.WorkOrder,
+		involvedIDs, documentIDs *[]string,
+		assets *[]struct {
+			ID  string `json:"id" validate:"required"`
+			Qty int    `json:"qty" validate:"required"`
+		}) error
+	ApproveMutationV2(wo entity.WorkOrderGroup, userid string) error
+	ApproveAssestment(wo entity.WorkOrderGroup, userid string) error
+	ApproveAudit(wo entity.WorkOrderGroup, userid string) error
 }
