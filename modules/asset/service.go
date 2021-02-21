@@ -72,10 +72,7 @@ func (service Service) mapAssetToAssetGroup(asset entity.Asset) (ag entity.Asset
 
 	// calculate linear valuation
 	oldestDate := time.Now()
-	sites, err := service.siteasset.GetAllByAssetID(asset.ID)
-	if err != nil {
-		return
-	}
+	sites, _ := service.siteasset.GetAllByAssetID(asset.ID)
 
 	// find oldest installation date
 	for _, site := range sites {
