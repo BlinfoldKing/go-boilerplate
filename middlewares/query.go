@@ -25,7 +25,7 @@ func ValidatePaginationQuery(ctx iris.Context) {
 
 		var sorts []map[string]interface{}
 		var where *map[string]interface{} = nil
-		var groups []entity.PaginationGroup
+		var groups *[]entity.PaginationGroup
 
 		var selection, distinctOn *[]string = nil, nil
 
@@ -86,11 +86,14 @@ func ValidatePaginationQuery(ctx iris.Context) {
 		var (
 			sortBy map[string]string = make(map[string]string)
 		)
-		for _, group := range groups {
-			if group.Desc != nil && *group.Desc {
-				sortBy[group.Selector] = "DESC"
-			} else {
-				sortBy[group.Selector] = "ASC"
+
+		if groups != nil {
+			for _, group := range *groups {
+				if group.Desc != nil && *group.Desc {
+					sortBy[group.Selector] = "DESC"
+				} else {
+					sortBy[group.Selector] = "ASC"
+				}
 			}
 		}
 
@@ -107,7 +110,7 @@ func ValidatePaginationQuery(ctx iris.Context) {
 			Query: entity.Query{
 				Limit:      &take,
 				Sort:       &sortBy,
-				GroupBy:    &groups,
+				GroupBy:    groups,
 				Where:      where,
 				DistinctOn: distinctOn,
 				Selection:  selection,
