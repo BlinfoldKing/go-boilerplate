@@ -24,6 +24,8 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
+
+	// helper.CreateResponse(ctx).WithData(workOrders).JSON()
 	helper.CreatePaginationResponse(ctx, request, workOrders, count).JSON()
 	ctx.Next()
 }
