@@ -4,6 +4,7 @@ import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/config"
 	"go-boilerplate/modules/asset"
+	assetwarehouse "go-boilerplate/modules/asset_warehouse"
 	"go-boilerplate/modules/auth"
 	"go-boilerplate/modules/brand"
 	brandcompany "go-boilerplate/modules/brand_company"
@@ -87,6 +88,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	sitedocument.Routes(prefix, adapters)
 	companycontactget.Routes(prefix, adapters)
 	templatesinvolvedid.Routes(prefix, adapters)
+	assetwarehouse.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)
