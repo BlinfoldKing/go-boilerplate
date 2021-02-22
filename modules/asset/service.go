@@ -7,6 +7,7 @@ import (
 	"go-boilerplate/modules/product"
 	siteasset "go-boilerplate/modules/site_asset"
 	"go-boilerplate/modules/warehouse"
+	"math"
 	"time"
 )
 
@@ -84,7 +85,7 @@ func (service Service) mapAssetToAssetGroup(asset entity.Asset) (ag entity.Asset
 	depreciationRate := (ag.PurchasePrice - ag.SalvageValue) / float32(ag.Product.Lifetime)
 	currentPrice := ag.PurchasePrice - (depreciationRate * float32(monthDiff(oldestDate)))
 
-	if currentPrice <= ag.SalvageValue {
+	if currentPrice <= ag.SalvageValue || math.IsNaN(float64(currentPrice)) {
 		ag.CurrentValuation = ag.SalvageValue
 	} else {
 		ag.CurrentValuation = currentPrice

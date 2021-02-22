@@ -97,7 +97,7 @@ func CreatePaginationResponse(ctx iris.Context, request entity.Pagination, list 
 
 		req := request.(entity.OffsetPagination)
 
-		if req.GroupBy != nil {
+		if req.GroupBy != nil && len(*req.GroupBy) > 0 {
 			newList := make([]map[string]interface{}, 0)
 			b, _ := json.Marshal(list)
 			json.Unmarshal(b, &newList)
@@ -107,8 +107,8 @@ func CreatePaginationResponse(ctx iris.Context, request entity.Pagination, list 
 			newList := make([]map[string]interface{}, 0)
 			b, _ := json.Marshal(list)
 			json.Unmarshal(b, &newList)
-
 			result := make([]interface{}, 0)
+
 			for _, item := range newList {
 				if req.Selection != nil {
 					result = append(result, CreateContentMap(item, *req.Selection...))

@@ -124,6 +124,7 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 		}
 		workOrderGroups = append(workOrderGroups, workOrderGroup)
 	}
+
 	return
 }
 
@@ -169,6 +170,7 @@ func (service Service) GetList(pagination entity.Pagination) (workOrderGroups []
 	if err != nil {
 		return
 	}
+
 	workOrderGroups, err = service.mapWorkOrdersToWorkOrderGroups(workOrders)
 	return
 }

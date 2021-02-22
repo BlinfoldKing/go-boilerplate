@@ -10,16 +10,16 @@ import (
 	"sort"
 )
 
-// Content Reponse content implemented using map slice
+// Content Reponse Content implemented using map slice
 type Content struct {
 	Key   string
 	Value interface{}
 }
 
-// ContentMap Reponse content implemented using map slice
+// ContentMap Reponse Content implemented using map slice
 type ContentMap []Content
 
-// CreateContentMap create new content map
+// CreateContentMap create new Content map
 func CreateContentMap(m map[string]interface{}, selections ...string) (newMap ContentMap) {
 	if len(selections) > 0 {
 		for _, s := range selections {
@@ -35,12 +35,12 @@ func CreateContentMap(m map[string]interface{}, selections ...string) (newMap Co
 }
 
 // Add new entry
-func (ms ContentMap) Add(content Content) (newMap ContentMap) {
-	switch content.Value.(type) {
+func (ms ContentMap) Add(Content Content) (newMap ContentMap) {
+	switch Content.Value.(type) {
 	case map[string]interface{}:
-		content.Value = CreateContentMap(content.Value.(map[string]interface{}))
+		Content.Value = CreateContentMap(Content.Value.(map[string]interface{}))
 	case []interface{}:
-		slice := content.Value.([]interface{})
+		slice := Content.Value.([]interface{})
 		value := make([]interface{}, 0)
 		for _, item := range slice {
 			switch item.(type) {
@@ -53,17 +53,17 @@ func (ms ContentMap) Add(content Content) (newMap ContentMap) {
 			}
 
 		}
-		content.Value = value
+		Content.Value = value
 	}
 
-	newMap = append(ms, content)
+	newMap = append(ms, Content)
 	return newMap
 }
 
 // Len get len
 func (ms ContentMap) Len() int { return len(ms) }
 
-// Swap swap content
+// Swap swap Content
 func (ms ContentMap) Swap(i, j int) { ms[i], ms[j] = ms[j], ms[i] }
 
 // Less custom comparator
@@ -135,7 +135,7 @@ func (ms ContentMap) MarshalJSON() ([]byte, error) {
 // Response represent http reponse
 type Response struct {
 	ok      bool
-	content ContentMap
+	Content ContentMap
 	context iris.Context
 }
 
@@ -144,46 +144,46 @@ func CreateResponse(ctx iris.Context) Response {
 	response := Response{}
 
 	response.context = ctx
-	response.content = ContentMap{}
+	response.Content = ContentMap{}
 
 	return response
 }
 
 // Ok http 200
 func (response Response) Ok() Response {
-	response.content = response.content.Add(Content{"status", 200})
+	response.Content = response.Content.Add(Content{"status", 200})
 	return response.WithMessage("ok")
 }
 
 // WithData set data
 func (response Response) WithData(data interface{}) Response {
-	response.content = response.content.Add(Content{"data", data})
+	response.Content = response.Content.Add(Content{"data", data})
 	return response
 }
 
 // WithField set custom field
 func (response Response) WithField(field string, data interface{}) Response {
-	response.content = response.content.Add(Content{field, data})
+	response.Content = response.Content.Add(Content{field, data})
 	return response
 }
 
 // WithStatus set status
 func (response Response) WithStatus(status int) Response {
-	response.content = response.content.Add(Content{"status", status})
+	response.Content = response.Content.Add(Content{"status", status})
 	return response
 }
 
 // WithMessage set message
 func (response Response) WithMessage(message string) Response {
-	response.content = response.content.Add(Content{"message", message})
+	response.Content = response.Content.Add(Content{"message", message})
 	return response
 }
 
 // JSON send response as JSON
 func (response Response) JSON() {
 	Logger.
-		WithField("content", response).
+		WithField("Content", response.Content).
 		Debug()
 
-	response.context.JSON(response.content)
+	response.context.JSON(response.Content)
 }
