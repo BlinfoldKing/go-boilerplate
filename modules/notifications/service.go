@@ -15,8 +15,8 @@ func CreateService(repo Repository) Service {
 }
 
 // CreateNotification create new notification
-func (service Service) CreateNotification(userID, title, subtitle, urlLink, body string) (notification entity.Notification, err error) {
-	notification = entity.NewNotification(userID, title, subtitle, urlLink, body)
+func (service Service) CreateNotification(userID, title, subtitle, urlLink, body string, notifType, status int) (notification entity.Notification, err error) {
+	notification = entity.NewNotification(userID, title, subtitle, urlLink, body, notifType, status)
 	err = service.repository.Save(notification)
 	return
 }

@@ -62,7 +62,8 @@ func (h handler) Update(ctx iris.Context) {
 		Address:     request.Address,
 		Latitude:    request.Latitude,
 		Longitude:   request.Longitude,
-	})
+	},
+		request.ContactIDs)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

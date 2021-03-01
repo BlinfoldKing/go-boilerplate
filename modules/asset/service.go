@@ -3,6 +3,7 @@ package asset
 import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
+	assetwarehouseextend "go-boilerplate/modules/asset_warehouse_extend"
 	"go-boilerplate/modules/company"
 	"go-boilerplate/modules/product"
 	siteasset "go-boilerplate/modules/site_asset"
@@ -13,11 +14,12 @@ import (
 
 // Service contains business logic
 type Service struct {
-	repository Repository
-	warehouse  warehouse.Service
-	company    company.Service
-	product    product.Service
-	siteasset  siteasset.Service
+	repository      Repository
+	warehouse       warehouse.Service
+	company         company.Service
+	product         product.Service
+	siteasset       siteasset.Service
+	assetWarehouses assetwarehouseextend.Service
 }
 
 // InitAssetService create new asset service
@@ -27,13 +29,15 @@ func InitAssetService(adapters adapters.Adapters) Service {
 	company := company.InitCompanyService(adapters)
 	warehouse := warehouse.InitWarehouseService(adapters)
 	siteasset := siteasset.InitSiteAssetService(adapters)
+	assetwarehouse := assetwarehouseextend.InitService(adapters)
 
 	return Service{
-		repository: repository,
-		product:    product,
-		company:    company,
-		warehouse:  warehouse,
-		siteasset:  siteasset,
+		repository:      repository,
+		product:         product,
+		company:         company,
+		warehouse:       warehouse,
+		siteasset:       siteasset,
+		assetWarehouses: assetwarehouse,
 	}
 }
 
@@ -142,10 +146,21 @@ func (service Service) GetList(pagination entity.Pagination) (assetGroups []enti
 }
 
 // Update update asset
-func (service Service) Update(id string, changeset entity.AssetChangeSet) (asset entity.Asset, err error) {
+func (service Service) Update(id string, changeset entity.AssetChangeSet, warehouseIDs []string) (asset entity.Asset, err error) {
 	err = service.repository.Update(id, changeset)
 	if err != nil {
-		return entity.Asset{}, err
+		return
+	}
+
+	if len(warehouseIDs) > 0 {
+		err = service.assetWarehouses.DeleteByAssetID(id)
+		if err != nil {
+			return
+		}
+		_, err = service.assetWarehouses.CreateBatchAssetWarehouses(id, warehouseIDs)
+		if err != nil {
+			return
+		}
 	}
 	return service.GetByID(id)
 }

@@ -55,6 +55,8 @@ func (repo PostgresRepository) GetAllWarehousebyAssetID(id string) (warehouse []
 				warehouses w
 			INNER JOIN asset_warehouses aw
 				ON aw.asset_id = ?
+				AND aw.warehouse_id = w.id
+				AND aw.deleted_at IS NULL
 			`, id).Find(&warehouse)
 
 	return

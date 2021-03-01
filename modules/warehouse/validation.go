@@ -12,9 +12,10 @@ type CreateRequest struct {
 
 // UpdateRequest request for update warehouse
 type UpdateRequest struct {
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Address     string  `json:"address"`
-	Latitude    float64 `json:"latitude"`
-	Longitude   float64 `json:"longitude"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Address     string   `json:"address"`
+	Latitude    float64  `json:"latitude"`
+	Longitude   float64  `json:"longitude"`
+	ContactIDs  []string `json:"contact_ids"`
 }
