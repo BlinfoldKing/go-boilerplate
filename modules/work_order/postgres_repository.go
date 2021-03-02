@@ -47,7 +47,7 @@ func (repo PostgresRepository) ApproveAudit(wo entity.WorkOrderGroup, userid str
 	}
 
 	_, err = repo.db.Table("work_orders").Where("id = ?", wo.ID).Update(&entity.WorkOrderChangeSet{
-		Status: entity.AssestmentComplete,
+		Status: entity.AuditVerification,
 	})
 	if err != nil {
 		sess.Rollback()
@@ -86,7 +86,7 @@ func (repo PostgresRepository) ApproveAssestment(wo entity.WorkOrderGroup, useri
 	}
 
 	_, err = repo.db.Table("work_orders").Where("id = ?", wo.ID).Update(&entity.WorkOrderChangeSet{
-		Status: entity.AssestmentComplete,
+		Status: entity.AssestmentVerification,
 	})
 	if err != nil {
 		sess.Rollback()

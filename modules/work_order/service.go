@@ -198,6 +198,34 @@ func (service Service) VerifyInstallation(id, userid string) (workOrderGroup ent
 	return service.GetByID(id)
 }
 
+// VerifyAssestment update work_order
+func (service Service) VerifyAssestment(id, userid string) (workOrderGroup entity.WorkOrderGroup, err error) {
+	now := time.Now()
+	err = service.repository.Update(id, entity.WorkOrderChangeSet{
+		VerifiedBy: &userid,
+		VerifiedAt: &now,
+		Status:     entity.AssestmentComplete,
+	})
+	if err != nil {
+		return entity.WorkOrderGroup{}, err
+	}
+	return service.GetByID(id)
+}
+
+// VerifyAudit update work_order
+func (service Service) VerifyAudit(id, userid string) (workOrderGroup entity.WorkOrderGroup, err error) {
+	now := time.Now()
+	err = service.repository.Update(id, entity.WorkOrderChangeSet{
+		VerifiedBy: &userid,
+		VerifiedAt: &now,
+		Status:     entity.AuditComplete,
+	})
+	if err != nil {
+		return entity.WorkOrderGroup{}, err
+	}
+	return service.GetByID(id)
+}
+
 // RequestMutationV2 update work_order
 func (service Service) RequestMutationV2(id, userid, nextSiteID string) (wo entity.WorkOrderGroup, err error) {
 	wo, err = service.GetByID(id)
@@ -466,6 +494,10 @@ func (service Service) DeclineAssestment(id, userid string) (wo entity.WorkOrder
 		return entity.WorkOrderGroup{}, err
 	}
 
+	service.repository.Update(id, entity.WorkOrderChangeSet{
+		Status: entity.AssestmentAssestment,
+	})
+
 	body, _ := json.Marshal(structs.Map(wo))
 
 	for _, asset := range wo.Asset {
@@ -570,6 +602,10 @@ func (service Service) DeclineAudit(id, userid string) (wo entity.WorkOrderGroup
 	if err != nil {
 		return entity.WorkOrderGroup{}, err
 	}
+
+	service.repository.Update(id, entity.WorkOrderChangeSet{
+		Status: entity.AuditAudit,
+	})
 
 	body, _ := json.Marshal(structs.Map(wo))
 

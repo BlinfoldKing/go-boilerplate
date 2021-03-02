@@ -199,6 +199,40 @@ func (h handler) VerifyInstallation(ctx iris.Context) {
 	ctx.Next()
 }
 
+func (h handler) VerifyAssestment(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	workOrder, err := h.workorders.VerifyAssestment(id, user.ID)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
+func (h handler) VerifyAudit(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	workOrder, err := h.workorders.VerifyAudit(id, user.ID)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
 func (h handler) DeclineMutationV2(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 	workOrder, err := h.workorders.DeclineMutationV2(id)
