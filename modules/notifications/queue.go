@@ -4,7 +4,7 @@ import (
 	"go-boilerplate/adapters"
 	"go-boilerplate/helper"
 	"go-boilerplate/modules/firebase"
-	"go-boilerplate/modules/user_device"
+	userdevice "go-boilerplate/modules/user_device"
 )
 
 const topic = "notifications"
@@ -16,6 +16,8 @@ type Message struct {
 	Subtitle string `json:"subtitle"`
 	URLLink  string `json:"url_link"`
 	Body     string `json:"body"`
+	Type     int    `json:"type"`
+	Status   int    `json:"status"`
 }
 
 // PublishToQueue publish to ping queue
@@ -47,7 +49,7 @@ func Queue(adapters adapters.Adapters) {
 
 			tokens = []string{"cCr3j_BnRI-FfsSTf14J4r:APA91bHxFfPciKEZ3M-o8PKQHnLIkZhBwEsAeFTa8qJeqIlELAn8zqUy8LUajgkQLsqQcseLPos_oZnKq9VUskasybQOa-bOQ7bSKWjrAwOwZAJ8JTFdXhVr4lh2-EhY1ZUrzA5GybTY", "ceL8CJ4DTs6aFtY5GifMps:APA91bH4OQ9-9LVDoXkqd69R6nW-h3og-JKfoxRyVs0pj-SXZl3xmr1XHqdmd3rtfhzoXjrwOU2D8r-p_bnFrFfwBjeqTIw9MmGHsxZh29dDk-1KfnSdJQdqbwd3wT6Hle-4S0o6bow6"}
 
-			notif, err := service.CreateNotification(msg.UserID, msg.Title, msg.Subtitle, msg.URLLink, msg.Body)
+			notif, err := service.CreateNotification(msg.UserID, msg.Title, msg.Subtitle, msg.URLLink, msg.Body, msg.Type, msg.Status)
 			if err != nil {
 
 				helper.Logger.

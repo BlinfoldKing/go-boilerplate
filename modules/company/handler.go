@@ -61,7 +61,9 @@ func (h handler) Update(ctx iris.Context) {
 		Type:        request.Type,
 		Address:     request.Address,
 		PhoneNumber: request.PhoneNumber,
-	})
+	},
+		request.ContactIDs,
+		request.DocumentIDs)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

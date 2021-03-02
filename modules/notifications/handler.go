@@ -71,7 +71,7 @@ func (h handler) Update(ctx iris.Context) {
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	notification, err := h.notifications.CreateNotification(request.UserID, request.Title, request.Subtitle, request.URLLink, request.Body)
+	notification, err := h.notifications.CreateNotification(request.UserID, request.Title, request.Subtitle, request.URLLink, request.Body, request.Type, request.Status)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

@@ -22,4 +22,5 @@ type UpdateRequest struct {
 	PurchasePrice     float32   `json:"purchase_price"`
 	SupplierCompanyID string    `json:"supplier_company_id"`
 	SalvageValue      float32   `json:"salvage_value"`
+	WarehouseIDs      []string  `json:"warehouse_ids"`
 }

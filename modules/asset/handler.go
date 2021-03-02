@@ -64,7 +64,8 @@ func (h handler) Update(ctx iris.Context) {
 		PurchasePrice:     request.PurchasePrice,
 		SupplierCompanyID: request.SupplierCompanyID,
 		SalvageValue:      request.SalvageValue,
-	})
+	},
+		request.WarehouseIDs)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

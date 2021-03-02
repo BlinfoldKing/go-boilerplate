@@ -70,10 +70,20 @@ func (service Service) GetList(pagination entity.Pagination) (warehouseGroups []
 }
 
 // Update update warehouse
-func (service Service) Update(id string, changeset entity.WarehouseChangeSet) (warehouse entity.WarehouseGroup, err error) {
+func (service Service) Update(id string, changeset entity.WarehouseChangeSet, contactIDs []string) (warehouse entity.WarehouseGroup, err error) {
 	err = service.repository.Update(id, changeset)
 	if err != nil {
-		return entity.WarehouseGroup{}, err
+		return
+	}
+	if len(contactIDs) > 0 {
+		err = service.warehouseContacts.DeleteByWarehouseID(id)
+		if err != nil {
+			return
+		}
+		_, err = service.warehouseContacts.CreateBatchWarehouseContacts(id, contactIDs)
+		if err != nil {
+			return
+		}
 	}
 	return service.GetByID(id)
 }
