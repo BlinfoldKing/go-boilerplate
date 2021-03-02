@@ -49,7 +49,8 @@ func (repo PostgresRepository) FindByProductID(productID string) (documents []en
 				product_documents pd
 			INNER JOIN documents d
 				ON pd.product_id = ?
-				AND pd.document_id = d.id`,
+				AND pd.document_id = d.id
+				AND pd.deleted_at IS NULL`,
 			productID).Find(&documents)
 	return
 }
@@ -63,7 +64,8 @@ func (repo PostgresRepository) FindByHistoryID(historyID string) (documents []en
 				history_documents hd
 			INNER JOIN documents d
 				ON hd.history_id = ?
-				AND hd.document_id = d.id`,
+				AND hd.document_id = d.id
+				AND hd.deleted_at IS NULL`,
 			historyID).Find(&documents)
 	return
 }
@@ -77,7 +79,8 @@ func (repo PostgresRepository) FindByCompanyID(companyID string) (documents []en
 				company_documents cd
 			INNER JOIN documents d
 				ON cd.company_id = ?
-				AND cd.document_id = d.id`,
+				AND cd.document_id = d.id
+				AND cd.deleted_at IS NULL`,
 			companyID).Find(&documents)
 	return
 }
@@ -91,7 +94,8 @@ func (repo PostgresRepository) FindByWorkOrderID(workOrderID string) (documents 
 				work_order_documents wd
 			INNER JOIN documents d
 				ON wd.work_order_id = ?
-				AND wd.document_id = d.id`,
+				AND wd.document_id = d.id
+				AND wd.deleted_at IS NULL`,
 			workOrderID).Find(&documents)
 	return
 }
@@ -105,7 +109,8 @@ func (repo PostgresRepository) FindBySiteID(siteID string) (documents []entity.D
 				site_documents pd
 			INNER JOIN documents d
 				ON pd.site_id = ?
-				AND pd.document_id = d.id`,
+				AND pd.document_id = d.id
+				AND pd.deleted_at IS NULL`,
 			siteID).Find(&documents)
 	return
 }

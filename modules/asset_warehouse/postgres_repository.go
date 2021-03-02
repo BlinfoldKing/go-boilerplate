@@ -21,6 +21,12 @@ func (repo PostgresRepository) Save(assetWarehouse entity.AssetWarehouse) error 
 	return err
 }
 
+// SaveBatch inserts a batch of assetWarehouses
+func (repo PostgresRepository) SaveBatch(assetWarehouses []entity.AssetWarehouse) error {
+	_, err := repo.db.Table("asset_warehouses").Insert(&assetWarehouses)
+	return err
+}
+
 // GetList get list of assetWarehouse
 func (repo PostgresRepository) GetList(pagination entity.Pagination) (assetwarehouses []entity.AssetWarehouse, count int, err error) {
 	count, err = repo.db.
@@ -43,5 +49,11 @@ func (repo PostgresRepository) FindByID(id string) (assetWarehouse entity.AssetW
 // DeleteByID delete assetWarehouse by id
 func (repo PostgresRepository) DeleteByID(id string) error {
 	_, err := repo.db.Table("asset_warehouses").Where("id = ?", id).Delete(&entity.AssetWarehouse{})
+	return err
+}
+
+// DeleteByAssetID delete asset warehouse by asset id
+func (repo PostgresRepository) DeleteByAssetID(assetID string) error {
+	_, err := repo.db.Table("asset_warehouses").Where("asset_id = ?", assetID).Delete(&entity.AssetWarehouse{})
 	return err
 }

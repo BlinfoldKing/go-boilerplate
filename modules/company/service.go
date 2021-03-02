@@ -99,10 +99,29 @@ func (service Service) GetList(pagination entity.Pagination) (companyGroups []en
 }
 
 // Update update company
-func (service Service) Update(id string, changeset entity.CompanyChangeSet) (company entity.CompanyGroup, err error) {
+func (service Service) Update(id string, changeset entity.CompanyChangeSet, contactIDs, documentIDs []string) (company entity.CompanyGroup, err error) {
 	err = service.repository.Update(id, changeset)
 	if err != nil {
-		return entity.CompanyGroup{}, err
+		return
+	}
+
+	if len(contactIDs) > 0 {
+		err = service.companyContacts.DeleteByCompanyID(id)
+		if err != nil {
+			return
+		}
+		_, err = service.companyContacts.CreateBatchCompanyContacts(id, contactIDs)
+		if err != nil {
+			return
+		}
+	}
+
+	if len(documentIDs) > 0 {
+		err = service.companyDocuments.DeleteByCompanyID(id)
+		if err != nil {
+			return
+		}
+		_, err = service.companyDocuments.CreateBatchCompanyDocuments(id, documentIDs)
 	}
 	return service.GetByID(id)
 }

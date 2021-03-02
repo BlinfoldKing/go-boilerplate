@@ -56,6 +56,19 @@ func (service Service) CreateAssetWarehouse(assetID string, warehouseID string) 
 	return
 }
 
+// CreateBatchAssetWarehouses creates a batch of new AssetWarehouses
+func (service Service) CreateBatchAssetWarehouses(assetID string, warehouseIDs []string) (assetWarehouses []entity.AssetWarehouse, err error) {
+	for _, warehouseID := range warehouseIDs {
+		assetWarehouse, err := entity.NewAssetWarehouse(assetID, warehouseID)
+		if err != nil {
+			return []entity.AssetWarehouse{}, err
+		}
+		assetWarehouses = append(assetWarehouses, assetWarehouse)
+	}
+	err = service.repository.SaveBatch(assetWarehouses)
+	return
+}
+
 // GetList get list of assetWarehouse
 func (service Service) GetList(pagination entity.Pagination) (assetWarehouse []entity.AssetWarehouseGroup, count int, err error) {
 	aws, count, err := service.repository.GetList(pagination)
@@ -96,4 +109,9 @@ func (service Service) GetByID(id string) (assetWarehouse entity.AssetWarehouseG
 // DeleteByID delete assetWarehouseby id
 func (service Service) DeleteByID(id string) (err error) {
 	return service.repository.DeleteByID(id)
+}
+
+// DeleteByAssetID delete asset warehouse by asset id
+func (service Service) DeleteByAssetID(assetID string) (err error) {
+	return service.repository.DeleteByAssetID(assetID)
 }

@@ -12,8 +12,10 @@ type CreateRequest struct {
 
 // UpdateRequest request for update company
 type UpdateRequest struct {
-	Name        string `json:"name"`
-	Type        int    `json:"type"`
-	Address     string `json:"address"`
-	PhoneNumber string `json:"phone_number"`
+	Name        string   `json:"name"`
+	Type        int      `json:"type"`
+	Address     string   `json:"address"`
+	PhoneNumber string   `json:"phone_number"`
+	ContactIDs  []string `json:"contact_ids"`
+	DocumentIDs []string `json:"document_ids"`
 }
