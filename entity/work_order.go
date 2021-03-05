@@ -90,6 +90,8 @@ const (
 	AuditVerification
 	// AuditComplete :nodoc
 	AuditComplete
+	// AuditRevision :nodoc
+	AuditRevision
 )
 
 // WorkOrder work_order entity
