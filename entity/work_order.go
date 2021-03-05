@@ -88,8 +88,6 @@ const (
 	AuditAudit
 	// AuditVerification :nodoc
 	AuditVerification
-	// AuditRevision :nodoc
-	AuditRevision
 	// AuditComplete :nodoc
 	AuditComplete
 )

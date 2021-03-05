@@ -199,6 +199,40 @@ func (h handler) VerifyInstallation(ctx iris.Context) {
 	ctx.Next()
 }
 
+func (h handler) VerifyMaintenance(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	workOrder, err := h.workorders.VerifyMaintenance(id, user.ID)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
+func (h handler) VerifyTroubleshoot(ctx iris.Context) {
+	id := ctx.Params().GetString("id")
+	user := ctx.Values().Get("user").(entity.UserGroup)
+	workOrder, err := h.workorders.VerifyTroubleshoot(id, user.ID)
+
+	if err != nil {
+		helper.
+			CreateErrorResponse(ctx, err).
+			InternalServer().
+			JSON()
+		return
+	}
+
+	helper.CreateResponse(ctx).Ok().WithData(workOrder).JSON()
+	ctx.Next()
+}
+
 func (h handler) VerifyAssestment(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
 	user := ctx.Values().Get("user").(entity.UserGroup)

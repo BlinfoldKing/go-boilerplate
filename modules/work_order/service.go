@@ -184,6 +184,34 @@ func (service Service) Update(id string, changeset entity.WorkOrderChangeSet) (w
 	return service.GetByID(id)
 }
 
+// VerifyMaintenance update work_order
+func (service Service) VerifyMaintenance(id, userid string) (workOrderGroup entity.WorkOrderGroup, err error) {
+	now := time.Now()
+	err = service.repository.Update(id, entity.WorkOrderChangeSet{
+		VerifiedBy: &userid,
+		VerifiedAt: &now,
+		Status:     entity.MaintenanceComplete,
+	})
+	if err != nil {
+		return entity.WorkOrderGroup{}, err
+	}
+	return service.GetByID(id)
+}
+
+// VerifyTroubleshoot update work_order
+func (service Service) VerifyTroubleshoot(id, userid string) (workOrderGroup entity.WorkOrderGroup, err error) {
+	now := time.Now()
+	err = service.repository.Update(id, entity.WorkOrderChangeSet{
+		VerifiedBy: &userid,
+		VerifiedAt: &now,
+		Status:     entity.TroubleshootingComplete,
+	})
+	if err != nil {
+		return entity.WorkOrderGroup{}, err
+	}
+	return service.GetByID(id)
+}
+
 // VerifyInstallation update work_order
 func (service Service) VerifyInstallation(id, userid string) (workOrderGroup entity.WorkOrderGroup, err error) {
 	now := time.Now()

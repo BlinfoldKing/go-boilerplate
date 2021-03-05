@@ -36,7 +36,9 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	workOrder.Post("/{id:string}/assestment:approve", handler.ApproveAssestment)
 	workOrder.Post("/{id:string}/assestment:decline", handler.DeclineAssestment)
 
+	workOrder.Post("/{id:string}/status:verify-maintenance", handler.VerifyMaintenance)
+	workOrder.Post("/{id:string}/status:verify-troubleshoot", handler.VerifyTroubleshoot)
 	workOrder.Post("/{id:string}/status:verify-install", handler.VerifyInstallation)
-	workOrder.Post("/{id:string}/status:verify-assestment", handler.VerifyInstallation)
-	workOrder.Post("/{id:string}/status:verify-audit", handler.VerifyInstallation)
+	workOrder.Post("/{id:string}/status:verify-assestment", handler.VerifyAssestment)
+	workOrder.Post("/{id:string}/status:verify-audit", handler.VerifyAudit)
 }
