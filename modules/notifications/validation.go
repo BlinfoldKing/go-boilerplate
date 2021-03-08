@@ -15,5 +15,10 @@ type CreateRequest struct {
 
 // UpdateRequest request for update notification
 type UpdateRequest struct {
-	Title string `json:"title" validate:"required"`
+	Title    string                    `json:"title"`
+	Subtitle string                    `json:"subtitle"`
+	URLLink  string                    `json:"url_link"`
+	Body     string                    `json:"body"`
+	Type     entity.NotificationType   `json:"type"`
+	Status   entity.NotificationStatus `json:"status"`
 }

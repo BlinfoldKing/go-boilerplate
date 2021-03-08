@@ -57,7 +57,12 @@ func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
 	notification, err := h.notifications.Update(id, entity.NotificationChangeSet{
-		Title: request.Title,
+		Title:    request.Title,
+		Subtitle: request.Subtitle,
+		URLLink:  request.URLLink,
+		Body:     request.Body,
+		Type:     request.Type,
+		Status:   request.Status,
 	})
 	if err != nil {
 		helper.

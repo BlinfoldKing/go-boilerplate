@@ -53,7 +53,12 @@ type Notification struct {
 
 // NotificationChangeSet change set fornotification
 type NotificationChangeSet struct {
-	Title string `json:"title" xorm:"title"`
+	Title    string             `json:"title" xorm:"title"`
+	Subtitle string             `xorm:"subtitle" json:"subtitle"`
+	URLLink  string             `xorm:"url_link" json:"url_link"`
+	Body     string             `xorm:"body" json:"body"`
+	Type     NotificationType   `xorm:"type" json:"type"`
+	Status   NotificationStatus `xorm:"status" json:"status"`
 }
 
 // NewNotification used to create a new notification
