@@ -1,7 +1,6 @@
 -- +migrate Up
-CREATE TABLE IF NOT EXISTS "new_table" (
-    "id" UUID NOT NULL PRIMARY KEY,
-);
+ALTER TABLE "work_orders" ADD COLUMN IF NOT EXISTS "payload" JSONB;
 
 -- +migrate Down
-DROP TABLE IF EXISTS "new_table";
+ALTER TABLE "work_orders" DROP COLUMN IF EXISTS "payload";
+
