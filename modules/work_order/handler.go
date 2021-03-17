@@ -68,6 +68,7 @@ func (h handler) Update(ctx iris.Context) {
 		Description: request.Description,
 		Type:        request.Type,
 		Status:      request.Status,
+		Payload:     request.Payload,
 	})
 	if err != nil {
 		helper.
@@ -312,6 +313,7 @@ func (h handler) Create(ctx iris.Context) {
 		request.Status,
 		request.Assets,
 		request.DocumentIDs,
+		request.Payload,
 	)
 	if err != nil {
 		helper.

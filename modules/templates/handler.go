@@ -59,6 +59,7 @@ func (h handler) Update(ctx iris.Context) {
 	templates, err := h.templates.Update(id, entity.TemplatesChangeSet{
 		Name:        request.Name,
 		Description: request.Description,
+		Payload:     request.Payload,
 	})
 	if err != nil {
 		helper.
@@ -72,7 +73,7 @@ func (h handler) Update(ctx iris.Context) {
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	templates, err := h.templates.CreateTemplates(request.Name, request.Description, request.TemplateItems, request.InvolvedIDs)
+	templates, err := h.templates.CreateTemplates(request.Name, request.Description, request.Payload, request.TemplateItems, request.InvolvedIDs)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

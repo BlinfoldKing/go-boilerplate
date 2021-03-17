@@ -6,6 +6,7 @@ import "go-boilerplate/entity"
 type CreateRequest struct {
 	Name          string                 `json:"name" validate:"required"`
 	Description   string                 `json:"description" validate:"required"`
+	Payload       string                 `json:"payload"`
 	TemplateItems []entity.TemplateItems `json:"template_items"`
 	InvolvedIDs   []string               `json:"involved_ids"`
 }
@@ -14,4 +15,5 @@ type CreateRequest struct {
 type UpdateRequest struct {
 	Name        string `json:"name" validate:"required"`
 	Description string `json:"description" validate:"required"`
+	Payload     string `json:"payload"`
 }
