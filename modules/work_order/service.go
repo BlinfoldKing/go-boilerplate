@@ -143,6 +143,7 @@ func (service Service) CreateWorkOrder(
 		Qty int    `json:"qty" validate:"required"`
 	},
 	documentIDs *[]string,
+	payload string,
 ) (workOrder entity.WorkOrder, err error) {
 	workOrder, err = entity.NewWorkOrder(
 		noOrder,
@@ -152,6 +153,7 @@ func (service Service) CreateWorkOrder(
 		description,
 		workOrderType,
 		status,
+		payload,
 	)
 	if err != nil {
 		return

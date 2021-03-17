@@ -118,6 +118,8 @@ type WorkOrder struct {
 	VerifiedBy *string    `json:"verified_by" xorm:"verified_by"`
 	VerifiedAt *time.Time `json:"verified_at" xorm:"verified_at"`
 
+	Payload string `json:"payload"`
+
 	CreatedAt time.Time  `json:"created_at" xorm:"created"`
 	UpdatedAt time.Time  `json:"updated_at" xorm:"updated"`
 	DeletedAt *time.Time `json:"deleted_at" xorm:"deleted"`
@@ -152,10 +154,11 @@ type WorkOrderChangeSet struct {
 	MutationApprovedAt  *time.Time    `json:"mutation_approved_at" xorm:"mutation_approved_at"`
 	VerifiedBy          *string       `json:"verified_by" xorm:"verified_by"`
 	VerifiedAt          *time.Time    `json:"verified_at" xorm:"verified_at"`
+	Payload             string        `json:"payload"`
 }
 
 // NewWorkOrder create newwork_order
-func NewWorkOrder(noOrder, picid string, siteID *string, name, description string, workOrderType WorkOrderType, status StatusType) (workOrder WorkOrder, err error) {
+func NewWorkOrder(noOrder, picid string, siteID *string, name, description string, workOrderType WorkOrderType, status StatusType, payload string) (workOrder WorkOrder, err error) {
 	workOrder = WorkOrder{
 		ID:          uuid.NewV4().String(),
 		NoOrder:     noOrder,
@@ -165,6 +168,7 @@ func NewWorkOrder(noOrder, picid string, siteID *string, name, description strin
 		Type:        workOrderType,
 		Description: description,
 		Status:      status,
+		Payload:     payload,
 	}
 	return
 }
