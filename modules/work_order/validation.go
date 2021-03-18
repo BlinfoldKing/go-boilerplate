@@ -15,6 +15,7 @@ type CreateRequest struct {
 	} `json:"assets"`
 	DocumentIDs *[]string `json:"document_ids"`
 	SiteID      *string   `json:"site_id"`
+	Payload     string    `json:"payload"`
 }
 
 // UpdateRequest request for update work_order
@@ -25,6 +26,7 @@ type UpdateRequest struct {
 	Status      int     `json:"status"`
 	Description string  `json:"description"`
 	SiteID      *string `json:"site_id"`
+	Payload     string  `json:"payload"`
 }
 
 // ApproveRequest request for aprroval

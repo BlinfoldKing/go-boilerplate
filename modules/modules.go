@@ -27,6 +27,8 @@ import (
 	productdocument "go-boilerplate/modules/product_document"
 	productspecification "go-boilerplate/modules/product_specification"
 	"go-boilerplate/modules/roles"
+	"go-boilerplate/modules/sensor"
+	sensorlog "go-boilerplate/modules/sensor_log"
 	"go-boilerplate/modules/site"
 	siteasset "go-boilerplate/modules/site_asset"
 	sitecontact "go-boilerplate/modules/site_contact"
@@ -89,6 +91,8 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	companycontactget.Routes(prefix, adapters)
 	templatesinvolvedid.Routes(prefix, adapters)
 	assetwarehouse.Routes(prefix, adapters)
+	sensor.Routes(prefix, adapters)
+	sensorlog.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)

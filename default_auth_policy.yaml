@@ -61,6 +61,8 @@ policy:
       route: /site-contacts*
     - method: (POST) || (PUT) || (GET) || (DELETE)
       route: /site-documents*
+    - method: (POST) || (PUT) || (GET) || (DELETE)
+      route: /sensor*
   penyedia:
     - method: (GET) || (POST)
       route: /documents*
@@ -331,3 +333,4 @@ policy:
       route: /site-contacts*
     - method: (POST) || (PUT) || (GET) || (DELETE)
       route: /site-documents*
+

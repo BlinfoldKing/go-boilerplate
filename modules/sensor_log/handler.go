@@ -1,4 +1,4 @@
-package templates
+package sensorlog
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 )
 
 type handler struct {
-	templates Service
-	adapters  adapters.Adapters
+	sensorLogs Service
+	adapters   adapters.Adapters
 }
 
 func (h handler) GetList(ctx iris.Context) {
 	request := ctx.Values().Get("pagination").(entity.Pagination)
-	templates, count, err := h.templates.GetList(request)
+	sensorLogs, count, err := h.sensorLogs.GetList(request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -24,12 +24,12 @@ func (h handler) GetList(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreatePaginationResponse(ctx, request, templates, count).JSON()
+	helper.CreatePaginationResponse(ctx, request, sensorLogs, count).JSON()
 	ctx.Next()
 }
 func (h handler) GetByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	templates, err := h.templates.GetByID(id)
+	sensorLog, err := h.sensorLogs.GetByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -37,12 +37,12 @@ func (h handler) GetByID(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(templates).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(sensorLog).JSON()
 	ctx.Next()
 }
 func (h handler) DeleteByID(ctx iris.Context) {
 	id := ctx.Params().GetString("id")
-	err := h.templates.DeleteByID(id)
+	err := h.sensorLogs.DeleteByID(id)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -56,10 +56,11 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	templates, err := h.templates.Update(id, entity.TemplatesChangeSet{
-		Name:        request.Name,
-		Description: request.Description,
-		Payload:     request.Payload,
+	sensorLog, err := h.sensorLogs.Update(id, entity.SensorLogChangeSet{
+		SensorID: request.SensorID,
+		Unit:     request.Unit,
+		Payload:  request.Payload,
+		Value:    request.Value,
 	})
 	if err != nil {
 		helper.
@@ -68,12 +69,12 @@ func (h handler) Update(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(templates).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(sensorLog).JSON()
 	ctx.Next()
 }
 func (h handler) Create(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*CreateRequest)
-	templates, err := h.templates.CreateTemplates(request.Name, request.Description, request.Payload, request.TemplateItems, request.InvolvedIDs)
+	sensorLog, err := h.sensorLogs.CreateSensorLog(request.SensorID, request.Unit, request.Payload, request.Value)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).
@@ -81,6 +82,6 @@ func (h handler) Create(ctx iris.Context) {
 			JSON()
 		return
 	}
-	helper.CreateResponse(ctx).Ok().WithData(templates).JSON()
+	helper.CreateResponse(ctx).Ok().WithData(sensorLog).JSON()
 	ctx.Next()
 }

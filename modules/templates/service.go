@@ -52,8 +52,8 @@ func (service Service) mapTemplateItemsToTemplateGroup(template entity.Templates
 }
 
 // CreateTemplates create new templates
-func (service Service) CreateTemplates(name, description string, templateItems []entity.TemplateItems, involvedIDs []string) (templates entity.Templates, err error) {
-	templates, err = entity.NewTemplates(name, description)
+func (service Service) CreateTemplates(name, description, payload string, templateItems []entity.TemplateItems, involvedIDs []string) (templates entity.Templates, err error) {
+	templates, err = entity.NewTemplates(name, description, payload)
 	if err != nil {
 		return
 	}
