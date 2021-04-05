@@ -15,6 +15,7 @@ import (
 	"go-boilerplate/modules/users"
 	workorderasset "go-boilerplate/modules/work_order_asset"
 	workorderdocument "go-boilerplate/modules/work_order_document"
+	workorderproducts "go-boilerplate/modules/work_order_products"
 	"time"
 
 	"github.com/fatih/structs"
@@ -33,6 +34,7 @@ type Service struct {
 	history            history.Service
 	siteAsset          siteasset.Service
 	product            product.Service
+	workorderproducts  workorderproducts.Service
 }
 
 // InitWorkOrderService is used to init work order service
@@ -49,6 +51,7 @@ func InitWorkOrderService(adapters adapters.Adapters) Service {
 	historyService := history.InitHistoryService(adapters)
 	siteAsset := siteasset.InitSiteAssetService(adapters)
 	product := product.InitProductService(adapters)
+	workorderproducts := workorderproducts.InitWorkOrderProductService(adapters)
 
 	return CreateService(
 		repository,
@@ -62,6 +65,7 @@ func InitWorkOrderService(adapters adapters.Adapters) Service {
 		historyService,
 		siteAsset,
 		product,
+		workorderproducts,
 	)
 }
 
@@ -78,6 +82,7 @@ func CreateService(
 	histories history.Service,
 	siteAsset siteasset.Service,
 	product product.Service,
+	workorderproducts workorderproducts.Service,
 ) Service {
 	return Service{
 		repo,
@@ -91,6 +96,7 @@ func CreateService(
 		histories,
 		siteAsset,
 		product,
+		workorderproducts,
 	}
 }
 
@@ -156,6 +162,10 @@ func (service Service) CreateWorkOrder(
 	},
 	documentIDs *[]string,
 	payload string,
+	products *[]struct {
+		ID  string `json:"id" validate:"required"`
+		Qty int    `json:"qty" validate:"required"`
+	},
 ) (workOrder entity.WorkOrder, err error) {
 	workOrder, err = entity.NewWorkOrder(
 		noOrder,
@@ -170,7 +180,7 @@ func (service Service) CreateWorkOrder(
 	if err != nil {
 		return
 	}
-	err = service.repository.Create(workOrder, involvedIDs, documentIDs, assets)
+	err = service.repository.Create(workOrder, involvedIDs, documentIDs, assets, products)
 	if err != nil {
 		return
 	}

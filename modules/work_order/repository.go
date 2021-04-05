@@ -17,7 +17,12 @@ type Repository interface {
 		assets *[]struct {
 			ID  string `json:"id" validate:"required"`
 			Qty int    `json:"qty" validate:"required"`
-		}) error
+		},
+		products *[]struct {
+			ID  string `json:"id" validate:"required"`
+			Qty int    `json:"qty" validate:"required"`
+		},
+	) error
 	ApproveMutationV2(wo entity.WorkOrderGroup, userid string) error
 	ApproveAssestment(wo entity.WorkOrderGroup, userid string) error
 	ApproveAudit(wo entity.WorkOrderGroup, userid string) error

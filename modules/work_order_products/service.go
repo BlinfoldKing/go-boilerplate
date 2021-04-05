@@ -1,12 +1,20 @@
 package workorderproducts
 
 import (
+	"go-boilerplate/adapters"
 	"go-boilerplate/entity"
 )
 
 // Service contains business logic
 type Service struct {
 	repository Repository
+}
+
+// InitWorkOrderProductService :nodoc
+func InitWorkOrderProductService(adapters adapters.Adapters) Service {
+	repo := CreatePosgresRepository(adapters.Postgres)
+
+	return CreateService(repo)
 }
 
 // CreateService init service
