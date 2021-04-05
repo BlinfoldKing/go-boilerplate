@@ -9,6 +9,7 @@ import (
 	"go-boilerplate/modules/history"
 	involveduser "go-boilerplate/modules/involved_user"
 	"go-boilerplate/modules/notifications"
+	"go-boilerplate/modules/product"
 	"go-boilerplate/modules/site"
 	siteasset "go-boilerplate/modules/site_asset"
 	"go-boilerplate/modules/users"
@@ -31,6 +32,7 @@ type Service struct {
 	sites              site.Service
 	history            history.Service
 	siteAsset          siteasset.Service
+	product            product.Service
 }
 
 // InitWorkOrderService is used to init work order service
@@ -46,6 +48,7 @@ func InitWorkOrderService(adapters adapters.Adapters) Service {
 	siteService := site.InitSiteService(adapters)
 	historyService := history.InitHistoryService(adapters)
 	siteAsset := siteasset.InitSiteAssetService(adapters)
+	product := product.InitProductService(adapters)
 
 	return CreateService(
 		repository,
@@ -58,6 +61,7 @@ func InitWorkOrderService(adapters adapters.Adapters) Service {
 		siteService,
 		historyService,
 		siteAsset,
+		product,
 	)
 }
 
@@ -73,6 +77,7 @@ func CreateService(
 	sites site.Service,
 	histories history.Service,
 	siteAsset siteasset.Service,
+	product product.Service,
 ) Service {
 	return Service{
 		repo,
@@ -85,6 +90,7 @@ func CreateService(
 		sites,
 		histories,
 		siteAsset,
+		product,
 	}
 }
 
@@ -105,6 +111,11 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 			return []entity.WorkOrderGroup{}, err
 		}
 
+		products, err := service.product.GetByWorkorderID(workOrder.ID)
+		if err != nil {
+			return []entity.WorkOrderGroup{}, err
+		}
+
 		var site *entity.Site
 		if workOrder.SiteID != nil {
 			s, err := service.sites.GetByID(*workOrder.SiteID)
@@ -121,6 +132,7 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 			Asset:     assets,
 			Document:  documents,
 			Site:      site,
+			Products:  products,
 		}
 		workOrderGroups = append(workOrderGroups, workOrderGroup)
 	}
@@ -747,6 +759,11 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 	}
 
 	documents, err := service.documents.GetByWorkOrderID(workOrder.ID)
+	if err != nil {
+		return
+	}
+
+	products, err := service.product.GetByWorkorderID(workOrder.ID)
 	return entity.WorkOrderGroup{
 		WorkOrder:               workOrder,
 		User:                    users,
@@ -755,6 +772,7 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 		MutationRequestedByUser: mutationApprover,
 		MutationApprovedByUser:  mutationRequester,
 		VerifiedByUser:          verifier,
+		Products:                products,
 	}, err
 }
 

@@ -162,6 +162,13 @@ func (service Service) Update(id string, changeset entity.ProductChangeSet) (pro
 	return service.GetByID(id)
 }
 
+// GetByWorkorderID find productby id
+func (service Service) GetByWorkorderID(id string) (productGroup []entity.Product, err error) {
+	product, err := service.repository.FindByWorkOrderID(id)
+
+	return product, err
+}
+
 // GetByID find productby id
 func (service Service) GetByID(id string) (productGroup entity.ProductGroup, err error) {
 	product, err := service.repository.FindByID(id)

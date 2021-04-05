@@ -131,6 +131,7 @@ type WorkOrderGroup struct {
 	User                    []User       `json:"user"`
 	Asset                   []AssetGroup `json:"asset"`
 	Document                []Document   `json:"document"`
+	Products                []Product    `json:"products"`
 	Site                    *Site        `json:"site"`
 	MutationApprovedByUser  *User        `json:"mutation_approved_by_user"`
 	MutationRequestedByUser *User        `json:"mutation_requested_by_user"`

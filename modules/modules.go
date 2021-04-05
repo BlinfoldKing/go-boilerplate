@@ -44,6 +44,7 @@ import (
 	workorder "go-boilerplate/modules/work_order"
 	workorderasset "go-boilerplate/modules/work_order_asset"
 	workorderdocument "go-boilerplate/modules/work_order_document"
+	workorderproducts "go-boilerplate/modules/work_order_products"
 
 	"github.com/kataras/iris/v12"
 )
@@ -93,6 +94,7 @@ func Init(app *iris.Application, adapters adapters.Adapters) {
 	assetwarehouse.Routes(prefix, adapters)
 	sensor.Routes(prefix, adapters)
 	sensorlog.Routes(prefix, adapters)
+	workorderproducts.Routes(prefix, adapters)
 
 	// init queues
 	ping.Queue(adapters)
