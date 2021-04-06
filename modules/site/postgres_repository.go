@@ -1,6 +1,8 @@
 package site
 
 import (
+	"errors"
+	"fmt"
 	"go-boilerplate/adapters/postgres"
 	"go-boilerplate/entity"
 )
@@ -36,7 +38,14 @@ func (repo PostgresRepository) Update(id string, changeset entity.SiteChangeSet)
 
 // FindByID find site by id
 func (repo PostgresRepository) FindByID(id string) (site entity.Site, err error) {
-	_, err = repo.db.SQL("SELECT * FROM sites WHERE id = ? AND deleted_at IS null", id).Get(&site)
+	found, err := repo.db.SQL("SELECT * FROM sites WHERE id = ? AND deleted_at IS null", id).Get(&site)
+	fmt.Println(site, err)
+
+	if !found {
+		err = errors.New("not found")
+		return
+	}
+
 	return
 }
 

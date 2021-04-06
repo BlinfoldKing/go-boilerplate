@@ -141,6 +141,8 @@ func (service Service) GetByID(id string) (siteGroup entity.SiteGroup, err error
 	if err != nil {
 		return
 	}
+
+	fmt.Println(">", site)
 	siteGroup, err = service.mapSiteToSiteGroup(site)
 	return
 }
