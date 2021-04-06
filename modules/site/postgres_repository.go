@@ -37,6 +37,7 @@ func (repo PostgresRepository) Update(id string, changeset entity.SiteChangeSet)
 // FindByID find site by id
 func (repo PostgresRepository) FindByID(id string) (site entity.Site, err error) {
 	_, err = repo.db.SQL("SELECT * FROM sites WHERE id = ? AND deleted_at IS null", id).Get(&site)
+
 	return
 }
 

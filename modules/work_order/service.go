@@ -109,10 +109,12 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 		if workOrder.SiteID != nil {
 			s, err := service.sites.GetByID(*workOrder.SiteID)
 			if err != nil {
-				return []entity.WorkOrderGroup{}, err
+				site = nil
+			} else {
+
+				site = &s.Site
 			}
 
-			site = &s.Site
 		}
 
 		workOrderGroup := entity.WorkOrderGroup{
