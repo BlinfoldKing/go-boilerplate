@@ -147,6 +147,10 @@ func (repo PostgresRepository) Create(
 		ID  string `json:"id" validate:"required"`
 		Qty int    `json:"qty" validate:"required"`
 	},
+	products *[]struct {
+		ID  string `json:"id" validate:"required"`
+		Qty int    `json:"qty" validate:"required"`
+	},
 ) error {
 	sess := repo.db.Engine.NewSession()
 
@@ -174,6 +178,22 @@ func (repo PostgresRepository) Create(
 				return err
 			}
 		}
+	}
+
+	if products != nil {
+		for _, product := range *products {
+			woproduct, _ := entity.
+				NewWorkOrderProducts(entity.PRODUCTUNCHECKED, workOrder.ID, product.ID, product.Qty)
+			_, err = sess.
+				Table("work_order_products").
+				Insert(&woproduct)
+
+			if err != nil {
+				sess.Rollback()
+				return err
+			}
+		}
+
 	}
 
 	if involvedIDs != nil {

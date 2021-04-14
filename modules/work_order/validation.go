@@ -13,6 +13,10 @@ type CreateRequest struct {
 		ID  string `json:"id" validate:"required"`
 		Qty int    `json:"qty" validate:"required"`
 	} `json:"assets"`
+	Products *[]struct {
+		ID  string `json:"id" validate:"required"`
+		Qty int    `json:"qty" validate:"required"`
+	} `json:"products"`
 	DocumentIDs *[]string `json:"document_ids"`
 	SiteID      *string   `json:"site_id"`
 	Payload     string    `json:"payload"`

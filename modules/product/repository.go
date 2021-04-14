@@ -11,4 +11,5 @@ type Repository interface {
 	FindByID(id string) (entity.Product, error)
 	Update(id string, changeset entity.ProductChangeSet) error
 	GetList(pagination entity.Pagination) (Products []entity.Product, count int, err error)
+	FindByWorkOrderID(workOrderID string) (product []entity.Product, err error)
 }
