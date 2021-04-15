@@ -16,6 +16,7 @@ type Asset struct {
 	PurchasePrice     float32    `json:"purchase_price" xorm:"purchase_price"`
 	SupplierCompanyID string     `json:"supplier_company_id" xorm:"supplier_company_id"`
 	SalvageValue      float32    `json:"salvage_value" xorm:"salvage_value"`
+	CreatedBy         *string    `json:"created_by" xorm:"created_by"`
 	CreatedAt         time.Time  `json:"created_at"`
 	UpdatedAt         time.Time  `json:"updated_at"`
 	DeletedAt         *time.Time `json:"deleted_at"`
@@ -28,6 +29,7 @@ type AssetGroup struct {
 	Product          ProductGroup `json:"product"`
 	Warehouse        []Warehouse  `json:"warehouses"`
 	Company          CompanyGroup `json:"company"`
+	CreatedByUser    *User        `json:"created_by_user"`
 }
 
 // AssetChangeSet change set forasset
@@ -50,6 +52,7 @@ func NewAsset(
 	purchasePrice float32,
 	supplierCompanyID string,
 	salvageValue float32,
+	createdBy *string,
 ) (asset Asset, err error) {
 	asset = Asset{
 		ID:                uuid.NewV4().String(),
@@ -60,6 +63,7 @@ func NewAsset(
 		PurchasePrice:     purchasePrice,
 		SupplierCompanyID: supplierCompanyID,
 		SalvageValue:      salvageValue,
+		CreatedBy:         createdBy,
 	}
 	return
 }

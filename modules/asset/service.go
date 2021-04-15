@@ -114,6 +114,7 @@ func (service Service) CreateAsset(
 	purchasePrice float32,
 	supplierCompanyID string,
 	salvageValue float32,
+	createdBy *string,
 ) (asset entity.Asset, err error) {
 	asset, err = entity.NewAsset(
 		productID,
@@ -123,6 +124,7 @@ func (service Service) CreateAsset(
 		purchasePrice,
 		supplierCompanyID,
 		salvageValue,
+		createdBy,
 	)
 	if err != nil {
 		return

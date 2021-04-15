@@ -86,6 +86,7 @@ func (h handler) Create(ctx iris.Context) {
 		request.PurchasePrice,
 		request.SupplierCompanyID,
 		request.SalvageValue,
+		request.CreatedBy,
 	)
 	if err != nil {
 		helper.

@@ -11,6 +11,7 @@ type CreateRequest struct {
 	PurchasePrice     float32   `json:"purchase_price" validate:"required"`
 	SupplierCompanyID string    `json:"supplier_company_id" validate:"required"`
 	SalvageValue      float32   `json:"salvage_value" validate:"required"`
+	CreatedBy         *string   `json:"created_by"`
 }
 
 // UpdateRequest request for update asset

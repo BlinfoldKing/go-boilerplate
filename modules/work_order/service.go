@@ -131,16 +131,26 @@ func (service Service) mapWorkOrdersToWorkOrderGroups(workOrders []entity.WorkOr
 
 				site = &s.Site
 			}
+		}
 
+		var createdBy *entity.User
+		if workOrder.CreatedBy != nil {
+			c, err := service.users.GetByID(*workOrder.CreatedBy)
+			if err != nil {
+				createdBy = nil
+			} else {
+				createdBy = &c.User
+			}
 		}
 
 		workOrderGroup := entity.WorkOrderGroup{
-			WorkOrder: workOrder,
-			User:      users,
-			Asset:     assets,
-			Document:  documents,
-			Site:      site,
-			Products:  products,
+			WorkOrder:     workOrder,
+			User:          users,
+			Asset:         assets,
+			Document:      documents,
+			Site:          site,
+			Products:      products,
+			CreatedByUser: createdBy,
 		}
 		workOrderGroups = append(workOrderGroups, workOrderGroup)
 	}
@@ -168,6 +178,7 @@ func (service Service) CreateWorkOrder(
 		ID  string `json:"id" validate:"required"`
 		Qty int    `json:"qty" validate:"required"`
 	},
+	createdBy *string,
 ) (workOrder entity.WorkOrder, err error) {
 	workOrder, err = entity.NewWorkOrder(
 		noOrder,
@@ -178,6 +189,7 @@ func (service Service) CreateWorkOrder(
 		workOrderType,
 		status,
 		payload,
+		createdBy,
 	)
 	if err != nil {
 		return
@@ -747,6 +759,7 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 		mutationRequester *entity.User
 		mutationApprover  *entity.User
 		verifier          *entity.User
+		createdBy         *entity.User
 	)
 	if workOrder.MutationRequestedBy != nil {
 		user, err := service.users.GetByID(*workOrder.MutationRequestedBy)
@@ -770,6 +783,14 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 
 	}
 
+	if workOrder.CreatedBy != nil {
+		user, err := service.users.GetByID(*workOrder.CreatedBy)
+		if err == nil {
+			createdBy = &user.User
+		}
+
+	}
+
 	documents, err := service.documents.GetByWorkOrderID(workOrder.ID)
 	if err != nil {
 		return
@@ -785,6 +806,7 @@ func (service Service) GetByID(id string) (workOrderGroup entity.WorkOrderGroup,
 		MutationApprovedByUser:  mutationRequester,
 		VerifiedByUser:          verifier,
 		Products:                products,
+		CreatedByUser:           createdBy,
 	}, err
 }
 

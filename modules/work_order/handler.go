@@ -383,6 +383,7 @@ func (h handler) Create(ctx iris.Context) {
 		request.DocumentIDs,
 		request.Payload,
 		request.Products,
+		request.CreatedBy,
 	)
 	if err != nil {
 		helper.
