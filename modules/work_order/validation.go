@@ -20,7 +20,7 @@ type CreateRequest struct {
 	DocumentIDs *[]string `json:"document_ids"`
 	SiteID      *string   `json:"site_id"`
 	Payload     string    `json:"payload"`
-	CreatedBy   string    `json:"created_by"`
+	CreatedBy   *string   `json:"created_by"`
 }
 
 // UpdateRequest request for update work_order
