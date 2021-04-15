@@ -7,6 +7,7 @@ import (
 	"go-boilerplate/modules/company"
 	"go-boilerplate/modules/product"
 	siteasset "go-boilerplate/modules/site_asset"
+	"go-boilerplate/modules/users"
 	"go-boilerplate/modules/warehouse"
 	"math"
 	"time"
@@ -20,6 +21,7 @@ type Service struct {
 	product         product.Service
 	siteasset       siteasset.Service
 	assetWarehouses assetwarehouseextend.Service
+	user            users.Service
 }
 
 // InitAssetService create new asset service
@@ -30,6 +32,7 @@ func InitAssetService(adapters adapters.Adapters) Service {
 	warehouse := warehouse.InitWarehouseService(adapters)
 	siteasset := siteasset.InitSiteAssetService(adapters)
 	assetwarehouse := assetwarehouseextend.InitService(adapters)
+	user := users.InitUserService(adapters)
 
 	return Service{
 		repository:      repository,
@@ -38,6 +41,7 @@ func InitAssetService(adapters adapters.Adapters) Service {
 		warehouse:       warehouse,
 		siteasset:       siteasset,
 		assetWarehouses: assetwarehouse,
+		user:            user,
 	}
 }
 
@@ -74,6 +78,18 @@ func (service Service) mapAssetToAssetGroup(asset entity.Asset) (ag entity.Asset
 	if err != nil {
 		return
 	}
+
+	var createdBy *entity.User
+	if ag.CreatedBy != nil {
+		c, err := service.user.GetByID(*ag.CreatedBy)
+		if err != nil {
+			createdBy = nil
+		} else {
+			createdBy = &c.User
+		}
+	}
+
+	ag.CreatedByUser = createdBy
 
 	// calculate linear valuation
 	oldestDate := time.Now()
