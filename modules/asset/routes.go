@@ -2,6 +2,7 @@ package asset
 
 import (
 	"go-boilerplate/adapters"
+	"go-boilerplate/entity"
 	"go-boilerplate/middlewares"
 
 	"github.com/kataras/iris/v12"
@@ -15,7 +16,7 @@ func Routes(prefix iris.Party, adapters adapters.Adapters) {
 	handler := handler{service, adapters}
 	asset := prefix.Party(name)
 	asset.Get("/", middlewares.ValidatePaginationQuery, handler.GetList)
-	asset.Post("/", middlewares.ValidateBody(&CreateRequest{}), handler.Create)
+	asset.Post("/", middlewares.ValidateBody(&entity.AssetRequest{}), handler.Create)
 	asset.Get("/{id:string}", handler.GetByID)
 	asset.Delete("/{id:string}", handler.DeleteByID)
 	asset.Put("/{id:string}", middlewares.ValidateBody(&UpdateRequest{}), handler.Update)

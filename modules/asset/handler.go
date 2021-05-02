@@ -56,15 +56,7 @@ func (h handler) DeleteByID(ctx iris.Context) {
 func (h handler) Update(ctx iris.Context) {
 	request := ctx.Values().Get("body").(*UpdateRequest)
 	id := ctx.Params().GetString("id")
-	asset, err := h.assets.Update(id, entity.AssetChangeSet{
-		ProductID:         request.ProductID,
-		SerialNumber:      request.SerialNumber,
-		Status:            request.Status,
-		PurchaseDate:      request.PurchaseDate,
-		PurchasePrice:     request.PurchasePrice,
-		SupplierCompanyID: request.SupplierCompanyID,
-		SalvageValue:      request.SalvageValue,
-	},
+	asset, err := h.assets.Update(id, request.AssetChangeSet,
 		request.WarehouseIDs)
 	if err != nil {
 		helper.
@@ -77,17 +69,8 @@ func (h handler) Update(ctx iris.Context) {
 	ctx.Next()
 }
 func (h handler) Create(ctx iris.Context) {
-	request := ctx.Values().Get("body").(*CreateRequest)
-	asset, err := h.assets.CreateAsset(
-		request.ProductID,
-		request.SerialNumber,
-		request.Status,
-		request.PurchaseDate,
-		request.PurchasePrice,
-		request.SupplierCompanyID,
-		request.SalvageValue,
-		request.CreatedBy,
-	)
+	request := ctx.Values().Get("body").(*entity.AssetRequest)
+	asset, err := h.assets.CreateAsset(*request)
 	if err != nil {
 		helper.
 			CreateErrorResponse(ctx, err).

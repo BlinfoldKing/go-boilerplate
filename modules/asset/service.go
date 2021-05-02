@@ -123,25 +123,9 @@ func CreateService(repo Repository) Service {
 
 // CreateAsset create new asset
 func (service Service) CreateAsset(
-	productID string,
-	serialNumber string,
-	status int,
-	purchaseDate time.Time,
-	purchasePrice float32,
-	supplierCompanyID string,
-	salvageValue float32,
-	createdBy *string,
+	request entity.AssetRequest,
 ) (asset entity.Asset, err error) {
-	asset, err = entity.NewAsset(
-		productID,
-		serialNumber,
-		status,
-		purchaseDate,
-		purchasePrice,
-		supplierCompanyID,
-		salvageValue,
-		createdBy,
-	)
+	asset, err = entity.NewAsset(request)
 	if err != nil {
 		return
 	}

@@ -1,6 +1,9 @@
 package asset
 
-import "time"
+import (
+	"go-boilerplate/entity"
+	"time"
+)
 
 // CreateRequest request for create new asset
 type CreateRequest struct {
@@ -16,12 +19,6 @@ type CreateRequest struct {
 
 // UpdateRequest request for update asset
 type UpdateRequest struct {
-	ProductID         string    `json:"product_id"`
-	SerialNumber      string    `json:"serial_number"`
-	Status            int       `json:"status"`
-	PurchaseDate      time.Time `json:"purchase_date"`
-	PurchasePrice     float32   `json:"purchase_price"`
-	SupplierCompanyID string    `json:"supplier_company_id"`
-	SalvageValue      float32   `json:"salvage_value"`
-	WarehouseIDs      []string  `json:"warehouse_ids"`
+	entity.AssetChangeSet
+	WarehouseIDs []string `json:"warehouse_ids"`
 }
