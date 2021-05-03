@@ -81,7 +81,7 @@ type Asset struct {
 	OutdoorAP1Audience                     *string           `json:"outdoor_ap_1_audience" xorm:"outdoor_ap_1_audience"`
 	OutdoorAP1Security                     *string           `json:"outdoor_ap_1_security" xorm:"outdoor_ap_1_security"`
 	OutdoorAP1DurationSettingsBandwidthCos *string           `json:"outdoor_ap_1_duration_settings_bandwidth_cos" xorm:"outdoor_ap_1_duration_settings_bandwidth_cos"`
-	OutdoorAP2Location                     *string           `json:"outdoor_ap_2_location" xorm:"outdoor_ap2location"`
+	OutdoorAP2Location                     *string           `json:"outdoor_ap_2_location" xorm:"outdoor_ap_2_location"`
 	OutdoorAP2Type                         *string           `json:"outdoor_ap_2_type" xorm:"outdoor_ap2type"`
 	OutdoorAP2Brand                        *string           `json:"outdoor_ap_2_brand" xorm:"outdoor_ap2brand"`
 	OutdoorAP2SN                           *string           `json:"outdoor_ap_2_sn" xorm:"outdoor_ap2sn"`

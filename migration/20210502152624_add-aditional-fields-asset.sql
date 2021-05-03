@@ -1,5 +1,5 @@
 -- +migrate Up
-ALTER TABLE "work_order_assets"
+ALTER TABLE "assets"
 ADD COLUMN IF NOT EXISTS "qty" VARCHAR,
 ADD COLUMN IF NOT EXISTS "terminal_id" VARCHAR,
 ADD COLUMN IF NOT EXISTS "location_name" VARCHAR,
@@ -81,7 +81,7 @@ ADD COLUMN IF NOT EXISTS "rack_sn" VARCHAR,
 ADD COLUMN IF NOT EXISTS "notes" VARCHAR;
 
 -- +migrate Down
-ALTER TABLE "work_order_assets"
+ALTER TABLE "assets"
 DROP COLUMN IF EXISTS "terminal_id",
 DROP COLUMN IF EXISTS "location_name",
 DROP COLUMN IF EXISTS "location_identity",
